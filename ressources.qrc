@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/img">
+        <file alias="zoom.png">img/zoom.png</file>
+    </qresource>
+</RCC>

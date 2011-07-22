@@ -14,3 +14,6 @@ SOURCES += main.cpp\
         JtvLiveUiMain.cpp
 
 HEADERS  += JtvLiveUiMain.h
+
+RESOURCES += \
+    ressources.qrc
