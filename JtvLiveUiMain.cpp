@@ -124,11 +124,18 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_central_page2_layout->addWidget(ui_central_page2_start);
         ui_central_page2->setLayout(ui_central_page2_layout);
 
+        //Page 3 : rtmpgw
+        ui_central_page3 = new QWidget;
+
+        //Page 4 : Control
+        ui_central_page4 = new QWidget;
 
     //QTabWidget setup
     ui_central_widget->addTab(ui_central_page0, "Justin.tv");
     ui_central_widget->addTab(ui_central_page1, "Params");
     ui_central_widget->addTab(ui_central_page2, "rtmpdump");
+    ui_central_widget->addTab(ui_central_page3, "rtmpgw");
+    ui_central_widget->addTab(ui_central_page4, "Control");
 
     //Central signals/slots
     connect(ui_central_page2_pipe_box, SIGNAL(toggled(bool)), this, SLOT(Page2_toggleFileCheck(bool)));
