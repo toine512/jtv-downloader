@@ -16,6 +16,7 @@
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QVBoxLayout>
+#include "JtvLiveChannel.h"
 
 class JtvLiveUiMain : public QMainWindow
 {
@@ -29,11 +30,19 @@ signals:
 
 public slots:
 
-private slots:
+protected slots:
+    void Page0_searchChannel();
+    void Page0_onMessageChanged(QString message);
+    void Page0_onSearchSuccess(QVector<JtvLiveStream>*);
+    void Page0_onSearchError(QString error);
     void Page2_toggleFileCheck(bool pipe_ckecked);
     void Page2_togglePipeCheck(bool file_ckecked);
 
-private:
+protected:
+    void Page0_lock();
+    void Page0_unlock();
+
+    //UI
     QStatusBar *ui_bottom_statusBar;
 
     QTabWidget *ui_central_widget;
@@ -66,6 +75,9 @@ private:
     QPushButton *ui_central_page2_start;
     QVBoxLayout *ui_central_page2_layout;
 
+    //Core
+    //Page 0
+    JtvLiveChannel *live_channel;
 };
 
 #endif // JTVLIVEUIMAIN_H

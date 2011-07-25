@@ -2,6 +2,7 @@
 #include <QDesktopWidget>
 #include <QtCore/Qt>
 #include <QIcon>
+#include <QMessageBox>
 
 JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     QMainWindow(parent)
@@ -138,10 +139,60 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     ui_central_widget->addTab(ui_central_page4, "Control");
 
     //Central signals/slots
+    connect(ui_central_page0_searchBtn, SIGNAL(clicked()), this, SLOT(Page0_searchChannel()));
     connect(ui_central_page2_pipe_box, SIGNAL(toggled(bool)), this, SLOT(Page2_toggleFileCheck(bool)));
     connect(ui_central_page2_file_box, SIGNAL(toggled(bool)), this, SLOT(Page2_togglePipeCheck(bool)));
 
     setCentralWidget(ui_central_widget);
+
+    //Core
+    live_channel = new JtvLiveChannel;
+    connect(live_channel, SIGNAL(messageChanged(QString)), this, SLOT(Page0_onMessageChanged(QString)));
+}
+
+void JtvLiveUiMain::Page0_lock()
+{
+    ui_central_page0_channel->setDisabled(true);
+    ui_central_page0_searchBtn->setDisabled(true);
+}
+
+void JtvLiveUiMain::Page0_unlock()
+{
+    ui_central_page0_channel->setEnabled(true);
+    ui_central_page0_searchBtn->setEnabled(true);
+}
+
+void JtvLiveUiMain::Page0_searchChannel()
+{
+    QString channel_name = ui_central_page0_channel->text();
+    if(channel_name.isEmpty())
+    {
+        QMessageBox::information(this, "Search live channel", "Empty channel name field");
+    }
+    else
+    {
+        //QMessageBox::information(this, "s", channel_name);
+        Page0_lock();
+        connect(live_channel, SIGNAL(channelSearchSuccess(QVector<JtvLiveStream>*)), this, SLOT(Page0_onSearchSuccess(QVector<JtvLiveStream>*)));
+        connect(live_channel, SIGNAL(channelSearchError(QString)), this, SLOT(Page0_onSearchError(QString)));
+        live_channel->startSearch(channel_name);
+    }
+}
+
+void JtvLiveUiMain::Page0_onMessageChanged(QString message)
+{
+    ui_central_page0_parsingInfos->setText(message);
+}
+
+void JtvLiveUiMain::Page0_onSearchSuccess(QVector<JtvLiveStream>*)
+{
+    Page0_unlock();
+}
+
+void JtvLiveUiMain::Page0_onSearchError(QString error)
+{
+    QMessageBox::warning(this, "Search live channel", QString("An error occured : %1").arg(error));
+    Page0_unlock();
 }
 
 //Called by ui_central_page2_pipe_box

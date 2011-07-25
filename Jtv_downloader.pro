@@ -4,16 +4,18 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 TARGET = Jtv_downloader
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        JtvLiveUiMain.cpp
+        JtvLiveUiMain.cpp \
+    JtvLiveChannel.cpp
 
-HEADERS  += JtvLiveUiMain.h
+HEADERS  += JtvLiveUiMain.h \
+    JtvLiveChannel.h
 
 RESOURCES += \
     ressources.qrc
