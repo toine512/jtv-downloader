@@ -8,7 +8,8 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     QMainWindow(parent)
 {
     setWindowTitle("Justin.tv live downloader");
-    resize(425, 240);
+    //resize(425, 240);
+    setFixedSize(496, 280);
     //Center on the current screen
     QDesktopWidget desktop_widget;
     QRect screen_geometry = desktop_widget.availableGeometry();
@@ -140,6 +141,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 
     //Central signals/slots
     connect(ui_central_page0_searchBtn, SIGNAL(clicked()), this, SLOT(Page0_searchChannel()));
+    connect(ui_central_page0_streamSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(updateStreamDatas(int)));
     connect(ui_central_page2_pipe_box, SIGNAL(toggled(bool)), this, SLOT(Page2_toggleFileCheck(bool)));
     connect(ui_central_page2_file_box, SIGNAL(toggled(bool)), this, SLOT(Page2_togglePipeCheck(bool)));
 
@@ -173,7 +175,6 @@ void JtvLiveUiMain::Page0_searchChannel()
     }
     else
     {
-        //QMessageBox::information(this, "s", channel_name);
         Page0_lock();
         ui_central_page0_streamSelector->setDisabled(true);
         ui_central_page0_streamSelector->clear();
@@ -193,6 +194,7 @@ void JtvLiveUiMain::Page0_onSearchSuccess(QList<JtvLiveStream> *streams)
     {
         ui_central_page0_streamSelector->addItem(streams->at(i).display_name);
     }
+    ui_central_page0_streamSelector->setCurrentIndex(0); //Will call updateStreamDatas(int) slot
     ui_central_page0_streamSelector->setEnabled(true);
     Page0_unlock();
 }
@@ -201,6 +203,29 @@ void JtvLiveUiMain::Page0_onSearchError(QString error)
 {
     QMessageBox::warning(this, "Search live channel", QString("An error occured : %1").arg(error));
     Page0_unlock();
+}
+
+void JtvLiveUiMain::updateStreamDatas(int index)
+{
+    JtvLiveStream stream = live_channel->getStreams()->at(index);
+    //Page 0 stats
+    ui_central_page0_bitrate->setText(QString("bitrate : ").append(stream.bitrate));
+    ui_central_page0_viewers->setText(QString("viewers : ").append(stream.viewers));
+    ui_central_page0_part->setText(QString("part : ").append(stream.part));
+    ui_central_page0_id->setText(QString("id : ").append(stream.id));
+    ui_central_page0_node->setText(QString("node : ").append(stream.node));
+    //Page 1 params
+    ui_central_page1_rtmp->setText(stream.rtmp_url);
+    ui_central_page1_swf->setText(stream.player_url.append("?channel=").append(stream.channel_name));
+    ui_central_page1_web->setText(QString("http://fr.justin.tv/").append(stream.channel_name));
+    if(stream.server_type == LEGACY)
+    {
+        ui_central_page1_usherToken->setText(stream.usher_token);
+    }
+    else if(stream.server_type == AKAMAI)
+    {
+        ui_central_page1_swfVfy->setText(stream.player_url.append("?channel=").append(stream.channel_name));
+    }
 }
 
 //Called by ui_central_page2_pipe_box

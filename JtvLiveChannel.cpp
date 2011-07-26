@@ -12,7 +12,7 @@ JtvLiveChannel::JtvLiveChannel(QObject *parent) :
     QObject(parent)
 {
     //get a preferences object (?) and set the Jtv player URL
-    player_url.fromUtf8(JTV_PLAYER); //using hardcoded #define (see header)
+    player_url = QString(JTV_PLAYER); //using hardcoded #define (see header)
     streams = new QList<JtvLiveStream>;
     net_manager = new QNetworkAccessManager(this);
     connect(net_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(dlFinished(QNetworkReply*)));
@@ -225,6 +225,5 @@ void JtvLiveChannel::parseXml(QByteArray raw_datas)
 
 JtvLiveChannel::~JtvLiveChannel()
 {
-    //delete last_message;
     delete streams;
 }

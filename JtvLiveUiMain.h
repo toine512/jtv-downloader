@@ -31,6 +31,7 @@ signals:
 public slots:
 
 protected slots:
+    void updateStreamDatas(int index);
     void Page0_searchChannel();
     void Page0_onMessageChanged(QString message);
     void Page0_onSearchSuccess(QList<JtvLiveStream> *streams);

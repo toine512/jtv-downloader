@@ -5,7 +5,6 @@
 #include <QString>
 #include <QList>
 #include <QNetworkAccessManager>
-#include <QNetworkReply>
 #include <QByteArray>
 
 //Hardcoding is BAD !
