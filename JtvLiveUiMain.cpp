@@ -148,6 +148,8 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     //Core
     live_channel = new JtvLiveChannel;
     connect(live_channel, SIGNAL(messageChanged(QString)), this, SLOT(Page0_onMessageChanged(QString)));
+    connect(live_channel, SIGNAL(channelSearchSuccess(QList<JtvLiveStream>*)), this, SLOT(Page0_onSearchSuccess(QList<JtvLiveStream>*)));
+    connect(live_channel, SIGNAL(channelSearchError(QString)), this, SLOT(Page0_onSearchError(QString)));
 }
 
 void JtvLiveUiMain::Page0_lock()
@@ -173,8 +175,8 @@ void JtvLiveUiMain::Page0_searchChannel()
     {
         //QMessageBox::information(this, "s", channel_name);
         Page0_lock();
-        connect(live_channel, SIGNAL(channelSearchSuccess(QVector<JtvLiveStream>*)), this, SLOT(Page0_onSearchSuccess(QVector<JtvLiveStream>*)));
-        connect(live_channel, SIGNAL(channelSearchError(QString)), this, SLOT(Page0_onSearchError(QString)));
+        ui_central_page0_streamSelector->setDisabled(true);
+        ui_central_page0_streamSelector->clear();
         live_channel->startSearch(channel_name);
     }
 }
@@ -184,8 +186,14 @@ void JtvLiveUiMain::Page0_onMessageChanged(QString message)
     ui_central_page0_parsingInfos->setText(message);
 }
 
-void JtvLiveUiMain::Page0_onSearchSuccess(QVector<JtvLiveStream>*)
+void JtvLiveUiMain::Page0_onSearchSuccess(QList<JtvLiveStream> *streams)
 {
+    int s = streams->size();
+    for(int i = 0 ; i < s ; i++)
+    {
+        ui_central_page0_streamSelector->addItem(streams->at(i).display_name);
+    }
+    ui_central_page0_streamSelector->setEnabled(true);
     Page0_unlock();
 }
 

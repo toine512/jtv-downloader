@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QString>
-#include <QVector>
+#include <QList>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QByteArray>
@@ -19,14 +19,8 @@ enum JtvServerType
 typedef struct JtvLiveStream JtvLiveStream;
 struct JtvLiveStream
 {
-    QString display_name, channel_name, rtmp_url, usher_token, player_url;
+    QString channel_name, player_url, display_name, rtmp_url, usher_token, bitrate, part, id, viewers, node;
     JtvServerType server_type;
-    //Misc infos
-    /* int or QString, depending on the XML parsing ... */
-    QString bitrate, viewers, part;
-    QString id;
-    /***/
-    QString node;
 };
 
 class JtvLiveChannel : public QObject
@@ -37,13 +31,13 @@ public:
     explicit JtvLiveChannel(QObject *parent = 0);
     ~JtvLiveChannel();
     QString getLastMessage() const;
-    QVector<JtvLiveStream>* getStreams();
+    QList<JtvLiveStream>* getStreams();
     void startSearch(QString channel);
 
 signals:
     void messageChanged(QString);
     void channelSearchError(QString);
-    void channelSearchSuccess(QVector<JtvLiveStream>*);
+    void channelSearchSuccess(QList<JtvLiveStream>*);
 
 public slots:
 
@@ -53,7 +47,7 @@ protected slots:
 protected:
     QString channel_name;
     QString player_url;
-    QVector<JtvLiveStream> *streams;
+    QList<JtvLiveStream> *streams;
     QString last_message;
 
     QNetworkAccessManager *net_manager;

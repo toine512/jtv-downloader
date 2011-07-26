@@ -33,7 +33,7 @@ public slots:
 protected slots:
     void Page0_searchChannel();
     void Page0_onMessageChanged(QString message);
-    void Page0_onSearchSuccess(QVector<JtvLiveStream>*);
+    void Page0_onSearchSuccess(QList<JtvLiveStream> *streams);
     void Page0_onSearchError(QString error);
     void Page2_toggleFileCheck(bool pipe_ckecked);
     void Page2_togglePipeCheck(bool file_ckecked);
