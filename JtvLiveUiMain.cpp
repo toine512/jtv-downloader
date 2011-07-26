@@ -207,24 +207,27 @@ void JtvLiveUiMain::Page0_onSearchError(QString error)
 
 void JtvLiveUiMain::updateStreamDatas(int index)
 {
-    JtvLiveStream stream = live_channel->getStreams()->at(index);
-    //Page 0 stats
-    ui_central_page0_bitrate->setText(QString("bitrate : ").append(stream.bitrate));
-    ui_central_page0_viewers->setText(QString("viewers : ").append(stream.viewers));
-    ui_central_page0_part->setText(QString("part : ").append(stream.part));
-    ui_central_page0_id->setText(QString("id : ").append(stream.id));
-    ui_central_page0_node->setText(QString("node : ").append(stream.node));
-    //Page 1 params
-    ui_central_page1_rtmp->setText(stream.rtmp_url);
-    ui_central_page1_swf->setText(stream.player_url.append("?channel=").append(stream.channel_name));
-    ui_central_page1_web->setText(QString("http://fr.justin.tv/").append(stream.channel_name));
-    if(stream.server_type == LEGACY)
+    if(index >= 0) //Avoiding crash when the QComboBox is cleared
     {
-        ui_central_page1_usherToken->setText(stream.usher_token);
-    }
-    else if(stream.server_type == AKAMAI)
-    {
-        ui_central_page1_swfVfy->setText(stream.player_url.append("?channel=").append(stream.channel_name));
+        JtvLiveStream stream = live_channel->getStreams()->at(index);
+        //Page 0 stats
+        ui_central_page0_bitrate->setText(QString("bitrate : ").append(stream.bitrate));
+        ui_central_page0_viewers->setText(QString("viewers : ").append(stream.viewers));
+        ui_central_page0_part->setText(QString("part : ").append(stream.part));
+        ui_central_page0_id->setText(QString("id : ").append(stream.id));
+        ui_central_page0_node->setText(QString("node : ").append(stream.node));
+        //Page 1 params
+        ui_central_page1_rtmp->setText(stream.rtmp_url);
+        ui_central_page1_swf->setText(stream.player_url.append("?channel=").append(stream.channel_name));
+        ui_central_page1_web->setText(QString("http://fr.justin.tv/").append(stream.channel_name));
+        if(stream.server_type == LEGACY)
+        {
+            ui_central_page1_usherToken->setText(stream.usher_token);
+        }
+        else if(stream.server_type == AKAMAI)
+        {
+            ui_central_page1_swfVfy->setText(stream.player_url.append("?channel=").append(stream.channel_name));
+        }
     }
 }
 
