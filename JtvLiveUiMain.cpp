@@ -3,6 +3,7 @@
 #include <QtCore/Qt>
 #include <QIcon>
 #include <QMessageBox>
+#include <QFileDialog>
 
 JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     QMainWindow(parent)
@@ -142,6 +143,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     //Central signals/slots
     connect(ui_central_page0_searchBtn, SIGNAL(clicked()), this, SLOT(Page0_searchChannel()));
     connect(ui_central_page0_streamSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(updateStreamDatas(int)));
+    connect(ui_central_page2_file_btn, SIGNAL(clicked()), this, SLOT(Page2_browseFile()));
     connect(ui_central_page2_pipe_box, SIGNAL(toggled(bool)), this, SLOT(Page2_toggleFileCheck(bool)));
     connect(ui_central_page2_file_box, SIGNAL(toggled(bool)), this, SLOT(Page2_togglePipeCheck(bool)));
 
@@ -203,7 +205,7 @@ void JtvLiveUiMain::Page0_onSearchSuccess(QList<JtvLiveStream> *streams)
         }
         ui_central_page0_streamSelector->addItem(name);
     }
-    ui_central_page0_streamSelector->setCurrentIndex(0); //Will call updateStreamDatas(int) slot
+    ui_central_page0_streamSelector->setCurrentIndex(0); //Will call updateStreamDatas(int) [slot]
     ui_central_page0_streamSelector->setEnabled(true);
     Page0_unlock();
 }
@@ -238,6 +240,11 @@ void JtvLiveUiMain::updateStreamDatas(int index)
             ui_central_page1_swfVfy->setText(stream.player_url.append("?channel=").append(stream.channel_name));
         }
     }
+}
+
+void JtvLiveUiMain::Page2_browseFile()
+{
+    ui_central_page2_file->setText(QFileDialog::getSaveFileName(this, "Save stream", QString(), "Flash video (*.flv)"));
 }
 
 //Called by ui_central_page2_pipe_box
