@@ -18,7 +18,7 @@ enum JtvServerType
 typedef struct JtvLiveStream JtvLiveStream;
 struct JtvLiveStream
 {
-    QString channel_name, player_url, display_name, rtmp_url, usher_token, bitrate, part, id, viewers, node;
+    QString channel_name, player_url, tag_name, height, rtmp_url, usher_token, bitrate, part, id, viewers, node;
     JtvServerType server_type;
 };
 

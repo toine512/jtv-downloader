@@ -192,7 +192,16 @@ void JtvLiveUiMain::Page0_onSearchSuccess(QList<JtvLiveStream> *streams)
     int s = streams->size();
     for(int i = 0 ; i < s ; i++)
     {
-        ui_central_page0_streamSelector->addItem(streams->at(i).display_name);
+        QString name = QString("%1\t\tHeight : %2\t\t").arg(streams->at(i).tag_name, streams->at(i).height);
+        if(streams->at(i).server_type == LEGACY)
+        {
+            name.append("UsherToken");
+        }
+        else if(streams->at(i).server_type == AKAMAI)
+        {
+            name.append("SWF Vfy");
+        }
+        ui_central_page0_streamSelector->addItem(name);
     }
     ui_central_page0_streamSelector->setCurrentIndex(0); //Will call updateStreamDatas(int) slot
     ui_central_page0_streamSelector->setEnabled(true);

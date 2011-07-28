@@ -93,11 +93,13 @@ void JtvLiveChannel::parseXml(QByteArray raw_datas)
                 live_stream.player_url = player_url;
                 QDomElement t = stream.toElement();
                 logMessage(QString("Found <%1> node ...").arg(t.tagName()));
+                live_stream.tag_name = t.tagName();
                 //Creating display_name : tagname + <video_height>
                 QDomNode n = t.elementsByTagName("video_height").item(0);
                 if(!n.isNull())
                 {
-                    live_stream.display_name = QString("%1 H: %2").arg(t.tagName(), n.toElement().text().trimmed());
+                    live_stream.height = n.toElement().text().trimmed();
+                    //live_stream.display_name = QString("%1\tHeight : %2").arg(t.tagName(), n.toElement().text().trimmed());
                     //Creating rtmp_url : <connect> + <play>
                     QDomNode n = t.elementsByTagName("connect").item(0);
                     if(!n.isNull())
@@ -106,7 +108,7 @@ void JtvLiveChannel::parseXml(QByteArray raw_datas)
                         QDomNode n = t.elementsByTagName("play").item(0);
                         if(!n.isNull())
                         {
-                            live_stream.rtmp_url = v.append(n.toElement().text().trimmed());
+                            live_stream.rtmp_url = v.append("/").append(n.toElement().text().trimmed());
                             //<token>
                             QDomNode n = t.elementsByTagName("token").item(0);
                             if(!n.isNull())
