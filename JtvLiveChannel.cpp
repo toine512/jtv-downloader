@@ -4,6 +4,7 @@
 #include <QNetworkRequest>
 #include <QMessageBox>
 #include <QNetworkReply>
+#include <QRegExp>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
@@ -74,8 +75,12 @@ void JtvLiveChannel::dlFinished(QNetworkReply *reply)
 
 void JtvLiveChannel::parseXml(QByteArray raw_datas)
 {
+    QString clean_datas(raw_datas);
+    //Workaround for invalid Jtv XML !
+    clean_datas.replace(QRegExp("<(\\d+p)>"), "<live-\\1>");
+    clean_datas.replace(QRegExp("</(\\d+p)>"), "</live-\\1>");
     QDomDocument dom;
-    if(dom.setContent(raw_datas))
+    if(dom.setContent(clean_datas))
     {
         QDomElement nodes = dom.documentElement();
         //QDomNode nodes = dom_element.firstChild();
