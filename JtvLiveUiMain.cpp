@@ -263,6 +263,8 @@ void JtvLiveUiMain::Page0_onSearchError(QString error)
 
 void JtvLiveUiMain::updateStreamDatas(int index)
 {
+    Page0_defaultStats();
+    Page1_defaultParams();
     if(index >= 0) //Avoiding crash when the QComboBox is cleared
     {
         const JtvLiveStream &stream = live_channel->getStreams()->at(index);
