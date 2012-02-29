@@ -29,29 +29,28 @@ class JtvLiveChannel : public QObject
 public:
     explicit JtvLiveChannel(QObject *parent = 0);
     ~JtvLiveChannel();
-    QString getLastMessage() const;
+    const QString & getLastMessage() const;
     QList<JtvLiveStream>* getStreams();
-    void startSearch(QString channel);
+    void startSearch(const QString &channel);
 
 signals:
-    void messageChanged(QString);
-    void channelSearchError(QString);
-    void channelSearchSuccess(QList<JtvLiveStream>*);
-
-public slots:
+    void messageChanged(const QString &);
+    void channelSearchError(const QString &);
+    void channelSearchSuccess(QList<JtvLiveStream> *);
 
 protected slots:
     void dlFinished(QNetworkReply *reply);
 
 protected:
+    void logMessage(const QString &message);
+    void parseXml(const QByteArray &raw_datas);
+
     QString channel_name;
     QString player_url;
     QList<JtvLiveStream> *streams;
     QString last_message;
-
     QNetworkAccessManager *net_manager;
-    void logMessage(QString message);
-    void parseXml(QByteArray raw_datas);
+
 };
 
 #endif // JTVLIVECHANNEL_H

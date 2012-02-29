@@ -19,7 +19,7 @@ JtvLiveChannel::JtvLiveChannel(QObject *parent) :
     connect(net_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(dlFinished(QNetworkReply*)));
 }
 
-void JtvLiveChannel::logMessage(QString message)
+void JtvLiveChannel::logMessage(const QString &message)
 {
     if(!message.isEmpty())
     {
@@ -28,7 +28,7 @@ void JtvLiveChannel::logMessage(QString message)
     }
 }
 
-QString JtvLiveChannel::getLastMessage() const
+const QString & JtvLiveChannel::getLastMessage() const
 {
     return last_message;
 }
@@ -38,7 +38,7 @@ QList<JtvLiveStream>* JtvLiveChannel::getStreams()
     return streams;
 }
 
-void JtvLiveChannel::startSearch(QString channel)
+void JtvLiveChannel::startSearch(const QString &channel)
 {
     streams->clear();
     channel_name = channel;
@@ -73,7 +73,7 @@ void JtvLiveChannel::dlFinished(QNetworkReply *reply)
     reply->deleteLater();
 }
 
-void JtvLiveChannel::parseXml(QByteArray raw_datas)
+void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
 {
     QString clean_datas(raw_datas);
     //Workaround for invalid Jtv XML !
@@ -86,7 +86,7 @@ void JtvLiveChannel::parseXml(QByteArray raw_datas)
         //QDomNode nodes = dom_element.firstChild();
         if(nodes.hasChildNodes())
         {
-            for(QDomNode stream = nodes.firstChild(); !stream.isNull(); stream = stream.nextSibling())
+            for(QDomNode stream = nodes.firstChild() ; !stream.isNull() ; stream = stream.nextSibling())
             {
                 JtvLiveStream live_stream;
                 live_stream.channel_name = channel_name;
