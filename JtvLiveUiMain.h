@@ -43,6 +43,10 @@ protected slots:
 protected:
     void Page0_lock();
     void Page0_unlock();
+    void Page0_defaultStats();
+    void Page0_fillStats(const JtvLiveStream &stream);
+    void Page1_defaultParams();
+    void Page1_fillParams(const JtvLiveStream &stream);
 
     //UI
     QStatusBar *ui_bottom_statusBar;

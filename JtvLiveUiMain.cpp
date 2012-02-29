@@ -37,16 +37,17 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_central_page0_hSeparator->setFrameShadow(QFrame::Sunken);
         ui_central_page0_streamSelector = new QComboBox;
         ui_central_page0_streamSelector->setEnabled(false);
-        ui_central_page0_bitrate = new QLabel("bitrate : n/a");
+        ui_central_page0_bitrate = new QLabel();
         ui_central_page0_bitrate->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        ui_central_page0_viewers = new QLabel("viewers : n/a");
+        ui_central_page0_viewers = new QLabel();
         ui_central_page0_viewers->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        ui_central_page0_part = new QLabel("part : n/a");
+        ui_central_page0_part = new QLabel();
         ui_central_page0_part->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        ui_central_page0_id = new QLabel("id : n/a");
+        ui_central_page0_id = new QLabel();
         ui_central_page0_id->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        ui_central_page0_node = new QLabel("node : n/a");
+        ui_central_page0_node = new QLabel();
         ui_central_page0_node->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        Page0_defaultStats();
         //Layouts
         ui_central_page0_searchLayout = new QHBoxLayout;
         ui_central_page0_searchLayout->addWidget(ui_central_page0_chanName);
@@ -168,6 +169,48 @@ void JtvLiveUiMain::Page0_unlock()
     ui_central_page0_searchBtn->setEnabled(true);
 }
 
+void JtvLiveUiMain::Page0_defaultStats()
+{
+    ui_central_page0_bitrate->setText("bitrate : n/a");
+    ui_central_page0_viewers->setText("viewers : n/a");
+    ui_central_page0_part->setText("part : n/a");
+    ui_central_page0_id->setText("id : n/a");
+    ui_central_page0_node->setText("node : n/a");
+}
+
+void JtvLiveUiMain::Page0_fillStats(const JtvLiveStream &stream)
+{
+    ui_central_page0_bitrate->setText(QString("bitrate : ").append(stream.bitrate));
+    ui_central_page0_viewers->setText(QString("viewers : ").append(stream.viewers));
+    ui_central_page0_part->setText(QString("part : ").append(stream.part));
+    ui_central_page0_id->setText(QString("id : ").append(stream.id));
+    ui_central_page0_node->setText(QString("node : ").append(stream.node));
+}
+
+void JtvLiveUiMain::Page1_defaultParams()
+{
+    ui_central_page1_rtmp->clear();
+    ui_central_page1_swf->clear();
+    ui_central_page1_web->clear();
+    ui_central_page1_usherToken->clear();
+    ui_central_page1_swfVfy->clear();
+}
+
+void JtvLiveUiMain::Page1_fillParams(const JtvLiveStream &stream)
+{
+    ui_central_page1_rtmp->setText(stream.rtmp_url);
+    ui_central_page1_swf->setText(QString(stream.player_url).append("?channel=").append(stream.channel_name));
+    ui_central_page1_web->setText(QString("http://fr.justin.tv/").append(stream.channel_name));
+    if(stream.server_type == LEGACY)
+    {
+        ui_central_page1_usherToken->setText(stream.usher_token);
+    }
+    else if(stream.server_type == AKAMAI)
+    {
+        ui_central_page1_swfVfy->setText(QString(stream.player_url).append("?channel=").append(stream.channel_name));
+    }
+}
+
 void JtvLiveUiMain::Page0_searchChannel()
 {
     QString channel_name = ui_central_page0_channel->text();
@@ -177,7 +220,9 @@ void JtvLiveUiMain::Page0_searchChannel()
     }
     else
     {
+        Page0_defaultStats();
         Page0_lock();
+        Page1_defaultParams();
         ui_central_page0_streamSelector->setDisabled(true);
         ui_central_page0_streamSelector->clear();
         live_channel->startSearch(channel_name);
@@ -220,25 +265,9 @@ void JtvLiveUiMain::updateStreamDatas(int index)
 {
     if(index >= 0) //Avoiding crash when the QComboBox is cleared
     {
-        JtvLiveStream stream = live_channel->getStreams()->at(index);
-        //Page 0 stats
-        ui_central_page0_bitrate->setText(QString("bitrate : ").append(stream.bitrate));
-        ui_central_page0_viewers->setText(QString("viewers : ").append(stream.viewers));
-        ui_central_page0_part->setText(QString("part : ").append(stream.part));
-        ui_central_page0_id->setText(QString("id : ").append(stream.id));
-        ui_central_page0_node->setText(QString("node : ").append(stream.node));
-        //Page 1 params
-        ui_central_page1_rtmp->setText(stream.rtmp_url);
-        ui_central_page1_swf->setText(stream.player_url.append("?channel=").append(stream.channel_name));
-        ui_central_page1_web->setText(QString("http://fr.justin.tv/").append(stream.channel_name));
-        if(stream.server_type == LEGACY)
-        {
-            ui_central_page1_usherToken->setText(stream.usher_token);
-        }
-        else if(stream.server_type == AKAMAI)
-        {
-            ui_central_page1_swfVfy->setText(stream.player_url.append("?channel=").append(stream.channel_name));
-        }
+        const JtvLiveStream &stream = live_channel->getStreams()->at(index);
+        Page0_fillStats(stream);
+        Page1_fillParams(stream);
     }
 }
 
