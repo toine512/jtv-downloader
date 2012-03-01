@@ -4,6 +4,7 @@
 #include <QIcon>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QDebug>
 
 JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     QMainWindow(parent)
@@ -76,7 +77,13 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_central_page1_l_web = new QLabel("Web page (-p)");
         ui_central_page1_web = new QLineEdit;
         ui_central_page1_l_usherToken = new QLabel("UsherToken (-j)");
-        ui_central_page1_usherToken = new QTextEdit;
+        ui_central_page1_usherToken = new QLineEdit;
+        ui_central_page1_hSeparator = new QFrame;
+        ui_central_page1_hSeparator->setFrameShape(QFrame::HLine);
+        ui_central_page1_hSeparator->setFrameShadow(QFrame::Sunken);
+        ui_central_page1_l_cliFriendly = new QLabel("Command line input firendly :");
+        ui_central_page1_cliFriendly = new QPlainTextEdit;
+        ui_central_page1_cliFriendly->setReadOnly(true);
         //Layout
         ui_central_page1_layout = new QGridLayout;
         ui_central_page1_layout->addWidget(ui_central_page1_l_rtmp, 0, 0);
@@ -89,6 +96,9 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_central_page1_layout->addWidget(ui_central_page1_web, 3, 1);
         ui_central_page1_layout->addWidget(ui_central_page1_l_usherToken, 4, 0);
         ui_central_page1_layout->addWidget(ui_central_page1_usherToken, 4, 1);
+        ui_central_page1_layout->addWidget(ui_central_page1_hSeparator, 5, 0, 1, 2);
+        ui_central_page1_layout->addWidget(ui_central_page1_l_cliFriendly, 6, 0, 1, 2);
+        ui_central_page1_layout->addWidget(ui_central_page1_cliFriendly, 7, 0, 1, 2);
         ui_central_page1->setLayout(ui_central_page1_layout);
 
         //Page 2 : rtmpdump
@@ -144,6 +154,11 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     //Central signals/slots
     connect(ui_central_page0_searchBtn, SIGNAL(clicked()), this, SLOT(Page0_searchChannel()));
     connect(ui_central_page0_streamSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(updateStreamDatas(int)));
+    connect(ui_central_page1_rtmp, SIGNAL(textEdited(QString)), this, SLOT(Page1_buildCliFriendly()));
+    connect(ui_central_page1_swf, SIGNAL(textEdited(QString)), this, SLOT(Page1_buildCliFriendly()));
+    connect(ui_central_page1_swfVfy, SIGNAL(textEdited(QString)), this, SLOT(Page1_buildCliFriendly()));
+    connect(ui_central_page1_web, SIGNAL(textEdited(QString)), this, SLOT(Page1_buildCliFriendly()));
+    connect(ui_central_page1_usherToken, SIGNAL(textEdited(QString)), this, SLOT(Page1_buildCliFriendly()));
     connect(ui_central_page2_file_btn, SIGNAL(clicked()), this, SLOT(Page2_browseFile()));
     connect(ui_central_page2_pipe_box, SIGNAL(toggled(bool)), this, SLOT(Page2_toggleFileCheck(bool)));
     connect(ui_central_page2_file_box, SIGNAL(toggled(bool)), this, SLOT(Page2_togglePipeCheck(bool)));
@@ -152,9 +167,9 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 
     //Core
     live_channel = new JtvLiveChannel;
-    connect(live_channel, SIGNAL(messageChanged(QString)), this, SLOT(Page0_onMessageChanged(QString)));
-    connect(live_channel, SIGNAL(channelSearchSuccess(QList<JtvLiveStream>*)), this, SLOT(Page0_onSearchSuccess(QList<JtvLiveStream>*)));
-    connect(live_channel, SIGNAL(channelSearchError(QString)), this, SLOT(Page0_onSearchError(QString)));
+    connect(live_channel, SIGNAL(messageChanged(const QString &)), this, SLOT(Page0_onMessageChanged(const QString &)));
+    connect(live_channel, SIGNAL(channelSearchSuccess(QList<JtvLiveStream> *)), this, SLOT(Page0_onSearchSuccess(QList<JtvLiveStream> *)));
+    connect(live_channel, SIGNAL(channelSearchError(const QString &)), this, SLOT(Page0_onSearchError(const QString &)));
 }
 
 void JtvLiveUiMain::Page0_lock()
@@ -194,6 +209,7 @@ void JtvLiveUiMain::Page1_defaultParams()
     ui_central_page1_web->clear();
     ui_central_page1_usherToken->clear();
     ui_central_page1_swfVfy->clear();
+    ui_central_page1_cliFriendly->clear();
 }
 
 void JtvLiveUiMain::Page1_fillParams(const JtvLiveStream &stream)
@@ -209,6 +225,22 @@ void JtvLiveUiMain::Page1_fillParams(const JtvLiveStream &stream)
     {
         ui_central_page1_swfVfy->setText(QString(stream.player_url).append("?channel=").append(stream.channel_name));
     }
+    Page1_buildCliFriendly();
+}
+
+void JtvLiveUiMain::Page1_buildCliFriendly()
+{
+    qDebug() << "buildCliFriendly() called";
+    QString cmd = QString("-r %1 -s %2 -p %3 -v").arg(ui_central_page1_rtmp->text(), ui_central_page1_swf->text(), ui_central_page1_web->text());
+    if(!ui_central_page1_swfVfy->text().isEmpty())
+    {
+        cmd.append(QString(" -W %1").arg(ui_central_page1_swfVfy->text()));
+    }
+    if(!ui_central_page1_usherToken->text().isEmpty())
+    {
+        cmd.append(QString(" -j \"%1\"").arg(ui_central_page1_usherToken->text().replace("\"", "\\\"")));
+    }
+    ui_central_page1_cliFriendly->setPlainText(cmd);
 }
 
 void JtvLiveUiMain::Page0_searchChannel()
@@ -229,7 +261,7 @@ void JtvLiveUiMain::Page0_searchChannel()
     }
 }
 
-void JtvLiveUiMain::Page0_onMessageChanged(QString message)
+void JtvLiveUiMain::Page0_onMessageChanged(const QString &message)
 {
     ui_central_page0_parsingInfos->setText(message);
 }
@@ -255,7 +287,7 @@ void JtvLiveUiMain::Page0_onSearchSuccess(QList<JtvLiveStream> *streams)
     Page0_unlock();
 }
 
-void JtvLiveUiMain::Page0_onSearchError(QString error)
+void JtvLiveUiMain::Page0_onSearchError(const QString &error)
 {
     QMessageBox::warning(this, "Search live channel", QString("An error occured : %1").arg(error));
     Page0_unlock();

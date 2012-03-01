@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QLineEdit>
+#include <QPlainTextEdit>
 #include <QPushButton>
 #include <QFrame>
 #include <QComboBox>
@@ -33,9 +34,10 @@ public slots:
 protected slots:
     void updateStreamDatas(int index);
     void Page0_searchChannel();
-    void Page0_onMessageChanged(QString message);
+    void Page0_onMessageChanged(const QString &message);
     void Page0_onSearchSuccess(QList<JtvLiveStream> *streams);
-    void Page0_onSearchError(QString error);
+    void Page0_onSearchError(const QString &error);
+    void Page1_buildCliFriendly();
     void Page2_browseFile();
     void Page2_toggleFileCheck(bool pipe_ckecked);
     void Page2_togglePipeCheck(bool file_ckecked);
@@ -66,9 +68,10 @@ protected:
     QGridLayout *ui_central_page0_layout;
 
     //Page 1 : Parameters
-    QLabel *ui_central_page1_l_rtmp, *ui_central_page1_l_swf, *ui_central_page1_l_swfVfy, *ui_central_page1_l_web, *ui_central_page1_l_usherToken;
-    QLineEdit *ui_central_page1_rtmp, *ui_central_page1_swf, *ui_central_page1_swfVfy, *ui_central_page1_web;
-    QTextEdit *ui_central_page1_usherToken;
+    QLabel *ui_central_page1_l_rtmp, *ui_central_page1_l_swf, *ui_central_page1_l_swfVfy, *ui_central_page1_l_web, *ui_central_page1_l_usherToken, *ui_central_page1_l_cliFriendly;
+    QLineEdit *ui_central_page1_rtmp, *ui_central_page1_swf, *ui_central_page1_swfVfy, *ui_central_page1_web, *ui_central_page1_usherToken;
+    QFrame *ui_central_page1_hSeparator;
+    QPlainTextEdit *ui_central_page1_cliFriendly;
     QGridLayout *ui_central_page1_layout;
 
     //Page 2 : rtmpdump
