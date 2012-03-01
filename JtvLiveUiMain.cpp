@@ -9,6 +9,17 @@
 JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     QMainWindow(parent)
 {
+    //Core
+    settings = new QSettings("jtvdl.conf", QSettings::IniFormat, this);
+    live_channel = new JtvLiveChannel;
+    connect(live_channel, SIGNAL(messageChanged(const QString &)), this, SLOT(Page0_onMessageChanged(const QString &)));
+    connect(live_channel, SIGNAL(channelSearchSuccess(QList<JtvLiveStream> *)), this, SLOT(Page0_onSearchSuccess(QList<JtvLiveStream> *)));
+    connect(live_channel, SIGNAL(channelSearchError(const QString &)), this, SLOT(Page0_onSearchError(const QString &)));
+    linkedProcess_rtmpgw = new QProcess(this);
+    linkedProcess_rtmpgw->setProcessChannelMode(QProcess::MergedChannels);
+    linkedProcess_player = new QProcess(this);
+    linkedProcess_player->setProcessChannelMode(QProcess::MergedChannels);
+
     setWindowTitle("Justin.tv live downloader");
     //resize(425, 240);
     setFixedSize(496, 280);
@@ -138,22 +149,48 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_central_page2_layout->addWidget(ui_central_page2_start);
         ui_central_page2->setLayout(ui_central_page2_layout);
 
-        //Page 3 : rtmpgw
+        //Page 3 : Play
         ui_central_page3 = new QWidget;
+        ui_central_page3_player = new QLineEdit;
+#ifdef Q_OS_WIN32
+        ui_central_page3_player_label = new QLabel("Player path :");
+        ui_central_page3_player->setText(settings->value("watch/player", "%programfiles%\\VideoLAN\\VLC\\vlc.exe").toString());
+#else
+        ui_central_page3_player_label = new QLabel("Player command :");
+        ui_central_page3_player->setText(settings->value("watch/player", "vlc").toString());
+#endif
+        ui_central_page3_player_layout = new QHBoxLayout;
+        ui_central_page3_player_layout->addWidget(ui_central_page3_player_label);
+        ui_central_page3_player_layout->addWidget(ui_central_page3_player);
+        ui_central_page3_watchBtn = new QPushButton("Watch");
+        ui_central_page3_hSeparator = new QFrame;
+        ui_central_page3_hSeparator->setFrameShape(QFrame::HLine);
+        ui_central_page3_hSeparator->setFrameShadow(QFrame::Sunken);
+        ui_central_page3_rtmpgwOut = new QPlainTextEdit;
+        ui_central_page3_rtmpgwOut->setReadOnly(true);
+        ui_central_page3_playerOut = new QPlainTextEdit;
+        ui_central_page3_playerOut->setReadOnly(true);
+        ui_central_page3_layout = new QVBoxLayout;
+        ui_central_page3_layout->addLayout(ui_central_page3_player_layout);
+        ui_central_page3_layout->addWidget(ui_central_page3_watchBtn);
+        ui_central_page3_layout->addWidget(ui_central_page3_hSeparator);
+        ui_central_page3_layout->addWidget(ui_central_page3_rtmpgwOut);
+        ui_central_page3_layout->addWidget(ui_central_page3_playerOut);
+        ui_central_page3->setLayout(ui_central_page3_layout);
 
         //Page 4 : Control
         ui_central_page4 = new QWidget;
 
     //QTabWidget setup
     ui_central_widget->addTab(ui_central_page0, "Justin.tv");
+    ui_central_widget->addTab(ui_central_page3, "Play");
     ui_central_widget->addTab(ui_central_page1, "Params");
     ui_central_widget->addTab(ui_central_page2, "rtmpdump");
-    ui_central_widget->addTab(ui_central_page3, "rtmpgw");
-    ui_central_widget->addTab(ui_central_page4, "Control");
+    ui_central_widget->addTab(ui_central_page4, "rtmpgw");
 
     //Central signals/slots
     connect(ui_central_page0_searchBtn, SIGNAL(clicked()), this, SLOT(Page0_searchChannel()));
-    connect(ui_central_page0_streamSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(updateStreamDatas(int)));
+    connect(ui_central_page0_streamSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(Page0_updateStreamDatas(int)));
     connect(ui_central_page1_rtmp, SIGNAL(textEdited(QString)), this, SLOT(Page1_buildCliFriendly()));
     connect(ui_central_page1_swf, SIGNAL(textEdited(QString)), this, SLOT(Page1_buildCliFriendly()));
     connect(ui_central_page1_swfVfy, SIGNAL(textEdited(QString)), this, SLOT(Page1_buildCliFriendly()));
@@ -162,14 +199,43 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     connect(ui_central_page2_file_btn, SIGNAL(clicked()), this, SLOT(Page2_browseFile()));
     connect(ui_central_page2_pipe_box, SIGNAL(toggled(bool)), this, SLOT(Page2_toggleFileCheck(bool)));
     connect(ui_central_page2_file_box, SIGNAL(toggled(bool)), this, SLOT(Page2_togglePipeCheck(bool)));
+    connect(ui_central_page3_player, SIGNAL(textEdited(const QString &)), this, SLOT(Page3_savePlayerPath(const QString &)));
+    connect(ui_central_page3_watchBtn, SIGNAL(clicked()), this, SLOT(Page3_linkedProcessesStart()));
+    connect(linkedProcess_rtmpgw, SIGNAL(readyReadStandardOutput()), this, SLOT(Page3_rtmpgwOut()));
+    connect(linkedProcess_player, SIGNAL(readyReadStandardOutput()), this, SLOT(Page3_playerOut()));
 
     setCentralWidget(ui_central_widget);
+}
 
-    //Core
-    live_channel = new JtvLiveChannel;
-    connect(live_channel, SIGNAL(messageChanged(const QString &)), this, SLOT(Page0_onMessageChanged(const QString &)));
-    connect(live_channel, SIGNAL(channelSearchSuccess(QList<JtvLiveStream> *)), this, SLOT(Page0_onSearchSuccess(QList<JtvLiveStream> *)));
-    connect(live_channel, SIGNAL(channelSearchError(const QString &)), this, SLOT(Page0_onSearchError(const QString &)));
+QStringList JtvLiveUiMain::collectRtmpParams()
+{
+    QStringList args;
+    if(!ui_central_page1_rtmp->text().isEmpty())
+    {
+        args << "-r";
+        args << ui_central_page1_rtmp->text();
+    }
+    if(!ui_central_page1_swf->text().isEmpty())
+    {
+        args << "-s";
+        args << ui_central_page1_swf->text();
+    }
+    if(!ui_central_page1_swfVfy->text().isEmpty())
+    {
+        args << "-W";
+        args << ui_central_page1_swfVfy->text();
+    }
+    if(!ui_central_page1_web->text().isEmpty())
+    {
+        args << "-p";
+        args << ui_central_page1_web->text();
+    }
+    if(!ui_central_page1_usherToken->text().isEmpty())
+    {
+        args << "-j";
+        args << ui_central_page1_usherToken->text();
+    }
+    return args;
 }
 
 void JtvLiveUiMain::Page0_lock()
@@ -230,11 +296,10 @@ void JtvLiveUiMain::Page1_fillParams(const JtvLiveStream &stream)
 
 void JtvLiveUiMain::Page1_buildCliFriendly()
 {
-    qDebug() << "buildCliFriendly() called";
     QString cmd = QString("-r %1 -s %2 -p %3 -v").arg(ui_central_page1_rtmp->text(), ui_central_page1_swf->text(), ui_central_page1_web->text());
     if(!ui_central_page1_swfVfy->text().isEmpty())
     {
-        cmd.append(QString(" -W %1").arg(ui_central_page1_swfVfy->text()));
+        cmd.append(QString(" -W ").append(ui_central_page1_swfVfy->text()));
     }
     if(!ui_central_page1_usherToken->text().isEmpty())
     {
@@ -282,7 +347,7 @@ void JtvLiveUiMain::Page0_onSearchSuccess(QList<JtvLiveStream> *streams)
         }
         ui_central_page0_streamSelector->addItem(name);
     }
-    ui_central_page0_streamSelector->setCurrentIndex(0); //Will call updateStreamDatas(int) [slot]
+    ui_central_page0_streamSelector->setCurrentIndex(0); //Will call Page0_updateStreamDatas(int) [slot]
     ui_central_page0_streamSelector->setEnabled(true);
     Page0_unlock();
 }
@@ -293,7 +358,7 @@ void JtvLiveUiMain::Page0_onSearchError(const QString &error)
     Page0_unlock();
 }
 
-void JtvLiveUiMain::updateStreamDatas(int index)
+void JtvLiveUiMain::Page0_updateStreamDatas(int index)
 {
     Page0_defaultStats();
     Page1_defaultParams();
@@ -336,7 +401,96 @@ void JtvLiveUiMain::Page2_togglePipeCheck(bool file_ckecked)
     }
 }
 
-JtvLiveUiMain::~JtvLiveUiMain()
+void JtvLiveUiMain::Page3_savePlayerPath(const QString &path)
 {
-
+    settings->setValue("watch/player", path);
 }
+
+void JtvLiveUiMain::Page3_linkedProcessesStart()
+{
+    ui_central_page3_watchBtn->setDisabled(true);
+    if(ui_central_page3_player->text().isEmpty())
+    {
+        QMessageBox::warning(this, "Player", "No player path/command provided.");
+        ui_central_page3_watchBtn->setEnabled(true);
+    }
+    else
+    {
+        QStringList args = collectRtmpParams();
+        if(args.isEmpty())
+        {
+            QMessageBox::warning(this, "Parameters", "RTMP parameters are empty.");
+            ui_central_page3_watchBtn->setEnabled(true);
+        }
+        else
+        {
+            args << QString("-g ").append(settings->value("watch/port", "21080").toString());
+            args << QString("-f ").append(settings->value("flash/version", "WIN 11,1,102,62").toString());
+            args << QString("-v");
+            //args << QString("-V");
+            connect(linkedProcess_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(QProcess::ProcessError)));
+            connect(linkedProcess_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(QProcess::ProcessError)));
+            connect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesTerminate()));
+            connect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesTerminate()));
+#ifdef Q_OS_WIN32
+            linkedProcess_rtmpgw->start(settings->value("rtmp/rtmpgw", "rtmpgw.exe").toString(), args, QIODevice::ReadOnly | QIODevice::Text | QIODevice::Unbuffered);
+#else
+            linkedProcess_rtmpgw->start(settings->value("rtmp/rtmpgw", "rtmpgw").toString(), args, QIODevice::ReadOnly | QIODevice::Text | QIODevice::Unbuffered);
+#endif
+            linkedProcess_player->start(ui_central_page3_player->text(), QStringList(QString("http://127.0.0.1:").append(settings->value("watch/port", "21080").toString())));
+        }
+    }
+}
+
+void JtvLiveUiMain::Page3_linkedProcessesError(const QProcess::ProcessError &error)
+{
+    disconnect(linkedProcess_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(QProcess::ProcessError)));
+    disconnect(linkedProcess_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(QProcess::ProcessError)));
+    disconnect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesTerminate()));
+    disconnect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesTerminate()));
+    if(error == QProcess::FailedToStart)
+    {
+        QMessageBox::warning(this, "Startig process", "Unable to start the process, check rtmpgw & player path and your permissions.");
+    }
+    else if(error == QProcess::Crashed)
+    {
+        QMessageBox::critical(this, "Process crash", "The process has crashed.");
+    }
+    else if(error == QProcess::ReadError)
+    {
+        QMessageBox::critical(this, "Process read error", "Unable to read process output.");
+    }
+    else
+    {
+        QMessageBox::critical(this, "Process error", "An error has occured.");
+    }
+    Page3_linkedProcessesTerminate();
+}
+
+void JtvLiveUiMain::Page3_linkedProcessesTerminate()
+{
+    disconnect(linkedProcess_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(QProcess::ProcessError)));
+    disconnect(linkedProcess_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(QProcess::ProcessError)));
+    disconnect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesTerminate()));
+    disconnect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesTerminate()));
+#ifdef Q_OS_WIN32
+    linkedProcess_rtmpgw->kill();
+#else
+    linkedProcess_rtmpgw->terminate();
+#endif
+    linkedProcess_player->terminate();
+    ui_central_page3_watchBtn->setEnabled(true);
+}
+
+void JtvLiveUiMain::Page3_rtmpgwOut()
+{
+    ui_central_page3_rtmpgwOut->appendPlainText(linkedProcess_rtmpgw->readAll());
+}
+
+void JtvLiveUiMain::Page3_playerOut()
+{
+    ui_central_page3_playerOut->appendPlainText(linkedProcess_player->readAll());
+}
+
+JtvLiveUiMain::~JtvLiveUiMain()
+{ }

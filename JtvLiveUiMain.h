@@ -17,6 +17,9 @@
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QVBoxLayout>
+#include <QProcess>
+#include <QStringList>
+#include <QSettings>
 #include "JtvLiveChannel.h"
 
 class JtvLiveUiMain : public QMainWindow
@@ -32,7 +35,7 @@ signals:
 public slots:
 
 protected slots:
-    void updateStreamDatas(int index);
+    void Page0_updateStreamDatas(int index);
     void Page0_searchChannel();
     void Page0_onMessageChanged(const QString &message);
     void Page0_onSearchSuccess(QList<JtvLiveStream> *streams);
@@ -41,8 +44,15 @@ protected slots:
     void Page2_browseFile();
     void Page2_toggleFileCheck(bool pipe_ckecked);
     void Page2_togglePipeCheck(bool file_ckecked);
+    void Page3_savePlayerPath(const QString &path);
+    void Page3_linkedProcessesStart();
+    void Page3_linkedProcessesError(const QProcess::ProcessError &error);
+    void Page3_linkedProcessesTerminate();
+    void Page3_rtmpgwOut();
+    void Page3_playerOut();
 
 protected:
+    QStringList collectRtmpParams();
     void Page0_lock();
     void Page0_unlock();
     void Page0_defaultStats();
@@ -84,9 +94,20 @@ protected:
     QPushButton *ui_central_page2_start;
     QVBoxLayout *ui_central_page2_layout;
 
+    //Page 3 : Play
+    QHBoxLayout *ui_central_page3_player_layout;
+    QLabel *ui_central_page3_player_label;
+    QLineEdit *ui_central_page3_player;
+    QPushButton *ui_central_page3_watchBtn;
+    QFrame *ui_central_page3_hSeparator;
+    QPlainTextEdit *ui_central_page3_rtmpgwOut, *ui_central_page3_playerOut;
+    QVBoxLayout *ui_central_page3_layout;
+
     //Core
-    //Page 0
+    QSettings *settings;
     JtvLiveChannel *live_channel;
+    QProcess *linkedProcess_rtmpgw;
+    QProcess *linkedProcess_player;
 };
 
 #endif // JTVLIVEUIMAIN_H
