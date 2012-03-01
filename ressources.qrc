@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/img">
         <file alias="zoom.png">img/zoom.png</file>
+        <file alias="television.png">img/television.png</file>
     </qresource>
 </RCC>

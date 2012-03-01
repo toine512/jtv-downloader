@@ -42,7 +42,11 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page0_hSeparator->setFrameShape(QFrame::HLine);
         ui_page0_hSeparator->setFrameShadow(QFrame::Sunken);
         ui_page0_streamSelector = new QComboBox;
-        ui_page0_streamSelector->setEnabled(false);
+        ui_page0_streamSelector->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+        ui_page0_streamSelector->setDisabled(true);
+        ui_page0_gotoWatch = new QPushButton();
+        ui_page0_gotoWatch->setIcon(QIcon(":img/television.png"));
+        ui_page0_gotoWatch->setDisabled(true);
         ui_page0_bitrate = new QLabel();
         ui_page0_bitrate->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         ui_page0_viewers = new QLabel();
@@ -59,11 +63,14 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page0_searchLayout->addWidget(ui_page0_chanName);
         ui_page0_searchLayout->addWidget(ui_page0_channel);
         ui_page0_searchLayout->addWidget(ui_page0_searchBtn);
+        ui_page0_streamLayout = new QHBoxLayout;
+        ui_page0_streamLayout->addWidget(ui_page0_streamSelector);
+        ui_page0_streamLayout->addWidget(ui_page0_gotoWatch);
         ui_page0_layout = new QGridLayout;
         ui_page0_layout->addLayout(ui_page0_searchLayout, 0, 0, 1, 3);
         ui_page0_layout->addWidget(ui_page0_parsingInfos, 1, 0, 1, 3);
         ui_page0_layout->addWidget(ui_page0_hSeparator, 2, 0, 1, 3);
-        ui_page0_layout->addWidget(ui_page0_streamSelector, 3, 0, 1, 3);
+        ui_page0_layout->addLayout(ui_page0_streamLayout, 3, 0, 1, 3);
         ui_page0_layout->addWidget(ui_page0_bitrate, 4, 0);
         ui_page0_layout->addWidget(ui_page0_viewers, 4, 1);
         ui_page0_layout->addWidget(ui_page0_part, 4, 2);
@@ -157,6 +164,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page3_player_layout->addWidget(ui_page3_player_label);
         ui_page3_player_layout->addWidget(ui_page3_player);
         ui_page3_watchBtn = new QPushButton("Watch");
+        ui_page3_watchBtn->setIcon(QIcon(":img/television.png"));
         ui_page3_hSeparator = new QFrame;
         ui_page3_hSeparator->setFrameShape(QFrame::HLine);
         ui_page3_hSeparator->setFrameShadow(QFrame::Sunken);
@@ -164,6 +172,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page3_rtmpgwOut->setReadOnly(true);
         ui_page3_playerOut = new QPlainTextEdit;
         ui_page3_playerOut->setReadOnly(true);
+        //Layout
         ui_page3_layout = new QVBoxLayout;
         ui_page3_layout->addLayout(ui_page3_player_layout);
         ui_page3_layout->addWidget(ui_page3_watchBtn);
@@ -172,12 +181,12 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page3_layout->addWidget(ui_page3_playerOut);
         ui_page3->setLayout(ui_page3_layout);
 
-        //Page 4 : Control
+        //Page 4
         ui_page4 = new QWidget;
 
     //QTabWidget setup
     ui_widget->addTab(ui_page0, "Justin.tv");
-    ui_widget->addTab(ui_page3, "Play");
+    ui_widget->addTab(ui_page3, "Watch");
     ui_widget->addTab(ui_page1, "Params");
     ui_widget->addTab(ui_page2, "rtmpdump");
     ui_widget->addTab(ui_page4, "rtmpgw");
@@ -185,6 +194,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     //Central signals/slots
     connect(ui_page0_searchBtn, SIGNAL(clicked()), this, SLOT(Page0_searchChannel()));
     connect(ui_page0_streamSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(Page0_updateStreamDatas(int)));
+    connect(ui_page0_gotoWatch, SIGNAL(clicked()), this, SLOT(Page0_gotoWatchAndStart()));
     connect(ui_page1_rtmp, SIGNAL(textEdited(QString)), this, SLOT(Page1_buildCliFriendly()));
     connect(ui_page1_swf, SIGNAL(textEdited(QString)), this, SLOT(Page1_buildCliFriendly()));
     connect(ui_page1_swfVfy, SIGNAL(textEdited(QString)), this, SLOT(Page1_buildCliFriendly()));
@@ -214,6 +224,7 @@ void JtvLiveUiMain::Page0_searchChannel()
         Page0_lock();
         ui_page0_streamSelector->setDisabled(true);
         ui_page0_streamSelector->clear();
+        ui_page0_gotoWatch->setDisabled(true);
         Page1_defaultParams();
         live_channel->startSearch(ui_page0_channel->text());
     }
@@ -242,6 +253,7 @@ void JtvLiveUiMain::Page0_onSearchSuccess(QList<JtvLiveStream> *streams)
     }
     ui_page0_streamSelector->setCurrentIndex(0); //Will call Page0_updateStreamDatas(int) [slot]
     ui_page0_streamSelector->setEnabled(true);
+    ui_page0_gotoWatch->setEnabled(true);
     Page0_unlock();
 }
 
@@ -261,6 +273,12 @@ void JtvLiveUiMain::Page0_updateStreamDatas(int index)
         Page0_fillStats(stream);
         Page1_fillParams(stream);
     }
+}
+
+void JtvLiveUiMain::Page0_gotoWatchAndStart()
+{
+    ui_widget->setCurrentIndex(1);
+    Page3_linkedProcessesStart();
 }
 
 //Page 0 protected
