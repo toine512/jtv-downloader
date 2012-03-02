@@ -36,6 +36,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page0_channel = new QLineEdit;
         ui_page0_searchBtn = new QPushButton;
         ui_page0_searchBtn->setIcon(QIcon(":img/zoom.png"));
+        ui_page0_searchBtn->setToolTip("Search the channel");
         ui_page0_parsingInfos = new QLabel("First, write the channel name in the field above.");
         ui_page0_parsingInfos->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         ui_page0_hSeparator = new QFrame;
@@ -46,6 +47,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page0_streamSelector->setDisabled(true);
         ui_page0_gotoWatch = new QPushButton();
         ui_page0_gotoWatch->setIcon(QIcon(":img/television.png"));
+        ui_page0_gotoWatch->setToolTip("Watch this stream");
         ui_page0_gotoWatch->setDisabled(true);
         ui_page0_bitrate = new QLabel();
         ui_page0_bitrate->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
