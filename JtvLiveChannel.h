@@ -10,16 +10,12 @@
 //Hardcoding is BAD !
 #define JTV_PLAYER "http://fr.justin.tv/widgets/live_embed_player.swf"
 
-enum JtvServerType
+class JtvLiveStream
 {
-    LEGACY, AKAMAI
-};
-
-typedef struct JtvLiveStream JtvLiveStream;
-struct JtvLiveStream
-{
+public:
+    enum JtvServerType {UsherServer, AkamaiServer};
     QString channel_name, player_url, tag_name, height, rtmp_url, usher_token, bitrate, part, id, viewers, node;
-    JtvServerType server_type;
+    JtvLiveStream::JtvServerType server_type;
 };
 
 class JtvLiveChannel : public QObject

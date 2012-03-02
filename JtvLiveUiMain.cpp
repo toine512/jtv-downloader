@@ -241,11 +241,11 @@ void JtvLiveUiMain::Page0_onSearchSuccess(QList<JtvLiveStream> *streams)
     for(int i = 0 ; i < s ; i++)
     {
         QString name = QString("%1\t\tHeight : %2\t\t").arg(streams->at(i).tag_name, streams->at(i).height);
-        if(streams->at(i).server_type == LEGACY)
+        if(streams->at(i).server_type == JtvLiveStream::UsherServer)
         {
             name.append("UsherToken");
         }
-        else if(streams->at(i).server_type == AKAMAI)
+        else if(streams->at(i).server_type == JtvLiveStream::AkamaiServer)
         {
             name.append("SWF Vfy");
         }
@@ -343,11 +343,11 @@ void JtvLiveUiMain::Page1_fillParams(const JtvLiveStream &stream)
     ui_page1_rtmp->setText(stream.rtmp_url);
     ui_page1_swf->setText(QString(stream.player_url).append("?channel=").append(stream.channel_name));
     ui_page1_web->setText(QString("http://fr.justin.tv/").append(stream.channel_name));
-    if(stream.server_type == LEGACY)
+    if(stream.server_type == JtvLiveStream::UsherServer)
     {
         ui_page1_usherToken->setText(stream.usher_token);
     }
-    else if(stream.server_type == AKAMAI)
+    else if(stream.server_type == JtvLiveStream::AkamaiServer)
     {
         ui_page1_swfVfy->setText(QString(stream.player_url).append("?channel=").append(stream.channel_name));
     }

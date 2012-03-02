@@ -142,11 +142,11 @@ void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
                                                     live_stream.node = v;
                                                     if(v.toLower() == "akamai")
                                                     {
-                                                        live_stream.server_type = AKAMAI;
+                                                        live_stream.server_type = JtvLiveStream::AkamaiServer;
                                                     }
                                                     else
                                                     {
-                                                        live_stream.server_type = LEGACY;
+                                                        live_stream.server_type = JtvLiveStream::UsherServer;
                                                     }
                                                     //Adding the live_stream struct in streams QList, parsing stream node finished
                                                     streams->append(live_stream);
