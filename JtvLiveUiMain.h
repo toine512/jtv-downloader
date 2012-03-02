@@ -111,6 +111,7 @@ protected:
 
     //Core
     QSettings *settings;
+    QNetworkAccessManager *net_manager;
     JtvLiveChannel *live_channel;
     QProcess *linkedProcess_rtmpgw;
     QProcess *linkedProcess_player;

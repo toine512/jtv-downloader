@@ -1,11 +1,12 @@
 #include "JtvLiveUiMain.h"
-
+#include <QDebug>
 JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     QMainWindow(parent)
 {
     //Core
     settings = new QSettings("jtvdl.conf", QSettings::IniFormat, this);
-    live_channel = new JtvLiveChannel;
+    net_manager = new QNetworkAccessManager(this);
+    live_channel = new JtvLiveChannel(net_manager, this);
     connect(live_channel, SIGNAL(messageChanged(const QString &)), this, SLOT(Page0_onMessageChanged(const QString &)));
     connect(live_channel, SIGNAL(channelSearchSuccess(QList<JtvLiveStream> *)), this, SLOT(Page0_onSearchSuccess(QList<JtvLiveStream> *)));
     connect(live_channel, SIGNAL(channelSearchError(const QString &)), this, SLOT(Page0_onSearchError(const QString &)));
@@ -172,6 +173,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page3_hSeparator->setFrameShadow(QFrame::Sunken);
         ui_page3_rtmpgwOut = new QPlainTextEdit;
         ui_page3_rtmpgwOut->setReadOnly(true);
+        ui_page3_rtmpgwOut->setOverwriteMode(true);
         ui_page3_playerOut = new QPlainTextEdit;
         ui_page3_playerOut->setReadOnly(true);
         //Layout
@@ -335,15 +337,15 @@ void JtvLiveUiMain::Page1_defaultParams()
 void JtvLiveUiMain::Page1_fillParams(const JtvLiveStream &stream)
 {
     ui_page1_rtmp->setText(stream.rtmp_url);
-    ui_page1_swf->setText(QString(stream.player_url).append("?channel=").append(stream.channel_name));
-    ui_page1_web->setText(QString("http://fr.justin.tv/").append(stream.channel_name));
+    ui_page1_swf->setText(QString(settings->value("justin.tv/player", "http://www-cdn.jtvnw.net/widgets/live_site_player.r48dd120956a62c09d48d3e053fc56cbad3ded23b.swf?userAgent=").toString()).append("&channel=").append(stream.channel_name).append("&referer=").append(settings->value("justin.tv/referer", "http://fr.justin.tv/").toString()).append(stream.channel_name));
+    ui_page1_web->setText(QString(settings->value("justin.tv/referer", "http://fr.justin.tv/").toString()).append(stream.channel_name));
     if(stream.server_type == JtvLiveStream::UsherServer)
     {
         ui_page1_usherToken->setText(stream.usher_token);
     }
     else if(stream.server_type == JtvLiveStream::AkamaiServer)
     {
-        ui_page1_swfVfy->setText(QString(stream.player_url).append("?channel=").append(stream.channel_name));
+        ui_page1_swfVfy->setText(QString(settings->value("justin.tv/player", "http://www-cdn.jtvnw.net/widgets/live_site_player.r48dd120956a62c09d48d3e053fc56cbad3ded23b.swf?userAgent=").toString()).append("&channel=").append(stream.channel_name).append("&referer=").append(settings->value("justin.tv/referer", "http://fr.justin.tv/").toString()).append(stream.channel_name));
     }
     Page1_buildCliFriendly();
 }
@@ -432,7 +434,7 @@ void JtvLiveUiMain::Page2_startRtmpdump()
 #ifdef Q_OS_WIN32
                 if(!QProcess::startDetached(QString("cmd.exe /c \"%1 %2 | %3\"").arg(settings->value("rtmp/rtmpdump", "rtmpdump.exe").toString(), getCommandEscaped(args).replace("\\\"", "\"\"\""), ui_page2_pipe->text()))) //epic Windows crap ! -> replace("\\\"", "\"\"\"")
 #else
-                //TODO : linux terminal shell -> sh ?
+                //TODO : linux most common shell -> sh ?
                 if(!QProcess::startDetached(QString("%1 %2 | %3").arg(settings->value("rtmp/rtmpdump", "rtmpdump").toString(), getCommandEscaped(args), ui_page2_pipe->text())))
 #endif
                 {
@@ -481,11 +483,11 @@ void JtvLiveUiMain::Page3_linkedProcessesStart()
             connect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesDisconnectTerminate()));
             connect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesDisconnectTerminate()));
 #ifdef Q_OS_WIN32
-            linkedProcess_rtmpgw->start(settings->value("rtmp/rtmpgw", "rtmpgw.exe").toString(), args, QIODevice::ReadOnly | QIODevice::Text | QIODevice::Unbuffered);
+            linkedProcess_rtmpgw->start(settings->value("rtmp/rtmpgw", "rtmpgw.exe").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
 #else
-            linkedProcess_rtmpgw->start(settings->value("rtmp/rtmpgw", "rtmpgw").toString(), args, QIODevice::ReadOnly | QIODevice::Text | QIODevice::Unbuffered);
+            linkedProcess_rtmpgw->start(settings->value("rtmp/rtmpgw", "rtmpgw").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
 #endif
-            linkedProcess_player->start(ui_page3_player->text(), QStringList(QString("http://127.0.0.1:").append(settings->value("watch/port", "21080").toString())));
+            linkedProcess_player->start(ui_page3_player->text(), QStringList(QString("http://127.0.0.1:").append(settings->value("watch/port", "21080").toString())), QIODevice::ReadOnly | QIODevice::Unbuffered);
         }
     }
 }

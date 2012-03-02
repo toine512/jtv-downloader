@@ -9,14 +9,12 @@
 #include <QDomElement>
 #include <QDomNode>
 
-JtvLiveChannel::JtvLiveChannel(QObject *parent) :
+JtvLiveChannel::JtvLiveChannel(QNetworkAccessManager *network_manager, QObject *parent) :
     QObject(parent)
 {
-    //get a preferences object (?) and set the Jtv player URL
-    player_url = QString(JTV_PLAYER); //using hardcoded #define (see header)
     streams = new QList<JtvLiveStream>;
-    net_manager = new QNetworkAccessManager(this);
-    connect(net_manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(dlFinished(QNetworkReply*)));
+    net_manager = network_manager;
+    net_reply = 0;
 }
 
 void JtvLiveChannel::logMessage(const QString &message)
@@ -51,17 +49,19 @@ void JtvLiveChannel::startSearch(const QString &channel)
     QNetworkRequest req;
     req.setUrl(url);
     logMessage(QString("Downloading : %1").arg(url.toString()));
-    net_manager->get(req);
+    net_reply = net_manager->get(req);
+    connect(net_reply, SIGNAL(finished()), this, SLOT(dlFinished()));
 }
 
-void JtvLiveChannel::dlFinished(QNetworkReply *reply)
+void JtvLiveChannel::dlFinished()
 {
-    QNetworkReply::NetworkError error = reply->error();
+    disconnect(net_reply, SIGNAL(finished()), this, SLOT(dlFinished()));
+    QNetworkReply::NetworkError error = net_reply->error();
     if(error == QNetworkReply::NoError)
     {
         logMessage("Download finished without error");
         logMessage("Now, parsing this nice XML ...");
-        parseXml(reply->readAll());
+        parseXml(net_reply->readAll());
     }
     //TODO : Implement error cases from QNetworkReply::NetworkError
     else
@@ -70,7 +70,8 @@ void JtvLiveChannel::dlFinished(QNetworkReply *reply)
         //logMessage("Emitting channelSearchError(QString)");
         emit channelSearchError("Network error");
     }
-    reply->deleteLater();
+    net_reply->deleteLater();
+    net_reply = 0;
 }
 
 void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
@@ -83,14 +84,12 @@ void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
     if(dom.setContent(clean_datas))
     {
         QDomElement nodes = dom.documentElement();
-        //QDomNode nodes = dom_element.firstChild();
         if(nodes.hasChildNodes())
         {
             for(QDomNode stream = nodes.firstChild() ; !stream.isNull() ; stream = stream.nextSibling())
             {
                 JtvLiveStream live_stream;
                 live_stream.channel_name = channel_name;
-                live_stream.player_url = player_url;
                 QDomElement t = stream.toElement();
                 logMessage(QString("Found <%1> node ...").arg(t.tagName()));
                 live_stream.tag_name = t.tagName();

@@ -7,14 +7,11 @@
 #include <QNetworkAccessManager>
 #include <QByteArray>
 
-//Hardcoding is BAD !
-#define JTV_PLAYER "http://fr.justin.tv/widgets/live_embed_player.swf"
-
 class JtvLiveStream
 {
 public:
     enum JtvServerType {UsherServer, AkamaiServer};
-    QString channel_name, player_url, tag_name, height, rtmp_url, usher_token, bitrate, part, id, viewers, node;
+    QString channel_name, tag_name, height, rtmp_url, usher_token, bitrate, part, id, viewers, node;
     JtvLiveStream::JtvServerType server_type;
 };
 
@@ -23,7 +20,7 @@ class JtvLiveChannel : public QObject
     Q_OBJECT
 
 public:
-    explicit JtvLiveChannel(QObject *parent = 0);
+    explicit JtvLiveChannel(QNetworkAccessManager *net_manager, QObject *parent = 0);
     ~JtvLiveChannel();
     const QString & getLastMessage() const;
     QList<JtvLiveStream>* getStreams();
@@ -35,17 +32,17 @@ signals:
     void channelSearchSuccess(QList<JtvLiveStream> *);
 
 protected slots:
-    void dlFinished(QNetworkReply *reply);
+    void dlFinished();
 
 protected:
     void logMessage(const QString &message);
     void parseXml(const QByteArray &raw_datas);
 
     QString channel_name;
-    QString player_url;
     QList<JtvLiveStream> *streams;
     QString last_message;
     QNetworkAccessManager *net_manager;
+    QNetworkReply *net_reply;
 
 };
 
