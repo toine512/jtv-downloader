@@ -33,6 +33,7 @@ class JtvLiveUiMain : public QMainWindow
 
 public:
     JtvLiveUiMain(QWidget *parent = 0);
+    QString getCommandEscaped(QStringList args);
     ~JtvLiveUiMain();
 
 signals:
@@ -50,6 +51,7 @@ protected slots:
     void Page2_browseFile();
     void Page2_toggleFileCheck(bool pipe_ckecked);
     void Page2_togglePipeCheck(bool file_ckecked);
+    void Page2_startRtmpdump();
     void Page3_savePlayerPath(const QString &path);
     void Page3_linkedProcessesStart();
     void Page3_linkedProcessesError(const QProcess::ProcessError &error);
@@ -64,6 +66,7 @@ protected:
     void Page0_fillStats(const JtvLiveStream &stream);
     void Page1_defaultParams();
     void Page1_fillParams(const JtvLiveStream &stream);
+    void Page2_startRtmpdumpFile(const QString &path);
     void Page3_linkedProcessesTerminate();
     QStringList collectRtmpParams();
 

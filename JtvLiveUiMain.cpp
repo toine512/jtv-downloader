@@ -45,19 +45,19 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page0_streamSelector = new QComboBox;
         ui_page0_streamSelector->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
         ui_page0_streamSelector->setDisabled(true);
-        ui_page0_gotoWatch = new QPushButton();
+        ui_page0_gotoWatch = new QPushButton;
         ui_page0_gotoWatch->setIcon(QIcon(":img/television.png"));
         ui_page0_gotoWatch->setToolTip("Watch this stream");
         ui_page0_gotoWatch->setDisabled(true);
-        ui_page0_bitrate = new QLabel();
+        ui_page0_bitrate = new QLabel;
         ui_page0_bitrate->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        ui_page0_viewers = new QLabel();
+        ui_page0_viewers = new QLabel;
         ui_page0_viewers->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        ui_page0_part = new QLabel();
+        ui_page0_part = new QLabel;
         ui_page0_part->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        ui_page0_id = new QLabel();
+        ui_page0_id = new QLabel;
         ui_page0_id->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        ui_page0_node = new QLabel();
+        ui_page0_node = new QLabel;
         ui_page0_node->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         Page0_defaultStats();
         //Layouts
@@ -205,6 +205,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     connect(ui_page2_file_btn, SIGNAL(clicked()), this, SLOT(Page2_browseFile()));
     connect(ui_page2_pipe_box, SIGNAL(toggled(bool)), this, SLOT(Page2_toggleFileCheck(bool)));
     connect(ui_page2_file_box, SIGNAL(toggled(bool)), this, SLOT(Page2_togglePipeCheck(bool)));
+    connect(ui_page2_start, SIGNAL(clicked()), this, SLOT(Page2_startRtmpdump()));
     connect(ui_page3_player, SIGNAL(textEdited(const QString &)), this, SLOT(Page3_savePlayerPath(const QString &)));
     connect(ui_page3_watchBtn, SIGNAL(clicked()), this, SLOT(Page3_linkedProcessesStart()));
     connect(linkedProcess_rtmpgw, SIGNAL(readyReadStandardOutput()), this, SLOT(Page3_rtmpgwOut()));
@@ -317,16 +318,7 @@ void JtvLiveUiMain::Page0_fillStats(const JtvLiveStream &stream)
 //Page 1 slot
 void JtvLiveUiMain::Page1_buildCliFriendly()
 {
-    QString cmd = QString("-r %1 -s %2 -p %3 -v").arg(ui_page1_rtmp->text(), ui_page1_swf->text(), ui_page1_web->text());
-    if(!ui_page1_swfVfy->text().isEmpty())
-    {
-        cmd.append(QString(" -W ").append(ui_page1_swfVfy->text()));
-    }
-    if(!ui_page1_usherToken->text().isEmpty())
-    {
-        cmd.append(QString(" -j \"%1\"").arg(ui_page1_usherToken->text().replace("\"", "\\\"")));
-    }
-    ui_page1_cliFriendly->setPlainText(cmd);
+    ui_page1_cliFriendly->setPlainText(QString(getCommandEscaped(collectRtmpParams())).append(" -v"));
 }
 
 //Page 1 protected
@@ -388,6 +380,69 @@ void JtvLiveUiMain::Page2_togglePipeCheck(bool file_ckecked)
     }
 }
 
+void JtvLiveUiMain::Page2_startRtmpdump()
+{
+    QStringList args = collectRtmpParams();
+    if(args.isEmpty())
+    {
+        QMessageBox::warning(this, "Parameters", "RTMP parameters are empty.");
+    }
+    else
+    {
+        args << "-f";
+        args << settings->value("flash/version", "WIN 11,1,102,62").toString();
+        args << "-v";
+        if(ui_page2_file_box->isChecked())
+        {
+            if(ui_page2_file->text().isEmpty())
+            {
+                QMessageBox::warning(this, "Output file", "No output path provided.");
+            }
+            else
+            {
+                if(ui_page2_verbosity_verbose->isChecked())
+                {
+                    args << "-V";
+                }
+                else if(ui_page2_verbosity_debug->isChecked())
+                {
+                    args << "-z";
+                }
+                args << "-o";
+                args << ui_page2_file->text();
+#ifdef Q_OS_WIN32
+                if(!QProcess::startDetached(settings->value("rtmp/rtmpdump", "rtmpdump.exe").toString(), args))
+#else
+                if(!QProcess::startDetached(settings->value("rtmp/rtmpdump", "rtmpdump").toString(), args))
+#endif
+                {
+                    QMessageBox::warning(this, "Launching rtmpdump", "Unable to create the process, check the path.");
+                }
+            }
+        }
+        else if(ui_page2_pipe_box->isChecked())
+        {
+            if(ui_page2_pipe->text().isEmpty())
+            {
+                QMessageBox::warning(this, "Piping", "Right side of the pipe is empty.");
+            }
+            else
+            {
+                args << "-q";
+#ifdef Q_OS_WIN32
+                if(!QProcess::startDetached(QString("cmd.exe /c \"%1 %2 | %3\"").arg(settings->value("rtmp/rtmpdump", "rtmpdump.exe").toString(), getCommandEscaped(args).replace("\\\"", "\"\"\""), ui_page2_pipe->text()))) //epic Windows crap ! -> replace("\\\"", "\"\"\"")
+#else
+                //TODO : linux terminal shell -> sh ?
+                if(!QProcess::startDetached(QString("%1 %2 | %3").arg(settings->value("rtmp/rtmpdump", "rtmpdump").toString(), getCommandEscaped(args), ui_page2_pipe->text())))
+#endif
+                {
+                    QMessageBox::warning(this, "Launching rtmpdump", "Unable to create the process, check the path.");
+                }
+            }
+        }
+    }
+}
+
 //Page 3 slots
 void JtvLiveUiMain::Page3_savePlayerPath(const QString &path)
 {
@@ -415,9 +470,11 @@ void JtvLiveUiMain::Page3_linkedProcessesStart()
         }
         else
         {
-            args << QString("-g ").append(settings->value("watch/port", "21080").toString());
-            args << QString("-f ").append(settings->value("flash/version", "WIN 11,1,102,62").toString());
-            args << QString("-v");
+            args << "-g";
+            args << settings->value("watch/port", "21080").toString();
+            args << "-f";
+            args << settings->value("flash/version", "WIN 11,1,102,62").toString();
+            args << "-v";
             //args << QString("-V");
             connect(linkedProcess_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(const QProcess::ProcessError &)));
             connect(linkedProcess_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(const QProcess::ProcessError &)));
@@ -519,6 +576,24 @@ QStringList JtvLiveUiMain::collectRtmpParams()
         args << ui_page1_usherToken->text();
     }
     return args;
+}
+
+QString JtvLiveUiMain::getCommandEscaped(QStringList args)
+{
+    args.replaceInStrings("\"", "\\\"");
+    int s = args.size();
+    QString temp;
+    for (int i = 0 ; i < s ; ++i)
+    {
+        temp = args.at(i);
+        if(temp.contains(" "))
+        {
+            temp.prepend("\"");
+            temp.append("\"");
+            args.replace(i, temp);
+        }
+    }
+    return args.join(" ");
 }
 
 JtvLiveUiMain::~JtvLiveUiMain()
