@@ -53,7 +53,7 @@ protected slots:
     void Page3_savePlayerPath(const QString &path);
     void Page3_linkedProcessesStart();
     void Page3_linkedProcessesError(const QProcess::ProcessError &error);
-    void Page3_linkedProcessesTerminate(bool dc = true);
+    void Page3_linkedProcessesDisconnectTerminate();
     void Page3_rtmpgwOut();
     void Page3_playerOut();
 
@@ -64,6 +64,7 @@ protected:
     void Page0_fillStats(const JtvLiveStream &stream);
     void Page1_defaultParams();
     void Page1_fillParams(const JtvLiveStream &stream);
+    void Page3_linkedProcessesTerminate();
     QStringList collectRtmpParams();
 
     //UI

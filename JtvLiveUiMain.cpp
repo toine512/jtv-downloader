@@ -354,6 +354,7 @@ void JtvLiveUiMain::Page1_fillParams(const JtvLiveStream &stream)
     Page1_buildCliFriendly();
 }
 
+//Page 2 slots
 void JtvLiveUiMain::Page2_browseFile()
 {
     ui_page2_file->setText(QFileDialog::getSaveFileName(this, "Save stream", QString(), "Flash video (*.flv)"));
@@ -385,6 +386,7 @@ void JtvLiveUiMain::Page2_togglePipeCheck(bool file_ckecked)
     }
 }
 
+//Page 3 slots
 void JtvLiveUiMain::Page3_savePlayerPath(const QString &path)
 {
     settings->setValue("watch/player", path);
@@ -417,8 +419,8 @@ void JtvLiveUiMain::Page3_linkedProcessesStart()
             //args << QString("-V");
             connect(linkedProcess_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(const QProcess::ProcessError &)));
             connect(linkedProcess_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(const QProcess::ProcessError &)));
-            connect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesTerminate()));
-            connect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesTerminate()));
+            connect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesDisconnectTerminate()));
+            connect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesDisconnectTerminate()));
 #ifdef Q_OS_WIN32
             linkedProcess_rtmpgw->start(settings->value("rtmp/rtmpgw", "rtmpgw.exe").toString(), args, QIODevice::ReadOnly | QIODevice::Text | QIODevice::Unbuffered);
 #else
@@ -433,8 +435,8 @@ void JtvLiveUiMain::Page3_linkedProcessesError(const QProcess::ProcessError &err
 {
     disconnect(linkedProcess_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(const QProcess::ProcessError &)));
     disconnect(linkedProcess_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(const QProcess::ProcessError &)));
-    disconnect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesTerminate()));
-    disconnect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesTerminate()));
+    disconnect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesDisconnectTerminate()));
+    disconnect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesDisconnectTerminate()));
     if(error == QProcess::FailedToStart)
     {
         QMessageBox::warning(this, "Startig process", "Unable to start the process, check rtmpgw & player path and your permissions.");
@@ -451,26 +453,16 @@ void JtvLiveUiMain::Page3_linkedProcessesError(const QProcess::ProcessError &err
     {
         QMessageBox::critical(this, "Process error", "An error has occured.");
     }
-    Page3_linkedProcessesTerminate(false);
+    Page3_linkedProcessesTerminate();
 }
 
-void JtvLiveUiMain::Page3_linkedProcessesTerminate(bool dc)
+void JtvLiveUiMain::Page3_linkedProcessesDisconnectTerminate()
 {
-    if(dc)
-    {
-        disconnect(linkedProcess_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(const QProcess::ProcessError &)));
-        disconnect(linkedProcess_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(const QProcess::ProcessError &)));
-        disconnect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesTerminate()));
-        disconnect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesTerminate()));
-    }
-#ifdef Q_OS_WIN32
-    linkedProcess_rtmpgw->kill();
-#else
-    linkedProcess_rtmpgw->terminate();
-#endif
-    linkedProcess_player->terminate();
-    ui_page0_gotoWatch->setEnabled(true);
-    ui_page3_watchBtn->setEnabled(true);
+    disconnect(linkedProcess_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(const QProcess::ProcessError &)));
+    disconnect(linkedProcess_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Page3_linkedProcessesError(const QProcess::ProcessError &)));
+    disconnect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesDisconnectTerminate()));
+    disconnect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesDisconnectTerminate()));
+    Page3_linkedProcessesTerminate();
 }
 
 void JtvLiveUiMain::Page3_rtmpgwOut()
@@ -481,6 +473,19 @@ void JtvLiveUiMain::Page3_rtmpgwOut()
 void JtvLiveUiMain::Page3_playerOut()
 {
     ui_page3_playerOut->appendPlainText(linkedProcess_player->readAll());
+}
+
+//Page 3 protected
+void JtvLiveUiMain::Page3_linkedProcessesTerminate()
+{
+#ifdef Q_OS_WIN32
+    linkedProcess_rtmpgw->kill();
+#else
+    linkedProcess_rtmpgw->terminate();
+#endif
+    linkedProcess_player->terminate();
+    ui_page0_gotoWatch->setEnabled(true);
+    ui_page3_watchBtn->setEnabled(true);
 }
 
 QStringList JtvLiveUiMain::collectRtmpParams()
