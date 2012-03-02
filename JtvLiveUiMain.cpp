@@ -392,10 +392,12 @@ void JtvLiveUiMain::Page3_savePlayerPath(const QString &path)
 
 void JtvLiveUiMain::Page3_linkedProcessesStart()
 {
+    ui_page0_gotoWatch->setDisabled(true);
     ui_page3_watchBtn->setDisabled(true);
     if(ui_page3_player->text().isEmpty())
     {
         QMessageBox::warning(this, "Player", "No player path/command provided.");
+        ui_page0_gotoWatch->setEnabled(true);
         ui_page3_watchBtn->setEnabled(true);
     }
     else
@@ -404,6 +406,7 @@ void JtvLiveUiMain::Page3_linkedProcessesStart()
         if(args.isEmpty())
         {
             QMessageBox::warning(this, "Parameters", "RTMP parameters are empty.");
+            ui_page0_gotoWatch->setEnabled(true);
             ui_page3_watchBtn->setEnabled(true);
         }
         else
@@ -466,6 +469,7 @@ void JtvLiveUiMain::Page3_linkedProcessesTerminate(bool dc)
     linkedProcess_rtmpgw->terminate();
 #endif
     linkedProcess_player->terminate();
+    ui_page0_gotoWatch->setEnabled(true);
     ui_page3_watchBtn->setEnabled(true);
 }
 
