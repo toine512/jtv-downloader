@@ -1,5 +1,5 @@
 #include "JtvLiveUiMain.h"
-#include <QDebug>
+
 JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     QMainWindow(parent)
 {
@@ -16,16 +16,15 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     linkedProcess_player->setProcessChannelMode(QProcess::MergedChannels);
 
     setWindowTitle("Justin.tv live downloader");
-    //resize(425, 240);
-    setFixedSize(496, 280);
+    setFixedSize(496, 270);
     //Center on the current screen
     QDesktopWidget desktop_widget;
     QRect screen_geometry = desktop_widget.availableGeometry();
     move(screen_geometry.width() / 2 - width() / 2, screen_geometry.height() / 2 - height() / 2);
 
     //Statusbar
-    ui_bottom_statusBar = statusBar();
-    ui_bottom_statusBar->showMessage("I'm an useless status bar !");
+    /*ui_bottom_statusBar = statusBar();
+    ui_bottom_statusBar->showMessage("I'm an useless status bar !");*/
 
     //Central zone
     ui_widget = new QTabWidget;

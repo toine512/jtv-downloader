@@ -2,7 +2,7 @@
 #define JTVLIVEUIMAIN_H
 
 #include <QtGui/QMainWindow>
-#include <QStatusBar>
+//#include <QStatusBar>
 #include <QTabWidget>
 #include <QWidget>
 #include <QLabel>
@@ -76,8 +76,7 @@ protected:
     QStringList collectRtmpParams();
 
     //UI
-    QStatusBar *ui_bottom_statusBar;
-
+    //QStatusBar *ui_bottom_statusBar;
     QTabWidget *ui_widget;
     QWidget *ui_page0, *ui_page1, *ui_page2, *ui_page3, *ui_page4;
 
