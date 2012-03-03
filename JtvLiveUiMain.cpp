@@ -1,3 +1,21 @@
+/* This file is part of "Jtv live downloader"
+ *
+ * Copyright (C) 2012 toine512 <toine512@gmail.com>
+ *
+ * "Jtv live downloader" is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * "Jtv live downloader" is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with "TV sur PC Desktop".  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "JtvLiveUiMain.h"
 
 JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
@@ -204,8 +222,6 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page4_params_layout->addWidget(ui_page4_params_colon, 1, 1);
         ui_page4_params_layout->addWidget(ui_page4_params_port, 1, 2);
         ui_page4_params_box->setLayout(ui_page4_params_layout);
-
-
         ui_page4_verbosity_box = new QGroupBox("Verbosity :");
         ui_page4_verbosity_normal = new QRadioButton("Normal");
         ui_page4_verbosity_normal->setChecked(true);
@@ -224,12 +240,27 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page4_layout->addWidget(ui_page4_start);
         ui_page4->setLayout(ui_page4_layout);
 
+        //Page 5 : About
+        ui_page5 = new QWidget;
+        ui_page5_copyrightNotice = new QLabel(QString("<p align=\"center\"><b>Jtv live downloader v.%1</b><br />Copyright © 2012 toine512<br />Compiled on [%2] [%3]<br /><br />This software is distributed under <a href=\"https://www.gnu.org/licenses/gpl.html\">GNU General Public License v. 3</a>.</p><p>Written in C++ with <a href=\"https://qt.nokia.com/\">Qt</a> 4.7.4 (<a href=\"https://www.gnu.org/licenses/gpl.html\">GNU GPL v. 3</a>)<br />Uses <a href=\"http://www.famfamfam.com/lab/icons/silk/\">FAMFAMFAM Silk Icons</a> by <a href=\"http://www.famfamfam.com/\">Mark James</a> (<a href=\"https://creativecommons.org/licenses/by/2.5/\">CC BY 2.5</a>).</p>").arg(G_VERSION, __DATE__, __TIME__));
+        ui_page5_copyrightNotice->setOpenExternalLinks(true);
+        ui_page5_gplv3 = new QLabel;
+        ui_page5_gplv3->setPixmap(QPixmap(":img/gplv3.png"));
+        ui_page5_aboutQt = new QPushButton("About Qt");
+        //Layout
+        ui_page5_layout = new QGridLayout;
+        ui_page5_layout->addWidget(ui_page5_copyrightNotice, 0, 0, 1, 2);
+        ui_page5_layout->addWidget(ui_page5_gplv3, 1, 0, 1, 1);
+        ui_page5_layout->addWidget(ui_page5_aboutQt, 1, 1, 1, 1);
+        ui_page5->setLayout(ui_page5_layout);
+
     //QTabWidget setup
     ui_widget->addTab(ui_page0, "Justin.tv");
     ui_widget->addTab(ui_page3, "Watch");
     ui_widget->addTab(ui_page1, "Params");
     ui_widget->addTab(ui_page2, "rtmpdump");
     ui_widget->addTab(ui_page4, "rtmpgw");
+    ui_widget->addTab(ui_page5, "About");
 
     //Central signals/slots
     connect(ui_page0_searchBtn, SIGNAL(clicked()), this, SLOT(Page0_searchChannel()));
@@ -250,6 +281,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     connect(ui_page4_params_ip, SIGNAL(textEdited(const QString &)), this, SLOT(Page4_saveIp(const QString &)));
     connect(ui_page4_params_port, SIGNAL(valueChanged(int)), this, SLOT(Page4_savePort(int)));
     connect(ui_page4_start, SIGNAL(clicked()), this, SLOT(Page4_startRtmpgw()));
+    connect(ui_page5_aboutQt, SIGNAL(clicked()), this, SLOT(aboutQt()));
     connect(linkedProcess_rtmpgw, SIGNAL(readyReadStandardOutput()), this, SLOT(Page3_rtmpgwOut()));
     connect(linkedProcess_player, SIGNAL(readyReadStandardOutput()), this, SLOT(Page3_playerOut()));
 
@@ -694,6 +726,11 @@ QString JtvLiveUiMain::getCommandEscaped(QStringList args)
         }
     }
     return args.join(" ");
+}
+
+void JtvLiveUiMain::aboutQt()
+{
+    QMessageBox::aboutQt(this);
 }
 
 JtvLiveUiMain::~JtvLiveUiMain()

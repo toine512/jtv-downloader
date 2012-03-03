@@ -15,7 +15,8 @@ SOURCES += main.cpp\
     JtvLiveChannel.cpp
 
 HEADERS  += JtvLiveUiMain.h \
-    JtvLiveChannel.h
+    JtvLiveChannel.h \
+    defines.h
 
 RESOURCES += \
     ressources.qrc

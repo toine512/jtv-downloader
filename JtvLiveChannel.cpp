@@ -1,13 +1,22 @@
+/* This file is part of "Jtv live downloader"
+ *
+ * Copyright (C) 2012 toine512 <toine512@gmail.com>
+ *
+ * "Jtv live downloader" is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * "Jtv live downloader" is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with "TV sur PC Desktop".  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "JtvLiveChannel.h"
-#include <cstdlib>
-#include <QUrl>
-#include <QNetworkRequest>
-#include <QMessageBox>
-#include <QNetworkReply>
-#include <QRegExp>
-#include <QDomDocument>
-#include <QDomElement>
-#include <QDomNode>
 
 JtvLiveChannel::JtvLiveChannel(QNetworkAccessManager *network_manager, QObject *parent) :
     QObject(parent)

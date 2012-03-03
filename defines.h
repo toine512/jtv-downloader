@@ -16,23 +16,9 @@
  * along with "TV sur PC Desktop".  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QtGui/QApplication>
-#include <QTextCodec>
+#ifndef DEFINES_H
+#define DEFINES_H
 
-#include "JtvLiveUiMain.h"
+#define G_VERSION "b1"
 
-int main(int argc, char *argv[])
-{
-    QApplication a(argc, argv);
-    /*** Config ***/
-    //UTF-8 support
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("utf8"));
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("utf8"));
-    //Locale
-    //QLocale::setDefault(QLocale(QLocale::French, QLocale::France));
-    /****************************************************/
-    JtvLiveUiMain w;
-    w.show();
-    return a.exec();
-}
+#endif // DEFINES_H

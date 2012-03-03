@@ -1,13 +1,42 @@
+/* This file is part of "Jtv live downloader"
+ *
+ * Copyright (C) 2012 toine512 <toine512@gmail.com>
+ *
+ * "Jtv live downloader" is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * "Jtv live downloader" is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with "TV sur PC Desktop".  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef JTVLIVEUIMAIN_H
 #define JTVLIVEUIMAIN_H
 
-#include <QtGui/QMainWindow>
+#include "defines.h"
+
+#include <QtCore/Qt>
+#include <QSettings>
+#include <QStringList>
+#include <QProcess>
+
+#include <QNetworkAccessManager>
+
 //#include <QStatusBar>
+#include <QMainWindow>
+#include <QDesktopWidget>
 #include <QTabWidget>
 #include <QWidget>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QIcon>
 #include <QFrame>
 #include <QComboBox>
 #include <QHBoxLayout>
@@ -17,14 +46,9 @@
 #include <QRadioButton>
 #include <QVBoxLayout>
 #include <QSpinBox>
-#include <QSettings>
-#include <QProcess>
-#include <QStringList>
-#include <QDesktopWidget>
-#include <QtCore/Qt>
-#include <QIcon>
-#include <QMessageBox>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QPixmap>
 
 #include "JtvLiveChannel.h"
 
@@ -59,6 +83,7 @@ protected slots:
     void Page4_saveIp(const QString &ip);
     void Page4_savePort(int port);
     void Page4_startRtmpgw();
+    void aboutQt();
 
 protected:
     void Page0_lock();
@@ -74,7 +99,7 @@ protected:
     //UI
     //QStatusBar *ui_bottom_statusBar;
     QTabWidget *ui_widget;
-    QWidget *ui_page0, *ui_page1, *ui_page2, *ui_page3, *ui_page4;
+    QWidget *ui_page0, *ui_page1, *ui_page2, *ui_page3, *ui_page4, *ui_page5;
 
     //Page 0 : Justin.tv
     QLabel *ui_page0_chanName, *ui_page0_parsingInfos, *ui_page0_bitrate, *ui_page0_viewers, *ui_page0_part, *ui_page0_id, *ui_page0_node;
@@ -119,6 +144,11 @@ protected:
     QRadioButton *ui_page4_verbosity_normal, *ui_page4_verbosity_verbose, *ui_page4_verbosity_debug;
     QPushButton *ui_page4_start;
     QVBoxLayout *ui_page4_layout;
+
+    //Page 5 : About
+    QLabel *ui_page5_copyrightNotice, *ui_page5_gplv3;
+    QPushButton *ui_page5_aboutQt;
+    QGridLayout *ui_page5_layout;
 
     //Core
     QSettings *settings;
