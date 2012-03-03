@@ -1,5 +1,6 @@
 #include <QtGui/QApplication>
 #include <QTextCodec>
+
 #include "JtvLiveUiMain.h"
 
 int main(int argc, char *argv[])
@@ -15,6 +16,5 @@ int main(int argc, char *argv[])
     /****************************************************/
     JtvLiveUiMain w;
     w.show();
-
     return a.exec();
 }

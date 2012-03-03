@@ -43,7 +43,6 @@ protected:
     QString last_message;
     QNetworkAccessManager *net_manager;
     QNetworkReply *net_reply;
-
 };
 
 #endif // JTVLIVECHANNEL_H

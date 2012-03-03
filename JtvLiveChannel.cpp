@@ -44,7 +44,8 @@ void JtvLiveChannel::startSearch(const QString &channel)
     url.addQueryItem("type", "any");
     url.addQueryItem("p", QString("%1%2%3%4%5%6").arg(rand() % 10).arg(rand() % 10).arg( rand() % 10).arg(rand() % 10).arg(rand() % 10).arg(rand() % 10)); //TODO : use srand() ...
     url.addQueryItem("group", "");
-    url.addQueryItem("channel_subscription", "");
+    url.addQueryItem("b_id", "true");
+    url.addQueryItem("private_code", "null");
     logMessage(url.toString());
     QNetworkRequest req;
     req.setUrl(url);

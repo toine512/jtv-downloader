@@ -37,10 +37,6 @@ public:
     QString getCommandEscaped(QStringList args);
     ~JtvLiveUiMain();
 
-signals:
-
-public slots:
-
 protected slots:
     void Page0_searchChannel();
     void Page0_onMessageChanged(const QString &message);
