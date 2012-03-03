@@ -131,6 +131,8 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page2_pipe_box->setCheckable(true);
         ui_page2_pipe_box->setChecked(false);
         ui_page2_pipe = new QLineEdit;
+        ui_page2_pipe->setToolTip("Right side of the pipe (after | )");
+        ui_page2_pipe->setText(settings->value("rtmpdump/pipe").toString());
         ui_page2_pipe_layout = new QHBoxLayout;
         ui_page2_pipe_layout->addWidget(ui_page2_pipe);
         ui_page2_pipe_box->setLayout(ui_page2_pipe_layout);
@@ -153,7 +155,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page2_layout->addWidget(ui_page2_start);
         ui_page2->setLayout(ui_page2_layout);
 
-        //Page 3 : Play
+        //Page 3 : Watch
         ui_page3 = new QWidget;
         ui_page3_player = new QLineEdit;
 #ifdef Q_OS_WIN32
@@ -185,8 +187,43 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page3_layout->addWidget(ui_page3_playerOut);
         ui_page3->setLayout(ui_page3_layout);
 
-        //Page 4
+        //Page 4 : rtmpgw
         ui_page4 = new QWidget;
+        ui_page4_params_box = new QGroupBox("Parameters :");
+        ui_page4_params_l_ip = new QLabel("Binding address :");
+        ui_page4_params_l_port = new QLabel("Listening port :");
+        ui_page4_params_colon = new QLabel(":");
+        ui_page4_params_ip = new QLineEdit;
+        ui_page4_params_ip->setText(settings->value("rtmpgw/ip", "0.0.0.0").toString());
+        ui_page4_params_port = new QSpinBox;
+        ui_page4_params_port->setRange(1,65335);
+        ui_page4_params_port->setValue(settings->value("rtmpgw/port", 80).toInt());
+        ui_page4_params_layout = new QGridLayout;
+        ui_page4_params_layout->addWidget(ui_page4_params_l_ip, 0, 0);
+        ui_page4_params_layout->addWidget(ui_page4_params_l_port, 0, 2);
+        ui_page4_params_layout->addWidget(ui_page4_params_ip, 1, 0);
+        ui_page4_params_layout->addWidget(ui_page4_params_colon, 1, 1);
+        ui_page4_params_layout->addWidget(ui_page4_params_port, 1, 2);
+        ui_page4_params_box->setLayout(ui_page4_params_layout);
+
+
+        ui_page4_verbosity_box = new QGroupBox("Verbosity :");
+        ui_page4_verbosity_normal = new QRadioButton("Normal");
+        ui_page4_verbosity_normal->setChecked(true);
+        ui_page4_verbosity_verbose = new QRadioButton("Verbose");
+        ui_page4_verbosity_debug = new QRadioButton("Debug");
+        ui_page4_verbosity_layout = new QHBoxLayout;
+        ui_page4_verbosity_layout->addWidget(ui_page4_verbosity_normal);
+        ui_page4_verbosity_layout->addWidget(ui_page4_verbosity_verbose);
+        ui_page4_verbosity_layout->addWidget(ui_page4_verbosity_debug);
+        ui_page4_verbosity_box->setLayout(ui_page4_verbosity_layout);
+        ui_page4_start = new QPushButton("Start");
+        //Layout
+        ui_page4_layout = new QVBoxLayout;
+        ui_page4_layout->addWidget(ui_page4_params_box);
+        ui_page4_layout->addWidget(ui_page4_verbosity_box);
+        ui_page4_layout->addWidget(ui_page4_start);
+        ui_page4->setLayout(ui_page4_layout);
 
     //QTabWidget setup
     ui_widget->addTab(ui_page0, "Justin.tv");
@@ -207,9 +244,13 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     connect(ui_page2_file_btn, SIGNAL(clicked()), this, SLOT(Page2_browseFile()));
     connect(ui_page2_pipe_box, SIGNAL(toggled(bool)), this, SLOT(Page2_toggleFileCheck(bool)));
     connect(ui_page2_file_box, SIGNAL(toggled(bool)), this, SLOT(Page2_togglePipeCheck(bool)));
+    connect(ui_page2_pipe, SIGNAL(textEdited(const QString &)), this, SLOT(Page2_savePipe(const QString &)));
     connect(ui_page2_start, SIGNAL(clicked()), this, SLOT(Page2_startRtmpdump()));
     connect(ui_page3_player, SIGNAL(textEdited(const QString &)), this, SLOT(Page3_savePlayerPath(const QString &)));
     connect(ui_page3_watchBtn, SIGNAL(clicked()), this, SLOT(Page3_linkedProcessesStart()));
+    connect(ui_page4_params_ip, SIGNAL(textEdited(const QString &)), this, SLOT(Page4_saveIp(const QString &)));
+    connect(ui_page4_params_port, SIGNAL(valueChanged(int)), this, SLOT(Page4_savePort(int)));
+    connect(ui_page4_start, SIGNAL(clicked()), this, SLOT(Page4_startRtmpgw()));
     connect(linkedProcess_rtmpgw, SIGNAL(readyReadStandardOutput()), this, SLOT(Page3_rtmpgwOut()));
     connect(linkedProcess_player, SIGNAL(readyReadStandardOutput()), this, SLOT(Page3_playerOut()));
 
@@ -382,6 +423,11 @@ void JtvLiveUiMain::Page2_togglePipeCheck(bool file_ckecked)
     }
 }
 
+void JtvLiveUiMain::Page2_savePipe(const QString &text)
+{
+    settings->setValue("rtmpdump/pipe", text);
+}
+
 void JtvLiveUiMain::Page2_startRtmpdump()
 {
     QStringList args = collectRtmpParams();
@@ -413,9 +459,9 @@ void JtvLiveUiMain::Page2_startRtmpdump()
                 args << "-o";
                 args << ui_page2_file->text();
 #ifdef Q_OS_WIN32
-                if(!QProcess::startDetached(settings->value("rtmp/rtmpdump", "rtmpdump.exe").toString(), args))
+                if(!QProcess::startDetached(settings->value("rtmpdump/rtmpdump", "rtmpdump.exe").toString(), args))
 #else
-                if(!QProcess::startDetached(settings->value("rtmp/rtmpdump", "rtmpdump").toString(), args))
+                if(!QProcess::startDetached(settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), args))
 #endif
                 {
                     QMessageBox::warning(this, "Launching rtmpdump", "Unable to create the process, check the path.");
@@ -432,10 +478,10 @@ void JtvLiveUiMain::Page2_startRtmpdump()
             {
                 args << "-q";
 #ifdef Q_OS_WIN32
-                if(!QProcess::startDetached(QString("cmd.exe /c \"%1 %2 | %3\"").arg(settings->value("rtmp/rtmpdump", "rtmpdump.exe").toString(), getCommandEscaped(args).replace("\\\"", "\"\"\""), ui_page2_pipe->text()))) //epic Windows crap ! -> replace("\\\"", "\"\"\"")
+                if(!QProcess::startDetached(QString("cmd.exe /c \"%1 %2 | %3\"").arg(settings->value("rtmpdump/rtmpdump", "rtmpdump.exe").toString(), getCommandEscaped(args).replace("\\\"", "\"\"\""), ui_page2_pipe->text()))) //epic Windows crap ! -> replace("\\\"", "\"\"\"")
 #else
                 //TODO : linux most common shell -> sh ?
-                if(!QProcess::startDetached(QString("%1 %2 | %3").arg(settings->value("rtmp/rtmpdump", "rtmpdump").toString(), getCommandEscaped(args), ui_page2_pipe->text())))
+                if(!QProcess::startDetached(QString("%1 %2 | %3").arg(settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), getCommandEscaped(args), ui_page2_pipe->text())))
 #endif
                 {
                     QMessageBox::warning(this, "Launching rtmpdump", "Unable to create the process, check the path.");
@@ -483,9 +529,9 @@ void JtvLiveUiMain::Page3_linkedProcessesStart()
             connect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesDisconnectTerminate()));
             connect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Page3_linkedProcessesDisconnectTerminate()));
 #ifdef Q_OS_WIN32
-            linkedProcess_rtmpgw->start(settings->value("rtmp/rtmpgw", "rtmpgw.exe").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
+            linkedProcess_rtmpgw->start(settings->value("watch/rtmpgw", "rtmpgw.exe").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
 #else
-            linkedProcess_rtmpgw->start(settings->value("rtmp/rtmpgw", "rtmpgw").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
+            linkedProcess_rtmpgw->start(settings->value("watch/rtmpgw", "rtmpgw").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
 #endif
             linkedProcess_player->start(ui_page3_player->text(), QStringList(QString("http://127.0.0.1:").append(settings->value("watch/port", "21080").toString())), QIODevice::ReadOnly | QIODevice::Unbuffered);
         }
@@ -547,6 +593,59 @@ void JtvLiveUiMain::Page3_linkedProcessesTerminate()
     linkedProcess_player->terminate();
     ui_page0_gotoWatch->setEnabled(true);
     ui_page3_watchBtn->setEnabled(true);
+}
+
+//Page 4 : slots
+void JtvLiveUiMain::Page4_saveIp(const QString &ip)
+{
+    settings->setValue("rtmpgw/ip", ip);
+}
+
+void JtvLiveUiMain::Page4_savePort(int port)
+{
+    settings->setValue("rtmpgw/port", port);
+}
+
+void JtvLiveUiMain::Page4_startRtmpgw()
+{
+    QStringList args = collectRtmpParams();
+    if(args.isEmpty())
+    {
+        QMessageBox::warning(this, "Parameters", "RTMP parameters are empty.");
+    }
+    else
+    {
+        args << "-f";
+        args << settings->value("flash/version", "WIN 11,1,102,62").toString();
+        args << "-v";
+        if(ui_page4_params_ip->text().isEmpty())
+        {
+            QMessageBox::warning(this, "Binding IP", "No binding address provided.");
+        }
+        else
+        {
+            args << "-D";
+            args << ui_page4_params_ip->text();
+            args << "-g";
+            args << QString("%1").arg(ui_page4_params_port->value());
+            if(ui_page4_verbosity_verbose->isChecked())
+            {
+                args << "-V";
+            }
+            else if(ui_page4_verbosity_debug->isChecked())
+            {
+                args << "-z";
+            }
+#ifdef Q_OS_WIN32
+            if(!QProcess::startDetached(settings->value("rtmpgw/rtmpgw", "rtmpgw.exe").toString(), args))
+#else
+            if(!QProcess::startDetached(settings->value("rtmpgw/rtmpgw", "rtmpgw").toString(), args))
+#endif
+            {
+                QMessageBox::warning(this, "Launching rtmpgw", "Unable to create the process, check the path.");
+            }
+        }
+    }
 }
 
 QStringList JtvLiveUiMain::collectRtmpParams()

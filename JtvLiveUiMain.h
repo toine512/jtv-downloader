@@ -16,6 +16,7 @@
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QVBoxLayout>
+#include <QSpinBox>
 #include <QSettings>
 #include <QProcess>
 #include <QStringList>
@@ -51,6 +52,7 @@ protected slots:
     void Page2_browseFile();
     void Page2_toggleFileCheck(bool pipe_ckecked);
     void Page2_togglePipeCheck(bool file_ckecked);
+    void Page2_savePipe(const QString &text);
     void Page2_startRtmpdump();
     void Page3_savePlayerPath(const QString &path);
     void Page3_linkedProcessesStart();
@@ -58,6 +60,9 @@ protected slots:
     void Page3_linkedProcessesDisconnectTerminate();
     void Page3_rtmpgwOut();
     void Page3_playerOut();
+    void Page4_saveIp(const QString &ip);
+    void Page4_savePort(int port);
+    void Page4_startRtmpgw();
 
 protected:
     void Page0_lock();
@@ -108,6 +113,17 @@ protected:
     QFrame *ui_page3_hSeparator;
     QPlainTextEdit *ui_page3_rtmpgwOut, *ui_page3_playerOut;
     QVBoxLayout *ui_page3_layout;
+
+    //Page 4 : rtmpdump
+    QGroupBox *ui_page4_params_box, *ui_page4_verbosity_box;
+    QGridLayout *ui_page4_params_layout;
+    QLineEdit *ui_page4_params_ip;
+    QSpinBox *ui_page4_params_port;
+    QLabel *ui_page4_params_l_ip, *ui_page4_params_l_port, *ui_page4_params_colon;
+    QHBoxLayout *ui_page4_verbosity_layout;
+    QRadioButton *ui_page4_verbosity_normal, *ui_page4_verbosity_verbose, *ui_page4_verbosity_debug;
+    QPushButton *ui_page4_start;
+    QVBoxLayout *ui_page4_layout;
 
     //Core
     QSettings *settings;
