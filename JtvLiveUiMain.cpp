@@ -492,7 +492,7 @@ void JtvLiveUiMain::Page2_startRtmpdump()
 #ifdef Q_OS_WIN32
                 if(!QProcess::startDetached(settings->value("rtmpdump/rtmpdump", "rtmpdump.exe").toString(), args))
 #else
-                if(!QProcess::startDetached(settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), args))
+                if(!QProcess::startDetached(settings->value("terminal/terminal", "xterm").toString(), QStringList() << settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2").arg(settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), getCommandEscaped(args).replace("&", "\\&")))) //"&" is meaningful under Linux ;) -> replace("&", "\\&")
 #endif
                 {
                     QMessageBox::warning(this, "Launching rtmpdump", "Unable to create the process, check the path.");
@@ -511,8 +511,7 @@ void JtvLiveUiMain::Page2_startRtmpdump()
 #ifdef Q_OS_WIN32
                 if(!QProcess::startDetached(QString("cmd.exe /c \"%1 %2 | %3\"").arg(settings->value("rtmpdump/rtmpdump", "rtmpdump.exe").toString(), getCommandEscaped(args).replace("\\\"", "\"\"\""), ui_page2_pipe->text()))) //epic Windows crap ! -> replace("\\\"", "\"\"\"")
 #else
-                //TODO : linux most common shell -> sh ?
-                if(!QProcess::startDetached(QString("%1 %2 | %3").arg(settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), getCommandEscaped(args), ui_page2_pipe->text())))
+                if(!QProcess::startDetached(settings->value("terminal/terminal", "xterm").toString(), QStringList() << settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2 | %3").arg(settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), getCommandEscaped(args).replace("&", "\\&"), ui_page2_pipe->text()))) //"&" is meaningful under Linux ;) -> replace("&", "\\&")
 #endif
                 {
                     QMessageBox::warning(this, "Launching rtmpdump", "Unable to create the process, check the path.");
@@ -670,7 +669,7 @@ void JtvLiveUiMain::Page4_startRtmpgw()
 #ifdef Q_OS_WIN32
             if(!QProcess::startDetached(settings->value("rtmpgw/rtmpgw", "rtmpgw.exe").toString(), args))
 #else
-            if(!QProcess::startDetached(settings->value("rtmpgw/rtmpgw", "rtmpgw").toString(), args))
+            if(!QProcess::startDetached(settings->value("terminal/terminal", "xterm").toString(), QStringList() << settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2").arg(settings->value("rtmpgw/rtmpgw", "rtmpgw").toString(), getCommandEscaped(args).replace("&", "\\&"))))
 #endif
             {
                 QMessageBox::warning(this, "Launching rtmpgw", "Unable to create the process, check the path.");
