@@ -19,6 +19,6 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-#define G_VERSION "b1"
+#define G_VERSION "1.0"
 
 #endif // DEFINES_H

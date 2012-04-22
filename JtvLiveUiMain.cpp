@@ -34,7 +34,11 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     linkedProcess_player->setProcessChannelMode(QProcess::MergedChannels);
 
     setWindowTitle("Justin.tv live downloader");
+#ifdef Q_OS_WIN32
     setFixedSize(496, 270);
+#else
+    resize(496, 270);
+#endif
     //Center on the current screen
     QDesktopWidget desktop_widget;
     QRect screen_geometry = desktop_widget.availableGeometry();
