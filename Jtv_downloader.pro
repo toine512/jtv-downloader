@@ -6,7 +6,7 @@
 
 QT       += core gui network xml
 
-TARGET = Jtv_downloader
+TARGET = jtv-downloader
 TEMPLATE = app
 
 
