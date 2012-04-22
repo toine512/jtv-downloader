@@ -22,7 +22,11 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     QMainWindow(parent)
 {
     //Core
+#ifdef Q_OS_WIN32
     settings = new QSettings("jtvdl.conf", QSettings::IniFormat, this);
+#else
+    settings = new QSettings("$HOME/.config/jtv-downloader/jtvdl.conf", QSettings::IniFormat, this);
+#endif
     net_manager = new QNetworkAccessManager(this);
     live_channel = new JtvLiveChannel(net_manager, this);
     connect(live_channel, SIGNAL(messageChanged(const QString &)), this, SLOT(Page0_onMessageChanged(const QString &)));
