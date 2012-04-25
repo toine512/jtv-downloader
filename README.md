@@ -7,6 +7,7 @@ PPA for Ubuntu-based distributions
 	ppa:toine512/jtv-downloader
 
 Install **jtv-downloader** package :
+
 	apt-get install jtv-downloader
 
 Debian binary packages compiled in Ubuntu Oneiric
