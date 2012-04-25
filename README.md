@@ -3,12 +3,13 @@ Jtv live downloader, temporary instructions :
 
 PPA for Ubuntu-based distributions
 ----------------------------------
+ppa:toine512/jtv-downloader
 
-	ppa:toine512/jtv-downloader
+	sudo add-apt-repository ppa:toine512/jtv-downloader
 
 Install **jtv-downloader** package :
 
-	apt-get install jtv-downloader
+	sudo apt-get install jtv-downloader
 
 Debian binary packages compiled in Ubuntu Oneiric
 -------------------------------------------------
@@ -22,7 +23,7 @@ Building on Debian-based distributions
 
 You need **qt4-qmake** and **libqt4-dev** (>= 4.7.4) packages to achieve that.
 
-	apt-get install git qt4-qmake libqt4-dev
+	sudo apt-get install git qt4-qmake libqt4-dev
 	git clone git://github.com/toine512/jtv-downloader.git
 	cd jtv-downloader/
 	qmake --makefile
@@ -30,4 +31,4 @@ You need **qt4-qmake** and **libqt4-dev** (>= 4.7.4) packages to achieve that.
 
 At runtime you'll need **libqtcore4**, **libqt4-xml**, **libqtgui4**, **libqt4-network** :
 
-	apt-get install libqtcore4 libqt4-xml libqtgui4 libqt4-network
+	sudo apt-get install libqtcore4 libqt4-xml libqtgui4 libqt4-network
