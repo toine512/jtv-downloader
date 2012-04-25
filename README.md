@@ -1,5 +1,15 @@
-Jtv live downloader, temporary instructions :
-=============================================
+You need rtmpdump first :
+=========================
+
+[Patches and Widnows builds by KSV] (http://stream-recorder.com/forum/release-unofficial-rtmpdump-binaries-t11030.html)
+
+Jtv live downloader, how do I get it ?
+======================================
+
+Windows binaries
+----------------
+
+[1.0] (https://github.com/downloads/toine512/jtv-downloader/Jtv_downloader-b1.7z "In fact it's b1 but who cares ?")
 
 PPA for Ubuntu-based distributions
 ----------------------------------
