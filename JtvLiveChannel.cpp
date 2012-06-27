@@ -45,7 +45,7 @@ QList<JtvLiveStream>* JtvLiveChannel::getStreams()
     return streams;
 }
 
-void JtvLiveChannel::startSearch(const QString &channel)
+void JtvLiveChannel::startSearch(const QString &channel, const QString &password)
 {
     streams->clear();
     channel_name = channel;
@@ -54,7 +54,14 @@ void JtvLiveChannel::startSearch(const QString &channel)
     url.addQueryItem("p", QString("%1%2%3%4%5%6").arg(rand() % 10).arg(rand() % 10).arg( rand() % 10).arg(rand() % 10).arg(rand() % 10).arg(rand() % 10)); //TODO : use srand() ...
     url.addQueryItem("group", "");
     url.addQueryItem("b_id", "true");
-    url.addQueryItem("private_code", "null");
+    if(password.isEmpty())
+    {
+        url.addQueryItem("private_code", "null");
+    }
+    else
+    {
+        url.addQueryItem("private_code", password);
+    }
     logMessage(url.toString());
     QNetworkRequest req;
     req.setUrl(url);

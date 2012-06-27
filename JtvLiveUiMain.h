@@ -102,12 +102,12 @@ protected:
     QWidget *ui_page0, *ui_page1, *ui_page2, *ui_page3, *ui_page4, *ui_page5;
 
     //Page 0 : Justin.tv
-    QLabel *ui_page0_chanName, *ui_page0_parsingInfos, *ui_page0_bitrate, *ui_page0_viewers, *ui_page0_part, *ui_page0_id, *ui_page0_node;
-    QLineEdit *ui_page0_channel;
+    QLabel *ui_page0_chanName, *ui_page0_chanPass, *ui_page0_parsingInfos, *ui_page0_bitrate, *ui_page0_viewers, *ui_page0_part, *ui_page0_id, *ui_page0_node;
+    QLineEdit *ui_page0_channel, *ui_page0_password;
     QPushButton *ui_page0_searchBtn, *ui_page0_gotoWatch;
     QFrame *ui_page0_hSeparator;
     QComboBox *ui_page0_streamSelector;
-    QHBoxLayout *ui_page0_searchLayout, *ui_page0_streamLayout;
+    QHBoxLayout *ui_page0_searchLayout, *ui_page0_passwdLayout, *ui_page0_streamLayout;
     QGridLayout *ui_page0_layout;
 
     //Page 1 : Parameters

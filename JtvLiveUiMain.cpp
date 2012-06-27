@@ -63,7 +63,9 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page0_searchBtn = new QPushButton;
         ui_page0_searchBtn->setIcon(QIcon(":img/zoom.png"));
         ui_page0_searchBtn->setToolTip("Search the channel");
-        ui_page0_parsingInfos = new QLabel("First, write the channel name in the field above.");
+        ui_page0_chanPass = new QLabel("Channel password :");
+        ui_page0_password = new QLineEdit;
+        ui_page0_parsingInfos = new QLabel("First, type the channel name in the field above and the password if any.");
         ui_page0_parsingInfos->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         ui_page0_hSeparator = new QFrame;
         ui_page0_hSeparator->setFrameShape(QFrame::HLine);
@@ -91,19 +93,23 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page0_searchLayout->addWidget(ui_page0_chanName);
         ui_page0_searchLayout->addWidget(ui_page0_channel);
         ui_page0_searchLayout->addWidget(ui_page0_searchBtn);
+        ui_page0_passwdLayout = new QHBoxLayout;
+        ui_page0_passwdLayout->addWidget(ui_page0_chanPass);
+        ui_page0_passwdLayout->addWidget(ui_page0_password);
         ui_page0_streamLayout = new QHBoxLayout;
         ui_page0_streamLayout->addWidget(ui_page0_streamSelector);
         ui_page0_streamLayout->addWidget(ui_page0_gotoWatch);
         ui_page0_layout = new QGridLayout;
         ui_page0_layout->addLayout(ui_page0_searchLayout, 0, 0, 1, 3);
-        ui_page0_layout->addWidget(ui_page0_parsingInfos, 1, 0, 1, 3);
-        ui_page0_layout->addWidget(ui_page0_hSeparator, 2, 0, 1, 3);
-        ui_page0_layout->addLayout(ui_page0_streamLayout, 3, 0, 1, 3);
-        ui_page0_layout->addWidget(ui_page0_bitrate, 4, 0);
-        ui_page0_layout->addWidget(ui_page0_viewers, 4, 1);
-        ui_page0_layout->addWidget(ui_page0_part, 4, 2);
-        ui_page0_layout->addWidget(ui_page0_id, 5, 0);
-        ui_page0_layout->addWidget(ui_page0_node, 5, 1);
+        ui_page0_layout->addLayout(ui_page0_passwdLayout, 1, 0, 1, 3);
+        ui_page0_layout->addWidget(ui_page0_parsingInfos, 2, 0, 1, 3);
+        ui_page0_layout->addWidget(ui_page0_hSeparator, 3, 0, 1, 3);
+        ui_page0_layout->addLayout(ui_page0_streamLayout, 4, 0, 1, 3);
+        ui_page0_layout->addWidget(ui_page0_bitrate, 5, 0);
+        ui_page0_layout->addWidget(ui_page0_viewers, 5, 1);
+        ui_page0_layout->addWidget(ui_page0_part, 5, 2);
+        ui_page0_layout->addWidget(ui_page0_id, 6, 0);
+        ui_page0_layout->addWidget(ui_page0_node, 6, 1);
         ui_page0->setLayout(ui_page0_layout);
 
         //Page 1 : Parameters
@@ -250,7 +256,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 
         //Page 5 : About
         ui_page5 = new QWidget;
-        ui_page5_copyrightNotice = new QLabel(QString("<p align=\"center\"><b>Jtv live downloader v.%1</b><br />Copyright © 2012 toine512<br />Compiled on [%2] [%3]<br /><br />This software is distributed under <a href=\"https://www.gnu.org/licenses/gpl.html\">GNU General Public License v. 3</a>.</p><p>Written in C++ with <a href=\"https://qt.nokia.com/\">Qt</a> 4.7.4 (<a href=\"https://www.gnu.org/licenses/gpl.html\">GNU GPL v. 3</a>)<br />Uses <a href=\"http://www.famfamfam.com/lab/icons/silk/\">FAMFAMFAM Silk Icons</a> by <a href=\"http://www.famfamfam.com/\">Mark James</a> (<a href=\"https://creativecommons.org/licenses/by/2.5/\">CC BY 2.5</a>).</p>").arg(G_VERSION, __DATE__, __TIME__));
+        ui_page5_copyrightNotice = new QLabel(QString("<p align=\"center\"><b>Jtv live downloader v.%1</b><br />Copyright © 2012 toine512<br />Compiled on [%2] [%3]<br /><br />This software is distributed under <a href=\"https://www.gnu.org/licenses/gpl.html\">GNU General Public License v. 3</a>.</p><p>Written in C++ using <a href=\"https://qt.nokia.com/\">Qt</a> 4.7.4 (<a href=\"https://www.gnu.org/licenses/gpl.html\">GNU GPL v. 3</a>)<br />Uses <a href=\"http://www.famfamfam.com/lab/icons/silk/\">FAMFAMFAM Silk Icons</a> by <a href=\"http://www.famfamfam.com/\">Mark James</a> (<a href=\"https://creativecommons.org/licenses/by/2.5/\">CC BY 2.5</a>).</p>").arg(G_VERSION, __DATE__, __TIME__));
         ui_page5_copyrightNotice->setOpenExternalLinks(true);
         ui_page5_gplv3 = new QLabel;
         ui_page5_gplv3->setPixmap(QPixmap(":img/gplv3.png"));
@@ -311,7 +317,7 @@ void JtvLiveUiMain::Page0_searchChannel()
         ui_page0_streamSelector->clear();
         ui_page0_gotoWatch->setDisabled(true);
         Page1_defaultParams();
-        live_channel->startSearch(ui_page0_channel->text());
+        live_channel->startSearch(ui_page0_channel->text(), ui_page0_password->text());
     }
 }
 
@@ -371,12 +377,14 @@ void JtvLiveUiMain::Page0_lock()
 {
     ui_page0_channel->setDisabled(true);
     ui_page0_searchBtn->setDisabled(true);
+    ui_page0_password->setDisabled(true);
 }
 
 void JtvLiveUiMain::Page0_unlock()
 {
     ui_page0_channel->setEnabled(true);
     ui_page0_searchBtn->setEnabled(true);
+    ui_page0_password->setEnabled(true);
 }
 
 void JtvLiveUiMain::Page0_defaultStats()

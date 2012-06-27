@@ -53,7 +53,7 @@ public:
     ~JtvLiveChannel();
     const QString & getLastMessage() const;
     QList<JtvLiveStream>* getStreams();
-    void startSearch(const QString &channel);
+    void startSearch(const QString &channel, const QString &password);
 
 signals:
     void messageChanged(const QString &);
