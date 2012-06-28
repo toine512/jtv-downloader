@@ -1,2 +1,2 @@
-?package(jtv-downloader):needs="X11" section="Applications/Video"\
-  title="Jtv live downloader" command="/usr/bin/jtv-downloader" hints="jtv,rtmpdump"
+?package(jtv-downloader):needs="X11" section="Applications/Video" \
+                         title="Jtv live downloader" command="/usr/bin/jtv-downloader" hints="jtv,rtmpdump"
