@@ -1,3 +1,9 @@
+jtv-downloader (1.0+1SNAPSHOT1-0build1) precise; urgency=low
+
+  * Temporary build, includes password support.
+
+ -- toine512 <toine512@gmail.com>  Thu, 28 Jun 2012 15:13:09 +0200
+
 jtv-downloader (1.0-0ubuntu7) oneiric; urgency=low
 
   * Failed to put jtv-downloader in the right place.
