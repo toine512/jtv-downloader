@@ -13,4 +13,6 @@ Architecture: any
 Depends: libqtcore4 (>= 4.7.4), libqt4-xml (>= 4.7.4), libqtgui4 (>= 4.7.4), libqt4-network (>= 4.7.4)
 Suggests: rtmpdump
 Description: Grabs streams from Justin.tv using rtmpdump
- rtmpdump is not in dependencies as it's not up to date in repositories (22-04-2012)
+ rtmpdump is not in dependencies since it's not up to date in repositories. (22-04-2012)
+ Compile from source instead : http://stream-recorder.com/forum/release-unofficial-rtmpdump-binaries-t11030.html
+ An usable version is present in Quantal.
