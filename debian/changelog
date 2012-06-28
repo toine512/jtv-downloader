@@ -1,4 +1,4 @@
-jtv-downloader (1.0+1SNAPSHOT1-0build2) precise; urgency=low
+jtv-downloader (1.0+1SNAPSHOT3-0build3) precise; urgency=low
 
   * Temporary build, includes password support.
 
