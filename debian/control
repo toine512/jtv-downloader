@@ -1,0 +1,16 @@
+Source: jtv-downloader
+Section: video
+Priority: optional
+Maintainer: toine512 <toine512@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), qt4-qmake, libqt4-dev (>= 4.7.4)
+Standards-Version: 3.9.2
+Homepage: https://github.com/toine512/jtv-downloader
+Vcs-Git: git://github.com/toine512/jtv-downloader.git
+Vcs-Browser: https://github.com/toine512/jtv-downloader
+
+Package: jtv-downloader
+Architecture: any
+Depends: libqtcore4 (>= 4.7.4), libqt4-xml (>= 4.7.4), libqtgui4 (>= 4.7.4), libqt4-network (>= 4.7.4)
+Suggests: rtmpdump
+Description: Grabs streams from Justin.tv using rtmpdump
+ rtmpdump is not in dependencies as it's not up to date in repositories (22-04-2012)

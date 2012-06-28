@@ -1,0 +1,5 @@
+#!/bin/bash
+#configure
+#misuse of ./configure but practical to execute qmake (which does ./configure work)
+
+qmake -makefile -o Makefile \"CONFIG+=release\" ../Jtv_downloader.pro
