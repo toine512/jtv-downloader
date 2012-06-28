@@ -1,2 +1,2 @@
-jtv-downloader usr/bin/
-jtv-downloader.desktop usr/share/applications/
+jtv-downloader usr/bin
+debian/jtv-downloader.desktop usr/share/applications
