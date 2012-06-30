@@ -17,9 +17,9 @@
  */
 
 #include "JtvLiveUiMain.h"
-
+#include <QDebug>
 JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
-    QMainWindow(parent)
+    QMainWindow(parent, Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint)
 {
     //Core
 #ifdef Q_OS_WIN32
@@ -37,12 +37,13 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     linkedProcess_player = new QProcess(this);
     linkedProcess_player->setProcessChannelMode(QProcess::MergedChannels);
 
+    //GUI
     setWindowTitle("Justin.tv live downloader");
-#ifdef Q_OS_WIN32
-    setFixedSize(496, 270);
-#else
+
+    layout()->setSizeConstraint(QLayout::SetNoConstraint); //the main layout won't resize the QMainWindow
     resize(496, 270);
-#endif
+    setMinimumSize(496, 270);
+
     //Center on the current screen
     QDesktopWidget desktop_widget;
     QRect screen_geometry = desktop_widget.availableGeometry();
@@ -57,14 +58,27 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 
         //Page 0 : Justin.tv
         ui_page0 = new QWidget;
-        ui_page0_chanName = new QLabel("Channel name :");
-        ui_page0_chanName->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+        //ui_page0_chanLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         ui_page0_channel = new QLineEdit;
-        ui_page0_searchBtn = new QPushButton;
-        ui_page0_searchBtn->setIcon(QIcon(":img/zoom.png"));
-        ui_page0_searchBtn->setToolTip("Search the channel");
-        ui_page0_chanPass = new QLabel("Channel password :");
+        ui_page0_chanLabel = new QLabel("Channel name :");
+        ui_page0_chanLabel->setBuddy(ui_page0_channel);
+        ui_page0_favouriteBtn = new QPushButton("F");
+        ui_page0_favouriteBtn->setToolTip("favourite: TODO");
+        ui_page0_favouriteBtn->setDisabled(true);
+        //ui_page0_favouriteBtn->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         ui_page0_password = new QLineEdit;
+        ui_page0_passwdLabel = new QLabel("Channel password :");
+        ui_page0_passwdLabel->setBuddy(ui_page0_password);
+        ui_page0_searchBtn = new QSIRPushButton(":img/zoom.png");
+        //ui_page0_searchBtn->resize(10, 10);
+        //ui_page0_searchBtn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::QSizePolicy::Preferred);
+        //ui_page0_searchBtn->setFixedSize(100, 100);
+        /*ui_page0_searchBtn->setIcon(QIcon(":img/zoom.png"));
+        ui_page0_searchBtn->setToolTip("Search the channel");*/
+
+
+
         ui_page0_parsingInfos = new QLabel("First, type the channel name in the field above and the password if any.");
         ui_page0_parsingInfos->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         ui_page0_hSeparator = new QFrame;
@@ -89,27 +103,61 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_page0_node->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         Page0_defaultStats();
         //Layouts
+        /*ui_page0_nameFieldLayout = new QHBoxLayout;
+        ui_page0_nameFieldLayout->addWidget(ui_page0_channel);
+        ui_page0_nameFieldLayout->addWidget(ui_page0_favouriteBtn);
+        ui_page0_formLayout = new QFormLayout;
+        ui_page0_formLayout->addRow("Channel name :", ui_page0_nameFieldLayout);
+        ui_page0_formLayout->addRow("Channel password :", ui_page0_password);
         ui_page0_searchLayout = new QHBoxLayout;
+        ui_page0_searchLayout->addLayout(ui_page0_formLayout);
+        ui_page0_searchLayout->addWidget(ui_page0_searchBtn);*/
+
+        /*ui_page0_searchLayout = new QHBoxLayout;
         ui_page0_searchLayout->addWidget(ui_page0_chanName);
         ui_page0_searchLayout->addWidget(ui_page0_channel);
         ui_page0_searchLayout->addWidget(ui_page0_searchBtn);
         ui_page0_passwdLayout = new QHBoxLayout;
         ui_page0_passwdLayout->addWidget(ui_page0_chanPass);
-        ui_page0_passwdLayout->addWidget(ui_page0_password);
+        ui_page0_passwdLayout->addWidget(ui_page0_password);*/
+
+        ui_page0_searchLayout = new QGridLayout;
+        ui_page0_searchLayout->addWidget(ui_page0_chanLabel, 0, 0);
+        ui_page0_searchLayout->addWidget(ui_page0_channel, 0, 1);
+        ui_page0_searchLayout->addWidget(ui_page0_favouriteBtn, 0, 2);
+        ui_page0_searchLayout->addWidget(ui_page0_passwdLabel, 1, 0);
+        ui_page0_searchLayout->addWidget(ui_page0_password, 1, 1, 1, 2);
+        ui_page0_searchLayout->addWidget(ui_page0_searchBtn, 0, 3, 2, 1);
+
         ui_page0_streamLayout = new QHBoxLayout;
         ui_page0_streamLayout->addWidget(ui_page0_streamSelector);
         ui_page0_streamLayout->addWidget(ui_page0_gotoWatch);
-        ui_page0_layout = new QGridLayout;
-        ui_page0_layout->addLayout(ui_page0_searchLayout, 0, 0, 1, 3);
-        ui_page0_layout->addLayout(ui_page0_passwdLayout, 1, 0, 1, 3);
+
+        ui_page0_statsLayout = new QGridLayout;
+        ui_page0_statsLayout->addWidget(ui_page0_bitrate, 0, 0);
+        ui_page0_statsLayout->addWidget(ui_page0_viewers, 0, 1);
+        ui_page0_statsLayout->addWidget(ui_page0_part, 0, 2);
+        ui_page0_statsLayout->addWidget(ui_page0_id, 1, 0);
+        ui_page0_statsLayout->addWidget(ui_page0_node, 1, 1);
+
+        ui_page0_layout = new QVBoxLayout();
+        ui_page0_layout->addLayout(ui_page0_searchLayout);
+        ui_page0_layout->addWidget(ui_page0_parsingInfos);
+        ui_page0_layout->addWidget(ui_page0_hSeparator);
+        ui_page0_layout->addLayout(ui_page0_streamLayout);
+        ui_page0_layout->addLayout(ui_page0_statsLayout);
+        //////////////////////////////////
+        /*ui_page0_statsLayout = new QGridLayout;
+        ui_page0_layout->addLayout(ui_page0_searchLayout, 1, 0, 1, 3);
+        //ui_page0_layout->addLayout(ui_page0_passwdLayout, 1, 0, 1, 3);
         ui_page0_layout->addWidget(ui_page0_parsingInfos, 2, 0, 1, 3);
         ui_page0_layout->addWidget(ui_page0_hSeparator, 3, 0, 1, 3);
         ui_page0_layout->addLayout(ui_page0_streamLayout, 4, 0, 1, 3);
-        ui_page0_layout->addWidget(ui_page0_bitrate, 5, 0);
-        ui_page0_layout->addWidget(ui_page0_viewers, 5, 1);
-        ui_page0_layout->addWidget(ui_page0_part, 5, 2);
-        ui_page0_layout->addWidget(ui_page0_id, 6, 0);
-        ui_page0_layout->addWidget(ui_page0_node, 6, 1);
+        ui_page0_statsLayout->addWidget(ui_page0_bitrate, 5, 0);
+        ui_page0_statsLayout->addWidget(ui_page0_viewers, 5, 1);
+        ui_page0_statsLayout->addWidget(ui_page0_part, 5, 2);
+        ui_page0_statsLayout->addWidget(ui_page0_id, 6, 0);
+        ui_page0_statsLayout->addWidget(ui_page0_node, 6, 1);*/
         ui_page0->setLayout(ui_page0_layout);
 
         //Page 1 : Parameters
@@ -747,6 +795,17 @@ void JtvLiveUiMain::aboutQt()
 {
     QMessageBox::aboutQt(this);
 }
+
+/*void JtvLiveUiMain::resizeEvent(QResizeEvent *event)
+{
+    qDebug() << "resize";
+    if(!event->spontaneous())
+    {
+        qDebug() << "not spontaneus";
+        resize(event->oldSize());
+        updateGeometry();
+    }
+}*/
 
 JtvLiveUiMain::~JtvLiveUiMain()
 { }

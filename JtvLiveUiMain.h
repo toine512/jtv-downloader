@@ -41,14 +41,15 @@
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QGridLayout>
+#include <QVBoxLayout>
 #include <QPlainTextEdit>
 #include <QGroupBox>
 #include <QRadioButton>
-#include <QVBoxLayout>
 #include <QSpinBox>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPixmap>
+#include "QSIRPushButton.h"
 
 #include "JtvLiveChannel.h"
 
@@ -96,19 +97,22 @@ protected:
     void Page3_linkedProcessesTerminate();
     QStringList collectRtmpParams();
 
+    //void resizeEvent(QResizeEvent *event);
+
     //UI
     //QStatusBar *ui_bottom_statusBar;
     QTabWidget *ui_widget;
     QWidget *ui_page0, *ui_page1, *ui_page2, *ui_page3, *ui_page4, *ui_page5;
 
     //Page 0 : Justin.tv
-    QLabel *ui_page0_chanName, *ui_page0_chanPass, *ui_page0_parsingInfos, *ui_page0_bitrate, *ui_page0_viewers, *ui_page0_part, *ui_page0_id, *ui_page0_node;
+    QLabel *ui_page0_chanLabel, *ui_page0_passwdLabel, *ui_page0_parsingInfos, *ui_page0_bitrate, *ui_page0_viewers, *ui_page0_part, *ui_page0_id, *ui_page0_node;
     QLineEdit *ui_page0_channel, *ui_page0_password;
-    QPushButton *ui_page0_searchBtn, *ui_page0_gotoWatch;
+    QPushButton *ui_page0_favouriteBtn, *ui_page0_searchBtn, *ui_page0_gotoWatch;
     QFrame *ui_page0_hSeparator;
     QComboBox *ui_page0_streamSelector;
-    QHBoxLayout *ui_page0_searchLayout, *ui_page0_passwdLayout, *ui_page0_streamLayout;
-    QGridLayout *ui_page0_layout;
+    QHBoxLayout *ui_page0_streamLayout;
+    QGridLayout *ui_page0_searchLayout, *ui_page0_statsLayout;
+    QVBoxLayout *ui_page0_layout;
 
     //Page 1 : Parameters
     QLabel *ui_page1_l_rtmp, *ui_page1_l_swf, *ui_page1_l_swfVfy, *ui_page1_l_web, *ui_page1_l_usherToken, *ui_page1_l_cliFriendly;
