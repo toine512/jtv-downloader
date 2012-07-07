@@ -1,3 +1,9 @@
+jtv-downloader (1.0+1SNAPSHOT4-0build1) precise; urgency=low
+
+  * New Temporary build.
+
+ -- toine512 <toine512@gmail.com>  Sat, 07 Jul 2012 19:14:10 +0200
+
 jtv-downloader (1.0+1SNAPSHOT3-0build3) precise; urgency=low
 
   * Temporary build, includes password support.
