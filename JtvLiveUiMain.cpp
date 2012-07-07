@@ -162,16 +162,21 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 
         //Page 1 : Parameters
         ui_page1 = new QWidget;
-        ui_page1_l_rtmp = new QLabel("RTMP (-r)");
         ui_page1_rtmp = new QLineEdit;
-        ui_page1_l_swf = new QLabel("SWF (-s)");
+        ui_page1_l_rtmp = new QLabel("RTMP (-r)");
+        ui_page1_l_rtmp->setBuddy(ui_page1_rtmp);
         ui_page1_swf = new QLineEdit;
-        ui_page1_l_swfVfy = new QLabel("SWF verif (-W)");
+        ui_page1_l_swf = new QLabel("SWF (-s)");
+        ui_page1_l_swf->setBuddy(ui_page1_swf);
         ui_page1_swfVfy = new QLineEdit;
-        ui_page1_l_web = new QLabel("Web page (-p)");
+        ui_page1_l_swfVfy = new QLabel("SWF verif (-W)");
+        ui_page1_l_swfVfy->setBuddy(ui_page1_swfVfy);
         ui_page1_web = new QLineEdit;
-        ui_page1_l_usherToken = new QLabel("UsherToken (-j)");
+        ui_page1_l_web = new QLabel("Web page (-p)");
+        ui_page1_l_web->setBuddy(ui_page1_web);
         ui_page1_usherToken = new QLineEdit;
+        ui_page1_l_usherToken = new QLabel("UsherToken (-j)");
+        ui_page1_l_usherToken->setBuddy(ui_page1_usherToken);
         ui_page1_hSeparator = new QFrame;
         ui_page1_hSeparator->setFrameShape(QFrame::HLine);
         ui_page1_hSeparator->setFrameShadow(QFrame::Sunken);
