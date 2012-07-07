@@ -42,3 +42,13 @@ You need **qt4-qmake** and **libqt4-dev** (>= 4.7.4) packages to achieve that.
 At runtime you'll need **libqtcore4**, **libqt4-xml**, **libqtgui4**, **libqt4-network** :
 
 	sudo apt-get install libqtcore4 libqt4-xml libqtgui4 libqt4-network
+
+Configuration file samples
+==========================
+
+[On the wiki] (https://github.com/toine512/jtv-downloader/wiki)
+
+Reporting bugs/suggestions
+==========================
+
+[GitHub issues tracker] (https://github.com/toine512/jtv-downloader/issues)
