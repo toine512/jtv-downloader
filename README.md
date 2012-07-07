@@ -1,7 +1,7 @@
 You need rtmpdump first :
 =========================
 
-[Patches and Widnows builds by KSV] (http://stream-recorder.com/forum/release-unofficial-rtmpdump-binaries-t11030.html)
+[Patches and Windows builds by KSV] (http://stream-recorder.com/forum/release-unofficial-rtmpdump-binaries-t11030.html)
 
 Jtv live downloader, how do I get it ?
 ======================================
