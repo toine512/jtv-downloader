@@ -49,9 +49,11 @@ class JtvLiveChannel : public QObject
     Q_OBJECT
 
 public:
-    explicit JtvLiveChannel(QNetworkAccessManager *net_manager, QObject *parent = 0);
+    explicit JtvLiveChannel(QNetworkAccessManager *net_manager, const QString &base_player_url = "http://fr.justin.tv/widgets/live_embed_player.swf", const QString &base_http_referer = "http://fr.justin.tv/", QObject *parent = 0);
     ~JtvLiveChannel();
     const QString & getLastMessage() const;
+    const QString & getHttpReferer() const;
+    const QString & getPlayerUrl() const;
     QList<JtvLiveStream>* getStreams();
     void startSearch(const QString &channel, const QString &password);
 
@@ -61,17 +63,17 @@ signals:
     void channelSearchSuccess(QList<JtvLiveStream> *);
 
 protected slots:
+    void gotPlayerRedirect();
     void dlFinished();
 
 protected:
     void logMessage(const QString &message);
     void parseXml(const QByteArray &raw_datas);
 
-    QString channel_name;
+    QString channel_name, player_url, http_referer, last_message;
     QList<JtvLiveStream> *streams;
-    QString last_message;
     QNetworkAccessManager *net_manager;
-    QNetworkReply *net_reply;
+    QNetworkReply *net_reply, *player_reply;
 };
 
 #endif // JTVLIVECHANNEL_H

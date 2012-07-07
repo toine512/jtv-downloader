@@ -18,12 +18,19 @@
 
 #include "JtvLiveChannel.h"
 
-JtvLiveChannel::JtvLiveChannel(QNetworkAccessManager *network_manager, QObject *parent) :
+JtvLiveChannel::JtvLiveChannel(QNetworkAccessManager *network_manager, const QString &base_palyer_url, const QString &base_http_referer, QObject *parent) :
     QObject(parent)
 {
     streams = new QList<JtvLiveStream>;
     net_manager = network_manager;
     net_reply = 0;
+    //Retrieving dynamic player URL
+    http_referer = base_http_referer;
+    player_url = base_palyer_url;
+    QNetworkRequest req = QNetworkRequest(QUrl(player_url));
+    req.setRawHeader("Referer", http_referer.toAscii());
+    player_reply = net_manager->get(req);
+    connect(player_reply, SIGNAL(finished()), this, SLOT(gotPlayerRedirect()));
 }
 
 void JtvLiveChannel::logMessage(const QString &message)
@@ -38,6 +45,16 @@ void JtvLiveChannel::logMessage(const QString &message)
 const QString & JtvLiveChannel::getLastMessage() const
 {
     return last_message;
+}
+
+const QString & JtvLiveChannel::getHttpReferer() const
+{
+    return http_referer;
+}
+
+const QString & JtvLiveChannel::getPlayerUrl() const
+{
+    return player_url;
 }
 
 QList<JtvLiveStream>* JtvLiveChannel::getStreams()
@@ -68,6 +85,18 @@ void JtvLiveChannel::startSearch(const QString &channel, const QString &password
     logMessage(QString("Downloading : %1").arg(url.toString()));
     net_reply = net_manager->get(req);
     connect(net_reply, SIGNAL(finished()), this, SLOT(dlFinished()));
+}
+
+void JtvLiveChannel::gotPlayerRedirect()
+{
+    disconnect(player_reply, SIGNAL(finished()), this, SLOT(gotPlayerRedirect()));
+    QVariant loc = player_reply->header(QNetworkRequest::LocationHeader);
+    if(loc.isValid())
+    {
+        player_url = loc.toString();
+    }
+    player_reply->deleteLater();
+    player_reply = 0;
 }
 
 void JtvLiveChannel::dlFinished()

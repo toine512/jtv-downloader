@@ -28,7 +28,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     settings = new QSettings("$HOME/.config/jtv-downloader/jtvdl.conf", QSettings::IniFormat, this);
 #endif
     net_manager = new QNetworkAccessManager(this);
-    live_channel = new JtvLiveChannel(net_manager, this);
+    live_channel = new JtvLiveChannel(net_manager, settings->value("justin.tv/player", "http://fr.twitch.tv/widgets/live_embed_player.swf").toString(), settings->value("justin.tv/referer", "http://fr.twitch.tv/").toString(), this);
     connect(live_channel, SIGNAL(messageChanged(const QString &)), this, SLOT(Page0_onMessageChanged(const QString &)));
     connect(live_channel, SIGNAL(channelSearchSuccess(QList<JtvLiveStream> *)), this, SLOT(Page0_onSearchSuccess(QList<JtvLiveStream> *)));
     connect(live_channel, SIGNAL(channelSearchError(const QString &)), this, SLOT(Page0_onSearchError(const QString &)));
@@ -473,15 +473,15 @@ void JtvLiveUiMain::Page1_defaultParams()
 void JtvLiveUiMain::Page1_fillParams(const JtvLiveStream &stream)
 {
     ui_page1_rtmp->setText(stream.rtmp_url);
-    ui_page1_swf->setText(QString(settings->value("justin.tv/player", "http://www-cdn.jtvnw.net/widgets/live_site_player.r48dd120956a62c09d48d3e053fc56cbad3ded23b.swf?userAgent=").toString()).append("&channel=").append(stream.channel_name).append("&referer=").append(settings->value("justin.tv/referer", "http://fr.justin.tv/").toString()).append(stream.channel_name));
-    ui_page1_web->setText(QString(settings->value("justin.tv/referer", "http://fr.justin.tv/").toString()).append(stream.channel_name));
+    ui_page1_swf->setText(live_channel->getPlayerUrl());
+    ui_page1_web->setText(QString(live_channel->getHttpReferer()).append(stream.channel_name));
     if(stream.server_type == JtvLiveStream::UsherServer)
     {
         ui_page1_usherToken->setText(stream.usher_token);
     }
     else if(stream.server_type == JtvLiveStream::AkamaiServer)
     {
-        ui_page1_swfVfy->setText(QString(settings->value("justin.tv/player", "http://www-cdn.jtvnw.net/widgets/live_site_player.r48dd120956a62c09d48d3e053fc56cbad3ded23b.swf?userAgent=").toString()).append("&channel=").append(stream.channel_name).append("&referer=").append(settings->value("justin.tv/referer", "http://fr.justin.tv/").toString()).append(stream.channel_name));
+        ui_page1_swfVfy->setText(live_channel->getPlayerUrl());
     }
     Page1_buildCliFriendly();
 }
