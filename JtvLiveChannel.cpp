@@ -68,7 +68,7 @@ void JtvLiveChannel::startSearch(const QString &channel, const QString &password
     channel_name = channel;
     QUrl url(QString("http://usher.justin.tv/find/%1.xml").arg(channel_name));
     url.addQueryItem("type", "any");
-    url.addQueryItem("p", QString("%1%2%3%4%5%6").arg(rand() % 10).arg(rand() % 10).arg( rand() % 10).arg(rand() % 10).arg(rand() % 10).arg(rand() % 10)); //TODO : use srand() ...
+    url.addQueryItem("p", QString("%1%2%3%4%5%6").arg(qrand() % 10).arg(qrand() % 10).arg(qrand() % 10).arg(qrand() % 10).arg(qrand() % 10).arg(qrand() % 10));
     url.addQueryItem("group", "");
     url.addQueryItem("b_id", "true");
     if(password.isEmpty())

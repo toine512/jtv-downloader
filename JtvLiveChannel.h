@@ -19,8 +19,7 @@
 #ifndef JTVLIVECHANNEL_H
 #define JTVLIVECHANNEL_H
 
-#include <cstdlib>
-
+#include <QtGlobal>
 #include <QObject>
 #include <QString>
 #include <QUrl>
