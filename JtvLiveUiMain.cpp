@@ -330,6 +330,8 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     ui_widget->addTab(ui_page5, "About");
 
     //Central signals/slots
+    connect(ui_page0_channel, SIGNAL(returnPressed()), this, SLOT(Page0_searchChannel()));
+    connect(ui_page0_password, SIGNAL(returnPressed()), this, SLOT(Page0_searchChannel()));
     connect(ui_page0_searchBtn, SIGNAL(clicked()), this, SLOT(Page0_searchChannel()));
     connect(ui_page0_streamSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(Page0_updateStreamDatas(int)));
     connect(ui_page0_gotoWatch, SIGNAL(clicked()), this, SLOT(Page0_gotoWatchAndStart()));
