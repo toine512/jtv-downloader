@@ -29,6 +29,7 @@ JtvLiveChannel::JtvLiveChannel(QNetworkAccessManager *network_manager, const QSt
     player_url = base_palyer_url;
     QNetworkRequest req = QNetworkRequest(QUrl(player_url));
     req.setRawHeader("Referer", http_referer.toAscii());
+    req.setPriority(QNetworkRequest::HighPriority);
     player_reply = net_manager->get(req);
     connect(player_reply, SIGNAL(finished()), this, SLOT(gotPlayerRedirect()));
 }
