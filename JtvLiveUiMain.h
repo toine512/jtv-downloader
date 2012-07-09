@@ -29,7 +29,7 @@
 #include "JtvLiveChannel.h"
 
 #include <QNetworkAccessManager>
-//#include "UpdateChecker.h"
+#include "UpdateChecker.h"
 
 //#include <QStatusBar>
 #include <QMainWindow>
@@ -85,6 +85,7 @@ protected slots:
     void Tab4_saveIp(const QString &ip);
     void Tab4_savePort(int port);
     void Tab4_startRtmpgw();
+    void TabUpdate_show(const QString &new_version_human, const QString &dl_link);
     void aboutQt();
 
 protected:
@@ -97,8 +98,6 @@ protected:
     void Tab2_startRtmpdumpFile(const QString &path);
     void Tab3_linkedProcessesTerminate();
     QStringList collectRtmpParams();
-
-    //void resizeEvent(QResizeEvent *event);
 
     //UI
     //QStatusBar *ui_bottom_statusBar;
@@ -156,11 +155,15 @@ protected:
     QGridLayout *ui_tab5_layout;
 
     //Update Tab
+    QLabel *ui_tabUpdate_notice;
+    QPlainTextEdit *ui_tabUpdate_notes;
+    QVBoxLayout *ui_tabUpdate_layout;
 
     //Core
     QSettings *settings;
     QNetworkAccessManager *net_manager;
     JtvLiveChannel *live_channel;
+    UpdateChecker *updater;
     QProcess *linkedProcess_rtmpgw;
     QProcess *linkedProcess_player;
 };

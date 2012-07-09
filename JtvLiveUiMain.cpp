@@ -17,7 +17,7 @@
  */
 
 #include "JtvLiveUiMain.h"
-#include <QDebug>
+
 JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     QMainWindow(parent, Qt::CustomizeWindowHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint)
 {
@@ -44,7 +44,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     }
 
     //UpdateChecker setup
-
+    updater = new UpdateChecker(net_manager, "http://toine.fr.nf/jtvdl/", uuid, JTV_LIVE_VERSION, this);
 
     //Hosted QProcesses setup
     linkedProcess_rtmpgw = new QProcess(this);
@@ -329,7 +329,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 
         //Tab 5 : About
         ui_tab5 = new QWidget;
-        ui_tab5_copyrightNotice = new QLabel(QString("<p align=\"center\"><b>Jtv live downloader v.%1</b><br />Copyright © 2012 toine512<br />Compiled on [%2] [%3]<br /><br />This software is distributed under <a href=\"https://www.gnu.org/licenses/gpl.html\">GNU General Public License v. 3</a>.</p><p>Written in C++ using <a href=\"https://qt.nokia.com/\">Qt</a> 4.7.4 (<a href=\"https://www.gnu.org/licenses/gpl.html\">GNU GPL v. 3</a>)<br />Uses <a href=\"http://www.famfamfam.com/lab/icons/silk/\">FAMFAMFAM Silk Icons</a> by <a href=\"http://www.famfamfam.com/\">Mark James</a> (<a href=\"https://creativecommons.org/licenses/by/2.5/\">CC BY 2.5</a>).</p>").arg(JTV_LIVE_VERSION_HUMAN, __DATE__, __TIME__));
+        ui_tab5_copyrightNotice = new QLabel(QString("<p align=\"center\"><b>Jtv live downloader v. %1</b><br />Copyright © 2012 toine512<br />Compiled on [%2] [%3]<br /><br />This software is distributed under <a href=\"https://www.gnu.org/licenses/gpl.html\">GNU General Public License v. 3</a>.</p><p>Written in C++ using <a href=\"https://qt.nokia.com/\">Qt</a> 4.7.4 (<a href=\"https://www.gnu.org/licenses/gpl.html\">GNU GPL v. 3</a>)<br />Uses <a href=\"http://www.famfamfam.com/lab/icons/silk/\">FAMFAMFAM Silk Icons</a> by <a href=\"http://www.famfamfam.com/\">Mark James</a> (<a href=\"https://creativecommons.org/licenses/by/2.5/\">CC BY 2.5</a>).</p>").arg(JTV_LIVE_VERSION_HUMAN, __DATE__, __TIME__));
         ui_tab5_copyrightNotice->setOpenExternalLinks(true);
         ui_tab5_gplv3 = new QLabel;
         ui_tab5_gplv3->setPixmap(QPixmap(":img/gplv3.png"));
@@ -340,6 +340,17 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_tab5_layout->addWidget(ui_tab5_gplv3, 1, 0, 1, 1);
         ui_tab5_layout->addWidget(ui_tab5_aboutQt, 1, 1, 1, 1);
         ui_tab5->setLayout(ui_tab5_layout);
+
+        //Update Tab
+        ui_tabUpdate = new QWidget(this);
+        ui_tabUpdate_notice = new QLabel;
+        ui_tabUpdate_notice->setOpenExternalLinks(true);
+        ui_tabUpdate_notes = new QPlainTextEdit;
+        ui_tabUpdate_notes->setReadOnly(true);
+        ui_tabUpdate_layout = new QVBoxLayout;
+        ui_tabUpdate_layout->addWidget(ui_tabUpdate_notice);
+        ui_tabUpdate_layout->addWidget(ui_tabUpdate_notes);
+        ui_tabUpdate->setLayout(ui_tabUpdate_layout);
 
     //QTabWidget setup
     ui_widget->addTab(ui_tab0, "Justin.tv");
@@ -371,6 +382,8 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     connect(ui_tab4_params_port, SIGNAL(valueChanged(int)), this, SLOT(Tab4_savePort(int)));
     connect(ui_tab4_start, SIGNAL(clicked()), this, SLOT(Tab4_startRtmpgw()));
     connect(ui_tab5_aboutQt, SIGNAL(clicked()), this, SLOT(aboutQt()));
+    connect(updater, SIGNAL(updateAvailable(const QString &, const QString &)), this, SLOT(TabUpdate_show(const QString &, const QString &)));
+    connect(updater, SIGNAL(updateNotes(const QString &)), ui_tabUpdate_notes, SLOT(setPlainText(const QString &)));
     connect(linkedProcess_rtmpgw, SIGNAL(readyReadStandardOutput()), this, SLOT(Tab3_rtmpgwOut()));
     connect(linkedProcess_player, SIGNAL(readyReadStandardOutput()), this, SLOT(Tab3_playerOut()));
 
@@ -769,6 +782,15 @@ void JtvLiveUiMain::Tab4_startRtmpgw()
     }
 }
 
+//Update Tab slots
+void JtvLiveUiMain::TabUpdate_show(const QString &new_version_human, const QString &dl_link)
+{
+    QString notice = QString("Update %1 is available. %2").arg(new_version_human, dl_link);
+    ui_tabUpdate_notice->setText(notice);
+    ui_widget->addTab(ui_tabUpdate, QString("A new update is available! (v. %1)").arg(new_version_human));
+    //ui_widget->tabBar()->setTabTextColor(ui_widget->indexOf(ui_tabUpdate), QColor(255, 127, 13));
+}
+
 QStringList JtvLiveUiMain::collectRtmpParams()
 {
     QStringList args;
@@ -822,17 +844,6 @@ void JtvLiveUiMain::aboutQt()
 {
     QMessageBox::aboutQt(this);
 }
-
-/*void JtvLiveUiMain::resizeEvent(QResizeEvent *event)
-{
-    qDebug() << "resize";
-    if(!event->spontaneous())
-    {
-        qDebug() << "not spontaneus";
-        resize(event->oldSize());
-        updateGeometry();
-    }
-}*/
 
 JtvLiveUiMain::~JtvLiveUiMain()
 { }

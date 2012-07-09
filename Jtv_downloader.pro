@@ -13,12 +13,14 @@ TEMPLATE = app
 SOURCES += main.cpp\
         JtvLiveUiMain.cpp \
     JtvLiveChannel.cpp \
-    QSIRPushButton.cpp
+    QSIRPushButton.cpp \
+    UpdateChecker.cpp
 
 HEADERS  += JtvLiveUiMain.h \
     JtvLiveChannel.h \
     defines.h \
-    QSIRPushButton.h
+    QSIRPushButton.h \
+    UpdateChecker.h
 
 RESOURCES += \
     ressources.qrc
