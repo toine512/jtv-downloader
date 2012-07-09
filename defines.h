@@ -19,6 +19,12 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-#define G_VERSION "a1.1"
+/* 0x 0A 00 00 00 = alpha
+   0x 0B 00 00 00 = beta
+   0x 0F 00 00 00 = release */
+#define JTV_LIVE_VERSION 0x0A010100 //uint32_t For The Win !
+
+// Human readable version
+#define JTV_LIVE_VERSION_HUMAN "1.1a"
 
 #endif // DEFINES_H

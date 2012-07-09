@@ -23,10 +23,13 @@
 
 #include <QtCore/Qt>
 #include <QSettings>
+#include <QUuid>
 #include <QStringList>
 #include <QProcess>
+#include "JtvLiveChannel.h"
 
 #include <QNetworkAccessManager>
+//#include "UpdateChecker.h"
 
 //#include <QStatusBar>
 #include <QMainWindow>
@@ -51,8 +54,6 @@
 #include <QPixmap>
 #include "QSIRPushButton.h"
 
-#include "JtvLiveChannel.h"
-
 class JtvLiveUiMain : public QMainWindow
 {
     Q_OBJECT
@@ -63,38 +64,38 @@ public:
     ~JtvLiveUiMain();
 
 protected slots:
-    void Page0_searchChannel();
-    void Page0_onMessageChanged(const QString &message);
-    void Page0_onSearchSuccess(QList<JtvLiveStream> *streams);
-    void Page0_onSearchError(const QString &error);
-    void Page0_updateStreamDatas(int index);
-    void Page0_gotoWatchAndStart();
-    void Page1_buildCliFriendly();
-    void Page2_browseFile();
-    void Page2_toggleFileCheck(bool pipe_ckecked);
-    void Page2_togglePipeCheck(bool file_ckecked);
-    void Page2_savePipe(const QString &text);
-    void Page2_startRtmpdump();
-    void Page3_savePlayerPath(const QString &path);
-    void Page3_linkedProcessesStart();
-    void Page3_linkedProcessesError(const QProcess::ProcessError &error);
-    void Page3_linkedProcessesDisconnectTerminate();
-    void Page3_rtmpgwOut();
-    void Page3_playerOut();
-    void Page4_saveIp(const QString &ip);
-    void Page4_savePort(int port);
-    void Page4_startRtmpgw();
+    void Tab0_searchChannel();
+    void Tab0_onMessageChanged(const QString &message);
+    void Tab0_onSearchSuccess(QList<JtvLiveStream> *streams);
+    void Tab0_onSearchError(const QString &error);
+    void Tab0_updateStreamDatas(int index);
+    void Tab0_gotoWatchAndStart();
+    void Tab1_buildCliFriendly();
+    void Tab2_browseFile();
+    void Tab2_toggleFileCheck(bool pipe_ckecked);
+    void Tab2_togglePipeCheck(bool file_ckecked);
+    void Tab2_savePipe(const QString &text);
+    void Tab2_startRtmpdump();
+    void Tab3_savePlayerPath(const QString &path);
+    void Tab3_linkedProcessesStart();
+    void Tab3_linkedProcessesError(const QProcess::ProcessError &error);
+    void Tab3_linkedProcessesDisconnectTerminate();
+    void Tab3_rtmpgwOut();
+    void Tab3_playerOut();
+    void Tab4_saveIp(const QString &ip);
+    void Tab4_savePort(int port);
+    void Tab4_startRtmpgw();
     void aboutQt();
 
 protected:
-    void Page0_lock();
-    void Page0_unlock();
-    void Page0_defaultStats();
-    void Page0_fillStats(const JtvLiveStream &stream);
-    void Page1_defaultParams();
-    void Page1_fillParams(const JtvLiveStream &stream);
-    void Page2_startRtmpdumpFile(const QString &path);
-    void Page3_linkedProcessesTerminate();
+    void Tab0_lock();
+    void Tab0_unlock();
+    void Tab0_defaultStats();
+    void Tab0_fillStats(const JtvLiveStream &stream);
+    void Tab1_defaultParams();
+    void Tab1_fillParams(const JtvLiveStream &stream);
+    void Tab2_startRtmpdumpFile(const QString &path);
+    void Tab3_linkedProcessesTerminate();
     QStringList collectRtmpParams();
 
     //void resizeEvent(QResizeEvent *event);
@@ -102,57 +103,59 @@ protected:
     //UI
     //QStatusBar *ui_bottom_statusBar;
     QTabWidget *ui_widget;
-    QWidget *ui_page0, *ui_page1, *ui_page2, *ui_page3, *ui_page4, *ui_page5;
+    QWidget *ui_tab0, *ui_tab1, *ui_tab2, *ui_tab3, *ui_tab4, *ui_tab5, *ui_tabUpdate;
 
-    //Page 0 : Justin.tv
-    QLabel *ui_page0_chanLabel, *ui_page0_passwdLabel, *ui_page0_parsingInfos, *ui_page0_bitrate, *ui_page0_viewers, *ui_page0_part, *ui_page0_id, *ui_page0_node;
-    QLineEdit *ui_page0_channel, *ui_page0_password;
-    QPushButton *ui_page0_favouriteBtn, *ui_page0_searchBtn, *ui_page0_gotoWatch;
-    QFrame *ui_page0_hSeparator;
-    QComboBox *ui_page0_streamSelector;
-    QHBoxLayout *ui_page0_streamLayout;
-    QGridLayout *ui_page0_searchLayout, *ui_page0_statsLayout;
-    QVBoxLayout *ui_page0_layout;
+    //Tab 0 : Justin.tv
+    QLabel *ui_tab0_chanLabel, *ui_tab0_passwdLabel, *ui_tab0_parsingInfos, *ui_tab0_bitrate, *ui_tab0_viewers, *ui_tab0_part, *ui_tab0_id, *ui_tab0_node;
+    QLineEdit *ui_tab0_channel, *ui_tab0_password;
+    QPushButton *ui_tab0_favouriteBtn, *ui_tab0_searchBtn, *ui_tab0_gotoWatch;
+    QFrame *ui_tab0_hSeparator;
+    QComboBox *ui_tab0_streamSelector;
+    QHBoxLayout *ui_tab0_streamLayout;
+    QGridLayout *ui_tab0_searchLayout, *ui_tab0_statsLayout;
+    QVBoxLayout *ui_tab0_layout;
 
-    //Page 1 : Parameters
-    QLabel *ui_page1_l_rtmp, *ui_page1_l_swf, *ui_page1_l_swfVfy, *ui_page1_l_web, *ui_page1_l_usherToken, *ui_page1_l_cliFriendly;
-    QLineEdit *ui_page1_rtmp, *ui_page1_swf, *ui_page1_swfVfy, *ui_page1_web, *ui_page1_usherToken;
-    QFrame *ui_page1_hSeparator;
-    QPlainTextEdit *ui_page1_cliFriendly;
-    QGridLayout *ui_page1_layout;
+    //Tab 1 : Parameters
+    QLabel *ui_tab1_l_rtmp, *ui_tab1_l_swf, *ui_tab1_l_swfVfy, *ui_tab1_l_web, *ui_tab1_l_usherToken, *ui_tab1_l_cliFriendly;
+    QLineEdit *ui_tab1_rtmp, *ui_tab1_swf, *ui_tab1_swfVfy, *ui_tab1_web, *ui_tab1_usherToken;
+    QFrame *ui_tab1_hSeparator;
+    QPlainTextEdit *ui_tab1_cliFriendly;
+    QGridLayout *ui_tab1_layout;
 
-    //Page 2 : rtmpdump
-    QGroupBox *ui_page2_file_box, *ui_page2_pipe_box, *ui_page2_verbosity_box;
-    QHBoxLayout *ui_page2_file_layout, *ui_page2_pipe_layout, *ui_page2_verbosity_layout;
-    QLineEdit *ui_page2_file, *ui_page2_pipe;
-    QPushButton *ui_page2_file_btn, *ui_page2_start;
-    QRadioButton *ui_page2_verbosity_normal, *ui_page2_verbosity_verbose, *ui_page2_verbosity_debug;
-    QVBoxLayout *ui_page2_layout;
+    //Tab 2 : rtmpdump
+    QGroupBox *ui_tab2_file_box, *ui_tab2_pipe_box, *ui_tab2_verbosity_box;
+    QHBoxLayout *ui_tab2_file_layout, *ui_tab2_pipe_layout, *ui_tab2_verbosity_layout;
+    QLineEdit *ui_tab2_file, *ui_tab2_pipe;
+    QPushButton *ui_tab2_file_btn, *ui_tab2_start;
+    QRadioButton *ui_tab2_verbosity_normal, *ui_tab2_verbosity_verbose, *ui_tab2_verbosity_debug;
+    QVBoxLayout *ui_tab2_layout;
 
-    //Page 3 : Play
-    QHBoxLayout *ui_page3_player_layout;
-    QLabel *ui_page3_player_label;
-    QLineEdit *ui_page3_player;
-    QPushButton *ui_page3_watchBtn;
-    QFrame *ui_page3_hSeparator;
-    QPlainTextEdit *ui_page3_rtmpgwOut, *ui_page3_playerOut;
-    QVBoxLayout *ui_page3_layout;
+    //Tab 3 : Play
+    QHBoxLayout *ui_tab3_player_layout;
+    QLabel *ui_tab3_player_label;
+    QLineEdit *ui_tab3_player;
+    QPushButton *ui_tab3_watchBtn;
+    QFrame *ui_tab3_hSeparator;
+    QPlainTextEdit *ui_tab3_rtmpgwOut, *ui_tab3_playerOut;
+    QVBoxLayout *ui_tab3_layout;
 
-    //Page 4 : rtmpdump
-    QGroupBox *ui_page4_params_box, *ui_page4_verbosity_box;
-    QGridLayout *ui_page4_params_layout;
-    QLineEdit *ui_page4_params_ip;
-    QSpinBox *ui_page4_params_port;
-    QLabel *ui_page4_params_l_ip, *ui_page4_params_l_port, *ui_page4_params_colon;
-    QHBoxLayout *ui_page4_verbosity_layout;
-    QRadioButton *ui_page4_verbosity_normal, *ui_page4_verbosity_verbose, *ui_page4_verbosity_debug;
-    QPushButton *ui_page4_start;
-    QVBoxLayout *ui_page4_layout;
+    //Tab 4 : rtmpdump
+    QGroupBox *ui_tab4_params_box, *ui_tab4_verbosity_box;
+    QGridLayout *ui_tab4_params_layout;
+    QLineEdit *ui_tab4_params_ip;
+    QSpinBox *ui_tab4_params_port;
+    QLabel *ui_tab4_params_l_ip, *ui_tab4_params_l_port, *ui_tab4_params_colon;
+    QHBoxLayout *ui_tab4_verbosity_layout;
+    QRadioButton *ui_tab4_verbosity_normal, *ui_tab4_verbosity_verbose, *ui_tab4_verbosity_debug;
+    QPushButton *ui_tab4_start;
+    QVBoxLayout *ui_tab4_layout;
 
-    //Page 5 : About
-    QLabel *ui_page5_copyrightNotice, *ui_page5_gplv3;
-    QPushButton *ui_page5_aboutQt;
-    QGridLayout *ui_page5_layout;
+    //Tab 5 : About
+    QLabel *ui_tab5_copyrightNotice, *ui_tab5_gplv3;
+    QPushButton *ui_tab5_aboutQt;
+    QGridLayout *ui_tab5_layout;
+
+    //Update Tab
 
     //Core
     QSettings *settings;
