@@ -456,7 +456,7 @@ void JtvLiveUiMain::Tab0_updateStreamDatas(int index)
 
 void JtvLiveUiMain::Tab0_gotoWatchAndStart()
 {
-    ui_widget->setCurrentIndex(1);
+    ui_widget->setCurrentIndex(ui_widget->indexOf(ui_tab3));
     Tab3_linkedProcessesStart();
 }
 
