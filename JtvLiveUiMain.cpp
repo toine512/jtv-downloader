@@ -785,7 +785,7 @@ void JtvLiveUiMain::Tab4_startRtmpgw()
 //Update Tab slots
 void JtvLiveUiMain::TabUpdate_show(const QString &new_version_human, const QString &dl_link)
 {
-    QString notice = QString("Update %1 is available. %2").arg(new_version_human, dl_link);
+    QString notice = QString("Update %1 is available. <a href=\"%2\">%2</a>").arg(new_version_human, dl_link);
     ui_tabUpdate_notice->setText(notice);
     ui_widget->addTab(ui_tabUpdate, QString("A new update is available! (v. %1)").arg(new_version_human));
     //ui_widget->tabBar()->setTabTextColor(ui_widget->indexOf(ui_tabUpdate), QColor(255, 127, 13));
