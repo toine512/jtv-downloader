@@ -210,7 +210,7 @@ QStringList JtvLiveChannel::getRtmpParams() const
     return args;
 }
 
-QString JtvLiveChannel::escape4CLI(QStringList args) const
+QString JtvLiveChannel::escape4CLI(QStringList args)
 {
     args.replaceInStrings("\"", "\\\"");
 #ifndef Q_OS_WIN

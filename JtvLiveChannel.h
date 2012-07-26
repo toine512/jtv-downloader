@@ -74,7 +74,7 @@ public:
     const QString & getStreamNode() const;
     /**************************/
     QStringList getRtmpParams() const;
-    QString escape4CLI(QStringList args) const;
+    static QString escape4CLI(QStringList args);
 
 signals:
     void streamChanged();
