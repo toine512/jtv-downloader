@@ -18,10 +18,10 @@
 
 #include "JtvLiveChannel.h"
 
-#define implementGetOnStream(getSuffix, streamMemeber) \
+#define implementGetOnStream(getSuffix, streamMember) \
 const QString & JtvLiveChannel::getStream##getSuffix() const\
 {\
-    return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? l_streams.at(i_current_stream).streamMemeber : QString();\
+    return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? l_streams.at(i_current_stream).streamMember : QString();\
 }
 
 #define implementSetOnStream(setSuffix, streamMember) \
