@@ -18,97 +18,347 @@
 
 #include "JtvLiveChannel.h"
 
+#define implementGetOnStream(getSuffix, streamMemeber) \
+const QString & JtvLiveChannel::getStream##getSuffix() const\
+{\
+    return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? l_streams.at(i_current_stream).streamMemeber : QString();\
+}
+
+#define implementSetOnStream(setSuffix, streamMember) \
+void JtvLiveChannel::setStream##setSuffix(const QString &param)\
+{\
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())\
+    {\
+        l_streams[i_current_stream].streamMember = param;\
+        emit paramsChanged();\
+    }\
+}
+
 JtvLiveChannel::JtvLiveChannel(QNetworkAccessManager *network_manager, const QString &base_palyer_url, const QString &base_http_referer, QObject *parent) :
     QObject(parent)
 {
-    streams = new QList<JtvLiveStream>;
-    net_manager = network_manager;
-    net_reply = 0;
+    //pl_streams = new QList<JtvLiveStream>;
+    p_net_manager = network_manager;
+    p_net_reply = 0;
+    i_current_stream = -1;
     //Retrieving dynamic player URL
-    http_referer = base_http_referer;
-    player_url = base_palyer_url;
-    QNetworkRequest req = QNetworkRequest(QUrl(player_url));
-    req.setRawHeader("Referer", http_referer.toAscii());
+    qs_http_referer = base_http_referer;
+    qs_player_url = base_palyer_url;
+    QNetworkRequest req = QNetworkRequest(QUrl(qs_player_url));
+    req.setRawHeader("Referer", qs_http_referer.toAscii());
     req.setPriority(QNetworkRequest::HighPriority);
-    player_reply = net_manager->get(req);
-    connect(player_reply, SIGNAL(finished()), this, SLOT(gotPlayerRedirect()));
+    p_player_reply = p_net_manager->get(req);
+    connect(p_player_reply, SIGNAL(finished()), this, SLOT(gotPlayerRedirect()));
 }
 
 void JtvLiveChannel::logMessage(const QString &message)
 {
     if(!message.isEmpty())
     {
-        last_message = message;
+        qs_last_message = message;
         emit messageChanged(message);
     }
 }
 
 const QString & JtvLiveChannel::getLastMessage() const
 {
-    return last_message;
+    return qs_last_message;
 }
 
 const QString & JtvLiveChannel::getHttpReferer() const
 {
-    return http_referer;
+    return qs_http_referer;
 }
 
 const QString & JtvLiveChannel::getPlayerUrl() const
 {
-    return player_url;
+    return qs_player_url;
 }
 
-QList<JtvLiveStream>* JtvLiveChannel::getStreams()
+QStringList JtvLiveChannel::getStreamsDisplayName() const
 {
-    return streams;
+    QStringList list;
+    int streams_size = l_streams.size();
+    for(int i = 0 ; i < streams_size ; i++)
+    {
+        QString name = QString("%1\t\tHeight : %2\t\t").arg(l_streams.at(i).tag_name, l_streams.at(i).height);
+        if(l_streams.at(i).server_type == JtvLiveStream::UsherServer)
+        {
+            name.append("UsherToken");
+        }
+        else if(l_streams.at(i).server_type == JtvLiveStream::AkamaiServer)
+        {
+            name.append("SWF Vfy");
+        }
+        list.append(name);
+    }
+    return list;
+}
+
+/*QList<JtvLiveStream>* JtvLiveChannel::getStreams()
+{
+    return pl_streams;
+}*/
+
+/* Parameters getters/generators */
+implementGetOnStream(Rtmp, rtmp_url)
+implementGetOnStream(Swf, swf)
+implementGetOnStream(SwfVfy, swf_vfy)
+implementGetOnStream(UsherToken, usher_token)
+implementGetOnStream(Web, web)
+/*const QString & JtvLiveChannel::getStreamRtmp() const
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+        return l_streams.at(i_current_stream).rtmp_url;
+    return QString();
+}
+
+const QString & JtvLiveChannel::getStreamSwf() const
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+        return l_streams.at(i_current_stream).swf;
+    return QString();
+}
+
+const QString & JtvLiveChannel::getStreamSwfVfy() const
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+        return l_streams.at(i_current_stream).swf_vfy;
+    return QString();
+}
+
+const QString & JtvLiveChannel::getStreamUsherToken() const
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+        return l_streams.at(i_current_stream).usher_token;
+    return QString();
+}
+
+const QString & JtvLiveChannel::getStreamWeb() const
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+        return l_streams.at(i_current_stream).web;
+    return QString();
+}*/
+/***********************************/
+
+/* Stream stats accessors */
+implementGetOnStream(TagName, tag_name)
+implementGetOnStream(Height, height)
+implementGetOnStream(Bitrate, bitrate)
+implementGetOnStream(Part, part)
+implementGetOnStream(Id, id)
+implementGetOnStream(Viewers, viewers)
+implementGetOnStream(Node, node)
+/*const QString & JtvLiveChannel::getStreamTagName() const
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+        return l_streams.at(i_current_stream).tag_name;
+    return QString();
+}
+
+const QString & JtvLiveChannel::getStreamHeigth() const
+{
+    return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? l_streams.at(i_current_stream).height : QString();
+}
+
+const QString & JtvLiveChannel::getStreamBitrate() const
+{
+    return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? l_streams.at(i_current_stream).bitrate : QString();
+}
+
+const QString & JtvLiveChannel::getStreamPart() const
+{
+    return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? l_streams.at(i_current_stream).part : QString();
+}
+
+const QString & JtvLiveChannel::getStreamId() const
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+        return l_streams.at(i_current_stream).id;
+    return QString();
+}
+
+const QString & JtvLiveChannel::getStreamViewers() const
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+        return l_streams.at(i_current_stream).viewers;
+    return QString();
+}
+
+const QString & JtvLiveChannel::getStreamNode() const
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+        return l_streams.at(i_current_stream).node;
+    return QString();
+}*/
+/**************************/
+
+QStringList JtvLiveChannel::getRtmpParams() const
+{
+    QStringList args;
+    args << "-r";
+    args << getStreamRtmp();
+    args << "-s";
+    args << getStreamSwf();
+    args << "-W";
+    args << getStreamSwfVfy();
+    args << "-p";
+    args << getStreamWeb();
+    args << "-j";
+    args << getStreamUsherToken();
+    return args;
+}
+
+QString JtvLiveChannel::escape4CLI(QStringList args) const
+{
+    args.replaceInStrings("\"", "\\\"");
+#ifndef Q_OS_WIN
+    args.replaceInStrings("&", "\\&"); //& is escaped by backslash under Linux
+#endif
+    int s = args.size();
+    QString temp;
+    for (int i = 0 ; i < s ; ++i)
+    {
+        temp = args.at(i);
+#ifdef Q_OS_WIN
+        if(temp.contains(' ') || temp.contains('&')) //& is escaped by quotes under Windows
+#else
+        if(temp.contains(' '))
+#endif
+        {
+            temp.prepend('"');
+            temp.append('"');
+            args.replace(i, temp);
+        }
+    }
+    return args.join(" ");
 }
 
 void JtvLiveChannel::startSearch(const QString &channel, const QString &password)
 {
-    streams->clear();
-    channel_name = channel;
-    QUrl url(QString("http://usher.justin.tv/find/%1.xml").arg(channel_name));
-    url.addQueryItem("type", "any");
-    url.addQueryItem("p", QString("%1%2%3%4%5%6").arg(qrand() % 10).arg(qrand() % 10).arg(qrand() % 10).arg(qrand() % 10).arg(qrand() % 10).arg(qrand() % 10));
-    url.addQueryItem("group", "");
-    url.addQueryItem("b_id", "true");
-    if(password.isEmpty())
+    if(p_net_reply == 0)
     {
-        url.addQueryItem("private_code", "null");
+        if(channel.isEmpty())
+        {
+            logMessage("Empty parameter: channel");
+            emit channelSearchError("Channel name can't be empty!");
+        }
+        else
+        {
+            i_current_stream = -1;
+            l_streams.clear();
+            qs_channel_name = channel;
+            QUrl url(QString("http://usher.justin.tv/find/%1.xml").arg(qs_channel_name));
+            url.addQueryItem("type", "any");
+            url.addQueryItem("p", QString("%1%2%3%4%5%6").arg(qrand() % 10).arg(qrand() % 10).arg(qrand() % 10).arg(qrand() % 10).arg(qrand() % 10).arg(qrand() % 10));
+            url.addQueryItem("group", "");
+            url.addQueryItem("b_id", "true");
+            if(password.isEmpty())
+            {
+                url.addQueryItem("private_code", "null");
+            }
+            else
+            {
+                url.addQueryItem("private_code", password);
+            }
+            logMessage(url.toString());
+            QNetworkRequest req;
+            req.setUrl(url);
+            logMessage(QString("Downloading: %1").arg(url.toString()));
+            p_net_reply = p_net_manager->get(req);
+            connect(p_net_reply, SIGNAL(finished()), this, SLOT(dlFinished()));
+        }
     }
     else
     {
-        url.addQueryItem("private_code", password);
+        logMessage("Search already running!");
     }
-    logMessage(url.toString());
-    QNetworkRequest req;
-    req.setUrl(url);
-    logMessage(QString("Downloading : %1").arg(url.toString()));
-    net_reply = net_manager->get(req);
-    connect(net_reply, SIGNAL(finished()), this, SLOT(dlFinished()));
 }
+
+void JtvLiveChannel::setCurrentStream(int i)
+{
+    if(i >= 0 && i < l_streams.size())
+    {
+        i_current_stream = i;
+        emit streamChanged();
+        emit paramsChanged();
+    }
+}
+
+/* Parameters setters */
+implementSetOnStream(Rtmp, rtmp_url)
+implementSetOnStream(Swf, swf)
+implementSetOnStream(SwfVfy, swf_vfy)
+implementSetOnStream(UsherToken, usher_token)
+implementSetOnStream(Web, web)
+/*void JtvLiveChannel::setStreamRtmp(const QString &param)
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+    {
+        l_streams[i_current_stream].rtmp_url = param;
+        emit paramsChanged();
+    }
+}
+
+void JtvLiveChannel::setStreamSwf(const QString &param)
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+    {
+        l_streams[i_current_stream].swf = param;
+        emit paramsChanged();
+    }
+}
+
+void JtvLiveChannel::setStreamSwfVfy(const QString &param)
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+    {
+        l_streams[i_current_stream].swf_vfy = param;
+        emit paramsChanged();
+    }
+}
+
+void JtvLiveChannel::setStreamUsherToken(const QString &param)
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+    {
+        l_streams[i_current_stream].usher_token = param;
+        emit paramsChanged();
+    }
+}
+
+void JtvLiveChannel::setStreamWeb(const QString &param)
+{
+    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
+    {
+        l_streams[i_current_stream].web = param;
+        emit paramsChanged();
+    }
+}*/
+/**********************/
 
 void JtvLiveChannel::gotPlayerRedirect()
 {
-    disconnect(player_reply, SIGNAL(finished()), this, SLOT(gotPlayerRedirect()));
-    QVariant loc = player_reply->header(QNetworkRequest::LocationHeader);
+    disconnect(p_player_reply, SIGNAL(finished()), this, SLOT(gotPlayerRedirect()));
+    QVariant loc = p_player_reply->header(QNetworkRequest::LocationHeader);
     if(loc.isValid())
     {
-        player_url = loc.toString();
+        qs_player_url = loc.toString();
     }
-    player_reply->deleteLater();
-    player_reply = 0;
+    p_player_reply->deleteLater();
+    p_player_reply = 0;
 }
 
 void JtvLiveChannel::dlFinished()
 {
-    disconnect(net_reply, SIGNAL(finished()), this, SLOT(dlFinished()));
-    QNetworkReply::NetworkError error = net_reply->error();
+    disconnect(p_net_reply, SIGNAL(finished()), this, SLOT(dlFinished()));
+    QNetworkReply::NetworkError error = p_net_reply->error();
     if(error == QNetworkReply::NoError)
     {
         logMessage("Download finished without error");
-        logMessage("Now, parsing this nice XML ...");
-        parseXml(net_reply->readAll());
+        logMessage("Now, parsing this nice XML...");
+        parseXml(p_net_reply->readAll());
     }
     //TODO : Implement error cases from QNetworkReply::NetworkError
     else
@@ -117,8 +367,8 @@ void JtvLiveChannel::dlFinished()
         //logMessage("Emitting channelSearchError(QString)");
         emit channelSearchError("Network error");
     }
-    net_reply->deleteLater();
-    net_reply = 0;
+    p_net_reply->deleteLater();
+    p_net_reply = 0;
 }
 
 void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
@@ -136,7 +386,7 @@ void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
             for(QDomNode stream = nodes.firstChild() ; !stream.isNull() ; stream = stream.nextSibling())
             {
                 JtvLiveStream live_stream;
-                live_stream.channel_name = channel_name;
+                //live_stream.channel_name = qs_channel_name;
                 QDomElement t = stream.toElement();
                 logMessage(QString("Found <%1> node ...").arg(t.tagName()));
                 live_stream.tag_name = t.tagName();
@@ -189,13 +439,17 @@ void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
                                                     if(v.toLower() == "akamai")
                                                     {
                                                         live_stream.server_type = JtvLiveStream::AkamaiServer;
+                                                        live_stream.swf_vfy = qs_player_url;
                                                     }
                                                     else
                                                     {
                                                         live_stream.server_type = JtvLiveStream::UsherServer;
+                                                        live_stream.swf_vfy = QString();
                                                     }
+                                                    live_stream.swf = qs_player_url;
+                                                    live_stream.web = QString(qs_http_referer).append(qs_channel_name);
                                                     //Adding the live_stream struct in streams QList, parsing stream node finished
-                                                    streams->append(live_stream);
+                                                    l_streams.append(live_stream);
                                                 }
                                                 else
                                                 {
@@ -252,15 +506,15 @@ void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
                 }
             }
             //If the list is empty, there was no valid stream node
-            if(streams->isEmpty())
+            if(l_streams.isEmpty())
             {
-                logMessage("The stream list is empty !");
+                logMessage("The stream list is empty: Jtv XML is broken or this class is outdated!");
                 emit channelSearchError("There was no valid stream node");
             }
             else
             {
-                logMessage(QString("%1 stream(s) in list, parsing finished.").arg(streams->size()));
-                emit channelSearchSuccess(streams);
+                logMessage(QString("%1 stream(s) in list, parsing finished.").arg(l_streams.size()));
+                emit channelSearchSuccess(getStreamsDisplayName());
             }
         }
         else
@@ -271,12 +525,12 @@ void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
     }
     else
     {
-        logMessage("Failed to parse datas as DOM tree !");
+        logMessage("Failed to parse datas as DOM tree!");
         emit channelSearchError("Failed to parse datas as DOM tree");
     }
 }
 
 JtvLiveChannel::~JtvLiveChannel()
 {
-    delete streams;
+    //delete pl_streams;
 }

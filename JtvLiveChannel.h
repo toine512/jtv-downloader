@@ -24,6 +24,7 @@
 #include <QString>
 #include <QUrl>
 #include <QList>
+#include <QStringList>
 #include <QByteArray>
 #include <QRegExp>
 
@@ -39,7 +40,8 @@ class JtvLiveStream
 {
 public:
     enum JtvServerType {UsherServer, AkamaiServer};
-    QString channel_name, tag_name, height, rtmp_url, usher_token, bitrate, part, id, viewers, node;
+    //FIXME : remove channel_name
+    QString channel_name, swf, swf_vfy, web, tag_name, height, rtmp_url, usher_token, bitrate, part, id, viewers, node;
     JtvServerType server_type;
 };
 
@@ -53,13 +55,44 @@ public:
     const QString & getLastMessage() const;
     const QString & getHttpReferer() const;
     const QString & getPlayerUrl() const;
-    QList<JtvLiveStream>* getStreams();
-    void startSearch(const QString &channel, const QString &password);
+    //QList<JtvLiveStream> * getStreams();
+    QStringList getStreamsDisplayName() const;
+    /* Parameters getters/generators */
+    const QString & getStreamRtmp() const;
+    const QString & getStreamSwf() const;
+    const QString & getStreamSwfVfy() const;
+    const QString & getStreamUsherToken() const;
+    const QString & getStreamWeb() const;
+    /***********************************/
+    /* Stream stats accessors */
+    const QString & getStreamTagName() const;
+    const QString & getStreamHeight() const;
+    const QString & getStreamBitrate() const;
+    const QString & getStreamPart() const;
+    const QString & getStreamId() const;
+    const QString & getStreamViewers() const;
+    const QString & getStreamNode() const;
+    /**************************/
+    QStringList getRtmpParams() const;
+    QString escape4CLI(QStringList args) const;
 
 signals:
+    void streamChanged();
+    void paramsChanged();
     void messageChanged(const QString &);
     void channelSearchError(const QString &);
-    void channelSearchSuccess(QList<JtvLiveStream> *);
+    void channelSearchSuccess(QStringList);
+
+public slots:
+    void startSearch(const QString &channel, const QString &password);
+    void setCurrentStream(int i);
+    /* Parameters setters */
+    void setStreamRtmp(const QString &param);
+    void setStreamSwf(const QString &param);
+    void setStreamSwfVfy(const QString &param);
+    void setStreamUsherToken(const QString &param);
+    void setStreamWeb(const QString &param);
+    /**********************/
 
 protected slots:
     void gotPlayerRedirect();
@@ -69,10 +102,11 @@ protected:
     void logMessage(const QString &message);
     void parseXml(const QByteArray &raw_datas);
 
-    QString channel_name, player_url, http_referer, last_message;
-    QList<JtvLiveStream> *streams;
-    QNetworkAccessManager *net_manager;
-    QNetworkReply *net_reply, *player_reply;
+    QString qs_channel_name, qs_player_url, qs_http_referer, qs_last_message;
+    QList<JtvLiveStream> l_streams;
+    int i_current_stream;
+    QNetworkAccessManager *p_net_manager;
+    QNetworkReply *p_net_reply, *p_player_reply;
 };
 
 #endif // JTVLIVECHANNEL_H
