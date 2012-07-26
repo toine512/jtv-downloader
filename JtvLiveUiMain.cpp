@@ -23,7 +23,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 {
     /* Core */
     //QSettings setup
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
     settings = new QSettings("jtvdl.conf", QSettings::IniFormat, this);
 #else
     settings = new QSettings("$HOME/.config/jtv-downloader/jtvdl.conf", QSettings::IniFormat, this);
@@ -53,9 +53,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     linkedProcess_player->setProcessChannelMode(QProcess::MergedChannels);
 
     //Core connections
-    connect(live_channel, SIGNAL(messageChanged(const QString &)), this, SLOT(Tab0_onMessageChanged(const QString &)));
-    connect(live_channel, SIGNAL(channelSearchSuccess(QList<JtvLiveStream> *)), this, SLOT(Tab0_onSearchSuccess(QList<JtvLiveStream> *)));
-    connect(live_channel, SIGNAL(channelSearchError(const QString &)), this, SLOT(Tab0_onSearchError(const QString &)));
+
 
     /* GUI */
     setWindowTitle("Justin.tv live downloader");
@@ -77,108 +75,9 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     ui_widget = new QTabWidget;
 
         //Tab 0 : Justin.tv
-        ui_tab0 = new QWidget;
-
-        //ui_tab0_chanLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        ui_tab0_channel = new QLineEdit;
-        ui_tab0_chanLabel = new QLabel("Channel name :");
-        ui_tab0_chanLabel->setBuddy(ui_tab0_channel);
-        ui_tab0_favouriteBtn = new QPushButton("F");
-        ui_tab0_favouriteBtn->setToolTip("favourite: TODO");
-        ui_tab0_favouriteBtn->setDisabled(true);
-        //ui_tab0_favouriteBtn->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        ui_tab0_password = new QLineEdit;
-        ui_tab0_passwdLabel = new QLabel("Channel password :");
-        ui_tab0_passwdLabel->setBuddy(ui_tab0_password);
-        ui_tab0_searchBtn = new QSIRPushButton(":img/zoom.png");
-        //ui_tab0_searchBtn->resize(10, 10);
-        //ui_tab0_searchBtn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::QSizePolicy::Preferred);
-        //ui_tab0_searchBtn->setFixedSize(100, 100);
-        /*ui_tab0_searchBtn->setIcon(QIcon(":img/zoom.png"));
-        ui_tab0_searchBtn->setToolTip("Search the channel");*/
+    ui_tab0 = new JtvLiveUiTabJustin_tv(live_channel);
 
 
-
-        ui_tab0_parsingInfos = new QLabel("First, type the channel name in the field above and the password if any.");
-        ui_tab0_parsingInfos->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        ui_tab0_hSeparator = new QFrame;
-        ui_tab0_hSeparator->setFrameShape(QFrame::HLine);
-        ui_tab0_hSeparator->setFrameShadow(QFrame::Sunken);
-        ui_tab0_streamSelector = new QComboBox;
-        ui_tab0_streamSelector->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-        ui_tab0_streamSelector->setDisabled(true);
-        ui_tab0_gotoWatch = new QPushButton;
-        ui_tab0_gotoWatch->setIcon(QIcon(":img/television.png"));
-        ui_tab0_gotoWatch->setToolTip("Watch this stream");
-        ui_tab0_gotoWatch->setDisabled(true);
-        ui_tab0_bitrate = new QLabel;
-        ui_tab0_bitrate->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        ui_tab0_viewers = new QLabel;
-        ui_tab0_viewers->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        ui_tab0_part = new QLabel;
-        ui_tab0_part->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        ui_tab0_id = new QLabel;
-        ui_tab0_id->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        ui_tab0_node = new QLabel;
-        ui_tab0_node->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        Tab0_defaultStats();
-        //Layouts
-        /*ui_tab0_nameFieldLayout = new QHBoxLayout;
-        ui_tab0_nameFieldLayout->addWidget(ui_tab0_channel);
-        ui_tab0_nameFieldLayout->addWidget(ui_tab0_favouriteBtn);
-        ui_tab0_formLayout = new QFormLayout;
-        ui_tab0_formLayout->addRow("Channel name :", ui_tab0_nameFieldLayout);
-        ui_tab0_formLayout->addRow("Channel password :", ui_tab0_password);
-        ui_tab0_searchLayout = new QHBoxLayout;
-        ui_tab0_searchLayout->addLayout(ui_tab0_formLayout);
-        ui_tab0_searchLayout->addWidget(ui_tab0_searchBtn);*/
-
-        /*ui_tab0_searchLayout = new QHBoxLayout;
-        ui_tab0_searchLayout->addWidget(ui_tab0_chanName);
-        ui_tab0_searchLayout->addWidget(ui_tab0_channel);
-        ui_tab0_searchLayout->addWidget(ui_tab0_searchBtn);
-        ui_tab0_passwdLayout = new QHBoxLayout;
-        ui_tab0_passwdLayout->addWidget(ui_tab0_chanPass);
-        ui_tab0_passwdLayout->addWidget(ui_tab0_password);*/
-
-        ui_tab0_searchLayout = new QGridLayout;
-        ui_tab0_searchLayout->addWidget(ui_tab0_chanLabel, 0, 0);
-        ui_tab0_searchLayout->addWidget(ui_tab0_channel, 0, 1);
-        ui_tab0_searchLayout->addWidget(ui_tab0_favouriteBtn, 0, 2);
-        ui_tab0_searchLayout->addWidget(ui_tab0_passwdLabel, 1, 0);
-        ui_tab0_searchLayout->addWidget(ui_tab0_password, 1, 1, 1, 2);
-        ui_tab0_searchLayout->addWidget(ui_tab0_searchBtn, 0, 3, 2, 1);
-
-        ui_tab0_streamLayout = new QHBoxLayout;
-        ui_tab0_streamLayout->addWidget(ui_tab0_streamSelector);
-        ui_tab0_streamLayout->addWidget(ui_tab0_gotoWatch);
-
-        ui_tab0_statsLayout = new QGridLayout;
-        ui_tab0_statsLayout->addWidget(ui_tab0_bitrate, 0, 0);
-        ui_tab0_statsLayout->addWidget(ui_tab0_viewers, 0, 1);
-        ui_tab0_statsLayout->addWidget(ui_tab0_part, 0, 2);
-        ui_tab0_statsLayout->addWidget(ui_tab0_id, 1, 0);
-        ui_tab0_statsLayout->addWidget(ui_tab0_node, 1, 1);
-
-        ui_tab0_layout = new QVBoxLayout();
-        ui_tab0_layout->addLayout(ui_tab0_searchLayout);
-        ui_tab0_layout->addWidget(ui_tab0_parsingInfos);
-        ui_tab0_layout->addWidget(ui_tab0_hSeparator);
-        ui_tab0_layout->addLayout(ui_tab0_streamLayout);
-        ui_tab0_layout->addLayout(ui_tab0_statsLayout);
-        //////////////////////////////////
-        /*ui_tab0_statsLayout = new QGridLayout;
-        ui_tab0_layout->addLayout(ui_tab0_searchLayout, 1, 0, 1, 3);
-        //ui_tab0_layout->addLayout(ui_tab0_passwdLayout, 1, 0, 1, 3);
-        ui_tab0_layout->addWidget(ui_tab0_parsingInfos, 2, 0, 1, 3);
-        ui_tab0_layout->addWidget(ui_tab0_hSeparator, 3, 0, 1, 3);
-        ui_tab0_layout->addLayout(ui_tab0_streamLayout, 4, 0, 1, 3);
-        ui_tab0_statsLayout->addWidget(ui_tab0_bitrate, 5, 0);
-        ui_tab0_statsLayout->addWidget(ui_tab0_viewers, 5, 1);
-        ui_tab0_statsLayout->addWidget(ui_tab0_part, 5, 2);
-        ui_tab0_statsLayout->addWidget(ui_tab0_id, 6, 0);
-        ui_tab0_statsLayout->addWidget(ui_tab0_node, 6, 1);*/
-        ui_tab0->setLayout(ui_tab0_layout);
 
         //Tab 1 : Parameters
         ui_tab1 = new QWidget;
@@ -262,7 +161,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         //Tab 3 : Watch
         ui_tab3 = new QWidget;
         ui_tab3_player = new QLineEdit;
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
         ui_tab3_player_label = new QLabel("Player path :");
         ui_tab3_player->setText(settings->value("watch/player", "%programfiles%\\VideoLAN\\VLC\\vlc.exe").toString());
 #else
@@ -361,11 +260,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     ui_widget->addTab(ui_tab5, "About");
 
     //Central signals/slots
-    connect(ui_tab0_channel, SIGNAL(returnPressed()), this, SLOT(Tab0_searchChannel()));
-    connect(ui_tab0_password, SIGNAL(returnPressed()), this, SLOT(Tab0_searchChannel()));
-    connect(ui_tab0_searchBtn, SIGNAL(clicked()), this, SLOT(Tab0_searchChannel()));
-    connect(ui_tab0_streamSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(Tab0_updateStreamDatas(int)));
-    connect(ui_tab0_gotoWatch, SIGNAL(clicked()), this, SLOT(Tab0_gotoWatchAndStart()));
+
     connect(ui_tab1_rtmp, SIGNAL(textEdited(QString)), this, SLOT(Tab1_buildCliFriendly()));
     connect(ui_tab1_swf, SIGNAL(textEdited(QString)), this, SLOT(Tab1_buildCliFriendly()));
     connect(ui_tab1_swfVfy, SIGNAL(textEdited(QString)), this, SLOT(Tab1_buildCliFriendly()));
@@ -390,108 +285,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     setCentralWidget(ui_widget);
 }
 
-//Tab 0 slots
-void JtvLiveUiMain::Tab0_searchChannel()
-{
-    if(ui_tab0_channel->text().isEmpty())
-    {
-        QMessageBox::information(this, "Search live channel", "Empty channel name field");
-    }
-    else
-    {
-        Tab0_defaultStats();
-        Tab0_lock();
-        ui_tab0_streamSelector->setDisabled(true);
-        ui_tab0_streamSelector->clear();
-        ui_tab0_gotoWatch->setDisabled(true);
-        Tab1_defaultParams();
-        live_channel->startSearch(ui_tab0_channel->text(), ui_tab0_password->text());
-    }
-}
 
-void JtvLiveUiMain::Tab0_onMessageChanged(const QString &message)
-{
-    ui_tab0_parsingInfos->setText(message);
-}
-
-void JtvLiveUiMain::Tab0_onSearchSuccess(QList<JtvLiveStream> *streams)
-{
-    int s = streams->size();
-    for(int i = 0 ; i < s ; i++)
-    {
-        QString name = QString("%1\t\tHeight : %2\t\t").arg(streams->at(i).tag_name, streams->at(i).height);
-        if(streams->at(i).server_type == JtvLiveStream::UsherServer)
-        {
-            name.append("UsherToken");
-        }
-        else if(streams->at(i).server_type == JtvLiveStream::AkamaiServer)
-        {
-            name.append("SWF Vfy");
-        }
-        ui_tab0_streamSelector->addItem(name);
-    }
-    ui_tab0_streamSelector->setCurrentIndex(0); //Will call Tab0_updateStreamDatas(int) [slot]
-    ui_tab0_streamSelector->setEnabled(true);
-    ui_tab0_gotoWatch->setEnabled(true);
-    Tab0_unlock();
-}
-
-void JtvLiveUiMain::Tab0_onSearchError(const QString &error)
-{
-    QMessageBox::warning(this, "Search live channel", QString("An error occured : %1").arg(error));
-    Tab0_unlock();
-}
-
-void JtvLiveUiMain::Tab0_updateStreamDatas(int index)
-{
-    Tab0_defaultStats();
-    Tab1_defaultParams();
-    if(index >= 0) //Avoiding crash when the QComboBox is cleared
-    {
-        const JtvLiveStream &stream = live_channel->getStreams()->at(index);
-        Tab0_fillStats(stream);
-        Tab1_fillParams(stream);
-    }
-}
-
-void JtvLiveUiMain::Tab0_gotoWatchAndStart()
-{
-    ui_widget->setCurrentIndex(ui_widget->indexOf(ui_tab3));
-    Tab3_linkedProcessesStart();
-}
-
-//Tab 0 protected
-void JtvLiveUiMain::Tab0_lock()
-{
-    ui_tab0_channel->setDisabled(true);
-    ui_tab0_searchBtn->setDisabled(true);
-    ui_tab0_password->setDisabled(true);
-}
-
-void JtvLiveUiMain::Tab0_unlock()
-{
-    ui_tab0_channel->setEnabled(true);
-    ui_tab0_searchBtn->setEnabled(true);
-    ui_tab0_password->setEnabled(true);
-}
-
-void JtvLiveUiMain::Tab0_defaultStats()
-{
-    ui_tab0_bitrate->setText("bitrate : n/a");
-    ui_tab0_viewers->setText("viewers : n/a");
-    ui_tab0_part->setText("part : n/a");
-    ui_tab0_id->setText("id : n/a");
-    ui_tab0_node->setText("node : n/a");
-}
-
-void JtvLiveUiMain::Tab0_fillStats(const JtvLiveStream &stream)
-{
-    ui_tab0_bitrate->setText(QString("bitrate : ").append(stream.bitrate));
-    ui_tab0_viewers->setText(QString("viewers : ").append(stream.viewers));
-    ui_tab0_part->setText(QString("part : ").append(stream.part));
-    ui_tab0_id->setText(QString("id : ").append(stream.id));
-    ui_tab0_node->setText(QString("node : ").append(stream.node));
-}
 
 //Tab 1 slot
 void JtvLiveUiMain::Tab1_buildCliFriendly()
@@ -593,7 +387,7 @@ void JtvLiveUiMain::Tab2_startRtmpdump()
                 }
                 args << "-o";
                 args << ui_tab2_file->text();
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
                 if(!QProcess::startDetached(settings->value("rtmpdump/rtmpdump", "rtmpdump.exe").toString(), args))
 #else
                 if(!QProcess::startDetached(settings->value("terminal/terminal", "xterm").toString(), QStringList() << settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2").arg(settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), getCommandEscaped(args).replace("&", "\\&")))) //"&" is meaningful under Linux ;) -> replace("&", "\\&")
@@ -612,7 +406,7 @@ void JtvLiveUiMain::Tab2_startRtmpdump()
             else
             {
                 args << "-q";
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
                 if(!QProcess::startDetached(QString("cmd.exe /c \"%1 %2 | %3\"").arg(settings->value("rtmpdump/rtmpdump", "rtmpdump.exe").toString(), getCommandEscaped(args).replace("\\\"", "\"\"\""), ui_tab2_pipe->text()))) //epic Windows crap ! -> replace("\\\"", "\"\"\"")
 #else
                 if(!QProcess::startDetached(settings->value("terminal/terminal", "xterm").toString(), QStringList() << settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2 | %3").arg(settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), getCommandEscaped(args).replace("&", "\\&"), ui_tab2_pipe->text()))) //"&" is meaningful under Linux ;) -> replace("&", "\\&")
@@ -633,12 +427,14 @@ void JtvLiveUiMain::Tab3_savePlayerPath(const QString &path)
 
 void JtvLiveUiMain::Tab3_linkedProcessesStart()
 {
-    ui_tab0_gotoWatch->setDisabled(true);
+    //FIXME
+    //ui_tab0_gotoWatch->setDisabled(true);
     ui_tab3_watchBtn->setDisabled(true);
     if(ui_tab3_player->text().isEmpty())
     {
         QMessageBox::warning(this, "Player", "No player path/command provided.");
-        ui_tab0_gotoWatch->setEnabled(true);
+        //FIXME
+        //ui_tab0_gotoWatch->setEnabled(true);
         ui_tab3_watchBtn->setEnabled(true);
     }
     else
@@ -647,7 +443,8 @@ void JtvLiveUiMain::Tab3_linkedProcessesStart()
         if(args.isEmpty())
         {
             QMessageBox::warning(this, "Parameters", "RTMP parameters are empty.");
-            ui_tab0_gotoWatch->setEnabled(true);
+            //FIXME
+            //ui_tab0_gotoWatch->setEnabled(true);
             ui_tab3_watchBtn->setEnabled(true);
         }
         else
@@ -662,7 +459,7 @@ void JtvLiveUiMain::Tab3_linkedProcessesStart()
             connect(linkedProcess_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Tab3_linkedProcessesError(const QProcess::ProcessError &)));
             connect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Tab3_linkedProcessesDisconnectTerminate()));
             connect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Tab3_linkedProcessesDisconnectTerminate()));
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
             linkedProcess_rtmpgw->start(settings->value("watch/rtmpgw", "rtmpgw.exe").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
 #else
             linkedProcess_rtmpgw->start(settings->value("watch/rtmpgw", "rtmpgw").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
@@ -719,13 +516,14 @@ void JtvLiveUiMain::Tab3_playerOut()
 //Tab 3 protected
 void JtvLiveUiMain::Tab3_linkedProcessesTerminate()
 {
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
     linkedProcess_rtmpgw->kill();
 #else
     linkedProcess_rtmpgw->terminate();
 #endif
     linkedProcess_player->terminate();
-    ui_tab0_gotoWatch->setEnabled(true);
+    //FIXME
+    //ui_tab0_gotoWatch->setEnabled(true);
     ui_tab3_watchBtn->setEnabled(true);
 }
 
@@ -770,7 +568,7 @@ void JtvLiveUiMain::Tab4_startRtmpgw()
             {
                 args << "-z";
             }
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
             if(!QProcess::startDetached(settings->value("rtmpgw/rtmpgw", "rtmpgw.exe").toString(), args))
 #else
             if(!QProcess::startDetached(settings->value("terminal/terminal", "xterm").toString(), QStringList() << settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2").arg(settings->value("rtmpgw/rtmpgw", "rtmpgw").toString(), getCommandEscaped(args).replace("&", "\\&"))))

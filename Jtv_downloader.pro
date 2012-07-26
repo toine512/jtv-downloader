@@ -14,13 +14,15 @@ SOURCES += main.cpp\
         JtvLiveUiMain.cpp \
     JtvLiveChannel.cpp \
     QSIRPushButton.cpp \
-    UpdateChecker.cpp
+    UpdateChecker.cpp \
+    JtvLiveUiTabJustin_tv.cpp
 
 HEADERS  += JtvLiveUiMain.h \
     JtvLiveChannel.h \
     defines.h \
     QSIRPushButton.h \
-    UpdateChecker.h
+    UpdateChecker.h \
+    JtvLiveUiTabJustin_tv.h
 
 RESOURCES += \
     ressources.qrc

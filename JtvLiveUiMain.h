@@ -52,7 +52,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPixmap>
-#include "QSIRPushButton.h"
+#include "JtvLiveUiTabJustin_tv.h"
 
 class JtvLiveUiMain : public QMainWindow
 {
@@ -64,12 +64,7 @@ public:
     ~JtvLiveUiMain();
 
 protected slots:
-    void Tab0_searchChannel();
-    void Tab0_onMessageChanged(const QString &message);
-    void Tab0_onSearchSuccess(QList<JtvLiveStream> *streams);
-    void Tab0_onSearchError(const QString &error);
-    void Tab0_updateStreamDatas(int index);
-    void Tab0_gotoWatchAndStart();
+
     void Tab1_buildCliFriendly();
     void Tab2_browseFile();
     void Tab2_toggleFileCheck(bool pipe_ckecked);
@@ -89,10 +84,7 @@ protected slots:
     void aboutQt();
 
 protected:
-    void Tab0_lock();
-    void Tab0_unlock();
-    void Tab0_defaultStats();
-    void Tab0_fillStats(const JtvLiveStream &stream);
+
     void Tab1_defaultParams();
     void Tab1_fillParams(const JtvLiveStream &stream);
     void Tab2_startRtmpdumpFile(const QString &path);
@@ -102,17 +94,9 @@ protected:
     //UI
     //QStatusBar *ui_bottom_statusBar;
     QTabWidget *ui_widget;
-    QWidget *ui_tab0, *ui_tab1, *ui_tab2, *ui_tab3, *ui_tab4, *ui_tab5, *ui_tabUpdate;
+    QWidget *ui_tab1, *ui_tab2, *ui_tab3, *ui_tab4, *ui_tab5, *ui_tabUpdate;
 
-    //Tab 0 : Justin.tv
-    QLabel *ui_tab0_chanLabel, *ui_tab0_passwdLabel, *ui_tab0_parsingInfos, *ui_tab0_bitrate, *ui_tab0_viewers, *ui_tab0_part, *ui_tab0_id, *ui_tab0_node;
-    QLineEdit *ui_tab0_channel, *ui_tab0_password;
-    QPushButton *ui_tab0_favouriteBtn, *ui_tab0_searchBtn, *ui_tab0_gotoWatch;
-    QFrame *ui_tab0_hSeparator;
-    QComboBox *ui_tab0_streamSelector;
-    QHBoxLayout *ui_tab0_streamLayout;
-    QGridLayout *ui_tab0_searchLayout, *ui_tab0_statsLayout;
-    QVBoxLayout *ui_tab0_layout;
+    JtvLiveUiTabJustin_tv *ui_tab0;
 
     //Tab 1 : Parameters
     QLabel *ui_tab1_l_rtmp, *ui_tab1_l_swf, *ui_tab1_l_swfVfy, *ui_tab1_l_web, *ui_tab1_l_usherToken, *ui_tab1_l_cliFriendly;
