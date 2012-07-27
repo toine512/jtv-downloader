@@ -52,7 +52,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 
 
     /* GUI */
-    setWindowTitle("Justin.tv live downloader");
+    setWindowTitle("Justin.tv/Twitch.tv live downloader");
 
     layout()->setSizeConstraint(QLayout::SetNoConstraint); //the main layout won't resize the QMainWindow
     resize(496, 270);
