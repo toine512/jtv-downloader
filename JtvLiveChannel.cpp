@@ -247,7 +247,7 @@ QString JtvLiveChannel::escape4CLI(QStringList args)
     {
         temp = args.at(i);
 #ifdef Q_OS_WIN
-        if(temp.contains(' ') || temp.contains('&')) //& is escaped by quotes under Windows
+        if(temp.contains(' ') || temp.contains('&')) //surrounding & by quotes in enough under Windows
 #else
         if(temp.contains(' '))
 #endif
@@ -402,6 +402,7 @@ void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
     //Workaround for invalid Jtv XML !
     clean_datas.replace(QRegExp("<(\\d+p)>"), "<live-\\1>");
     clean_datas.replace(QRegExp("</(\\d+p)>"), "</live-\\1>");
+    qDebug() << clean_datas;
     QDomDocument dom;
     if(dom.setContent(clean_datas))
     {
@@ -451,83 +452,76 @@ void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
                                         {
                                             live_stream.id = n.toElement().text().trimmed();
                                             //<viewer_count>
+                                            //NOTE: ams01 cluster doesn't provide viewer_count [2707/2012]
                                             QDomNode n = t.elementsByTagName("viewer_count").item(0);
-                                            if(!n.isNull())
+                                            if(n.isNull())
+                                            {
+                                                live_stream.viewers = QString("unknown");
+                                            }
+                                            else
                                             {
                                                 live_stream.viewers = n.toElement().text().trimmed();
-                                                //<node> -> server_type
-                                                QDomNode n = t.elementsByTagName("node").item(0);
-                                                if(!n.isNull())
+                                            }
+                                            //<node> -> server_type
+                                            QDomNode n = t.elementsByTagName("node").item(0);
+                                            if(!n.isNull())
+                                            {
+                                                QString v = n.toElement().text().trimmed();
+                                                live_stream.node = v;
+                                                if(v.toLower() == "akamai")
                                                 {
-                                                    QString v = n.toElement().text().trimmed();
-                                                    live_stream.node = v;
-                                                    if(v.toLower() == "akamai")
-                                                    {
-                                                        live_stream.server_type = JtvLiveStream::AkamaiServer;
-                                                        live_stream.swf_vfy = qs_player_url;
-                                                    }
-                                                    else
-                                                    {
-                                                        live_stream.server_type = JtvLiveStream::UsherServer;
-                                                        live_stream.swf_vfy = QString();
-                                                    }
-                                                    live_stream.swf = qs_player_url;
-                                                    live_stream.web = QString(qs_http_referer).append(qs_channel_name);
-                                                    //Adding the live_stream struct in streams QList, parsing stream node finished
-                                                    l_streams.append(live_stream);
+                                                    live_stream.server_type = JtvLiveStream::AkamaiServer;
+                                                    live_stream.swf_vfy = qs_player_url;
                                                 }
                                                 else
                                                 {
-                                                    logMessage("");
-                                                    emit channelSearchError("");
+                                                    live_stream.server_type = JtvLiveStream::UsherServer;
+                                                    live_stream.swf_vfy = QString();
                                                 }
-                                             }
+                                                live_stream.swf = qs_player_url;
+                                                live_stream.web = QString(qs_http_referer).append(qs_channel_name);
+                                                //Adding the live_stream struct in streams QList, parsing stream node finished
+                                                l_streams.append(live_stream);
+                                            }
                                             else
                                             {
-                                                logMessage("");
-                                                emit channelSearchError("");
+                                                emit channelSearchError("8");
                                             }
+
                                         }
                                         else
                                         {
-                                            logMessage("");
-                                            emit channelSearchError("");
+                                            emit channelSearchError("7");
                                         }
                                     }
                                     else
                                     {
-                                        logMessage("");
-                                        emit channelSearchError("");
+                                        emit channelSearchError("6");
                                     }
                                 }
                                 else
                                 {
-                                    logMessage("");
-                                    emit channelSearchError("");
+                                    emit channelSearchError("5");
                                 }
                             }
                             else
                             {
-                                logMessage("");
-                                emit channelSearchError("");
+                                emit channelSearchError("4");
                             }
                         }
                         else
                         {
-                            logMessage("");
-                            emit channelSearchError("");
+                            emit channelSearchError("3");
                         }
                     }
                     else
                     {
-                        logMessage("");
-                        emit channelSearchError("");
+                        emit channelSearchError("2");
                     }
                 }
                 else
                 {
-                    logMessage("");
-                    emit channelSearchError("");
+                    emit channelSearchError("1");
                 }
             }
             //If the list is empty, there was no valid stream node
