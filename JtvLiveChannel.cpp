@@ -21,13 +21,13 @@
 #define implementGetOnStream(getSuffix, streamMember) \
 QString JtvLiveChannel::getStream##getSuffix() const\
 {\
-    return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? l_streams.at(i_current_stream).streamMember : QString();\
+    return (isReady()) ? l_streams.at(i_current_stream).streamMember : QString();\
 }
 
 #define implementSetOnStream(setSuffix, streamMember) \
 void JtvLiveChannel::setStream##setSuffix(const QString &param)\
 {\
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())\
+    if(isReady())\
     {\
         l_streams[i_current_stream].streamMember = param;\
         emit paramsChanged();\
@@ -51,7 +51,7 @@ JtvLiveChannel::JtvLiveChannel(QNetworkAccessManager *network_manager, const QSt
     connect(p_player_reply, SIGNAL(finished()), this, SLOT(gotPlayerRedirect()));
 }
 
-bool JtvLiveChannel::isReady()
+bool JtvLiveChannel::isReady() const
 {
     return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? true : false;
 }
