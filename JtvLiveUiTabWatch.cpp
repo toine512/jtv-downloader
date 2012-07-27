@@ -63,32 +63,38 @@ void JtvLiveUiTabWatch::settingsSetPlayerPath(const QString &path)
 
 void JtvLiveUiTabWatch::linkedProcessesStart()
 {
-    emit askBtn_watchDisable();
-    btn_watch->setDisabled(true);
+
     if(lne_player->text().isEmpty())
     {
         QMessageBox::warning(this, "Player", "No player path/command provided.");
-        emit askBtn_watchEnable();
-        btn_watch->setEnabled(true);
     }
     else
     {
-        QStringList args = p_live_channel->getRtmpParams();
-        args << "-g";
-        args << p_settings->value("watch/port", "21080").toString();
-        args << "-f";
-        args << p_settings->value("flash/version", "WIN 11,1,102,62").toString();
-        connect(qproc_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(linkedProcessesError(const QProcess::ProcessError &)));
-        connect(qproc_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(linkedProcessesError(const QProcess::ProcessError &)));
-        connect(qproc_rtmpgw, SIGNAL(finished(int)), this, SLOT(linkedProcessesDisconnectTerminate()));
-        connect(qproc_player, SIGNAL(finished(int)), this, SLOT(linkedProcessesDisconnectTerminate()));
+        if(p_live_channel->isReady())
+        {
+            emit askBtn_watchDisable();
+            btn_watch->setDisabled(true);
+            QStringList args = p_live_channel->getRtmpParams();
+            args << "-g";
+            args << p_settings->value("watch/port", "21080").toString();
+            args << "-f";
+            args << p_settings->value("flash/version", "WIN 11,1,102,62").toString();
+            connect(qproc_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(linkedProcessesError(const QProcess::ProcessError &)));
+            connect(qproc_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(linkedProcessesError(const QProcess::ProcessError &)));
+            connect(qproc_rtmpgw, SIGNAL(finished(int)), this, SLOT(linkedProcessesDisconnectTerminate()));
+            connect(qproc_player, SIGNAL(finished(int)), this, SLOT(linkedProcessesDisconnectTerminate()));
 #ifdef Q_OS_WIN
-        qproc_rtmpgw->start(p_settings->value("watch/rtmpgw", "rtmpgw.exe").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
+            qproc_rtmpgw->start(p_settings->value("watch/rtmpgw", "rtmpgw.exe").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
 #else
-        qproc_rtmpgw->start(p_settings->value("watch/rtmpgw", "rtmpgw").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
+            qproc_rtmpgw->start(p_settings->value("watch/rtmpgw", "rtmpgw").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
 #endif
-        qproc_player->start(lne_player->text(), QStringList(QString("http://127.0.0.1:").append(p_settings->value("watch/port", "21080").toString())), QIODevice::ReadOnly | QIODevice::Unbuffered);
+            qproc_player->start(lne_player->text(), QStringList(QString("http://127.0.0.1:").append(p_settings->value("watch/port", "21080").toString())), QIODevice::ReadOnly | QIODevice::Unbuffered);
 
+        }
+        else
+        {
+            QMessageBox::warning(this, "Parameters", "No stream ready yet.");
+        }
     }
 }
 
