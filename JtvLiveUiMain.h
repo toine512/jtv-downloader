@@ -55,6 +55,7 @@
 #include "JtvLiveUiTabJustin_tv.h"
 #include "JtvLiveUiTabWatch.h"
 #include "JtvLiveUiTabParams.h"
+#include "JtvLiveUiTabRtmpdump.h"
 
 class JtvLiveUiMain : public QMainWindow
 {
@@ -68,11 +69,7 @@ public:
 protected slots:
     void onGotoWatchAndStart();
 
-    void Tab2_browseFile();
-    void Tab2_toggleFileCheck(bool pipe_ckecked);
-    void Tab2_togglePipeCheck(bool file_ckecked);
-    void Tab2_savePipe(const QString &text);
-    void Tab2_startRtmpdump();
+
 
     void Tab4_saveIp(const QString &ip);
     void Tab4_savePort(int port);
@@ -83,26 +80,22 @@ protected slots:
 protected:
 
 
-    void Tab2_startRtmpdumpFile(const QString &path);
+
 
     QStringList collectRtmpParams();
 
     //UI
     //QStatusBar *ui_bottom_statusBar;
     QTabWidget *ui_widget;
-    QWidget *ui_tab2, *ui_tab4, *ui_tab5, *ui_tabUpdate;
+    QWidget *ui_tab4, *ui_tab5, *ui_tabUpdate;
 
     JtvLiveUiTabJustin_tv *ui_tab0;
     JtvLiveUiTabParams *ui_tab1;
     JtvLiveUiTabWatch *ui_tab3;
+    JtvLiveUiTabRtmpdump *ui_tab2;
 
     //Tab 2 : rtmpdump
-    QGroupBox *ui_tab2_file_box, *ui_tab2_pipe_box, *ui_tab2_verbosity_box;
-    QHBoxLayout *ui_tab2_file_layout, *ui_tab2_pipe_layout, *ui_tab2_verbosity_layout;
-    QLineEdit *ui_tab2_file, *ui_tab2_pipe;
-    QPushButton *ui_tab2_file_btn, *ui_tab2_start;
-    QRadioButton *ui_tab2_verbosity_normal, *ui_tab2_verbosity_verbose, *ui_tab2_verbosity_debug;
-    QVBoxLayout *ui_tab2_layout;
+
 
 
 

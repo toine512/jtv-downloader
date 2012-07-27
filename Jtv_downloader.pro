@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     UpdateChecker.cpp \
     JtvLiveUiTabJustin_tv.cpp \
     JtvLiveUiTabParams.cpp \
-    JtvLiveUiTabWatch.cpp
+    JtvLiveUiTabWatch.cpp \
+    JtvLiveUiTabRtmpdump.cpp
 
 HEADERS  += JtvLiveUiMain.h \
     JtvLiveChannel.h \
@@ -26,7 +27,8 @@ HEADERS  += JtvLiveUiMain.h \
     UpdateChecker.h \
     JtvLiveUiTabJustin_tv.h \
     JtvLiveUiTabParams.h \
-    JtvLiveUiTabWatch.h
+    JtvLiveUiTabWatch.h \
+    JtvLiveUiTabRtmpdump.h
 
 RESOURCES += \
     ressources.qrc

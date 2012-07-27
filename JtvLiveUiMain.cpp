@@ -81,43 +81,8 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     ui_tab3 = new JtvLiveUiTabWatch(settings, live_channel);
 
         //Tab 2 : rtmpdump
-        ui_tab2 = new QWidget;
-        ui_tab2_file_box = new QGroupBox("Outfile :");
-        ui_tab2_file_box->setCheckable(true);
-        ui_tab2_file_box->setChecked(true);
-        ui_tab2_file = new QLineEdit;
-        ui_tab2_file_btn = new QPushButton("...");
-        ui_tab2_file_layout = new QHBoxLayout();
-        ui_tab2_file_layout->addWidget(ui_tab2_file);
-        ui_tab2_file_layout->addWidget(ui_tab2_file_btn);
-        ui_tab2_file_box->setLayout(ui_tab2_file_layout);
-        ui_tab2_pipe_box = new QGroupBox("Pipe :");
-        ui_tab2_pipe_box->setCheckable(true);
-        ui_tab2_pipe_box->setChecked(false);
-        ui_tab2_pipe = new QLineEdit;
-        ui_tab2_pipe->setToolTip("Right side of the pipe (after | )");
-        ui_tab2_pipe->setText(settings->value("rtmpdump/pipe").toString());
-        ui_tab2_pipe_layout = new QHBoxLayout;
-        ui_tab2_pipe_layout->addWidget(ui_tab2_pipe);
-        ui_tab2_pipe_box->setLayout(ui_tab2_pipe_layout);
-        ui_tab2_verbosity_box = new QGroupBox("Verbosity :");
-        ui_tab2_verbosity_normal = new QRadioButton("Normal");
-        ui_tab2_verbosity_normal->setChecked(true);
-        ui_tab2_verbosity_verbose = new QRadioButton("Verbose");
-        ui_tab2_verbosity_debug = new QRadioButton("Debug");
-        ui_tab2_verbosity_layout = new QHBoxLayout;
-        ui_tab2_verbosity_layout->addWidget(ui_tab2_verbosity_normal);
-        ui_tab2_verbosity_layout->addWidget(ui_tab2_verbosity_verbose);
-        ui_tab2_verbosity_layout->addWidget(ui_tab2_verbosity_debug);
-        ui_tab2_verbosity_box->setLayout(ui_tab2_verbosity_layout);
-        ui_tab2_start = new QPushButton("Start");
-        //Layout
-        ui_tab2_layout = new QVBoxLayout;
-        ui_tab2_layout->addWidget(ui_tab2_file_box);
-        ui_tab2_layout->addWidget(ui_tab2_pipe_box);
-        ui_tab2_layout->addWidget(ui_tab2_verbosity_box);
-        ui_tab2_layout->addWidget(ui_tab2_start);
-        ui_tab2->setLayout(ui_tab2_layout);
+    ui_tab2 = new JtvLiveUiTabRtmpdump(settings, live_channel);
+
 
 
 
@@ -196,11 +161,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     connect(ui_tab3, SIGNAL(askBtn_watchEnable()), ui_tab0, SLOT(btn_watchEnable()));
     connect(ui_tab3, SIGNAL(askBtn_watchDisable()), ui_tab0, SLOT(btn_watchDisable()));
 
-    connect(ui_tab2_file_btn, SIGNAL(clicked()), this, SLOT(Tab2_browseFile()));
-    connect(ui_tab2_pipe_box, SIGNAL(toggled(bool)), this, SLOT(Tab2_toggleFileCheck(bool)));
-    connect(ui_tab2_file_box, SIGNAL(toggled(bool)), this, SLOT(Tab2_togglePipeCheck(bool)));
-    connect(ui_tab2_pipe, SIGNAL(textEdited(const QString &)), this, SLOT(Tab2_savePipe(const QString &)));
-    connect(ui_tab2_start, SIGNAL(clicked()), this, SLOT(Tab2_startRtmpdump()));
+
 
     connect(ui_tab4_params_ip, SIGNAL(textEdited(const QString &)), this, SLOT(Tab4_saveIp(const QString &)));
     connect(ui_tab4_params_port, SIGNAL(valueChanged(int)), this, SLOT(Tab4_savePort(int)));
@@ -220,104 +181,7 @@ void JtvLiveUiMain::onGotoWatchAndStart()
 }
 
 
-//Tab 2 slots
-void JtvLiveUiMain::Tab2_browseFile()
-{
-    ui_tab2_file->setText(QFileDialog::getSaveFileName(this, "Save stream", QString(), "Flash video (*.flv)"));
-}
 
-//Called by ui_tab2_pipe_box
-void JtvLiveUiMain::Tab2_toggleFileCheck(bool pipe_ckecked)
-{
-    if(pipe_ckecked)
-    {
-        ui_tab2_file_box->setChecked(false);
-    }
-    else
-    {
-        ui_tab2_file_box->setChecked(true);
-    }
-}
-
-//Called by ui_tab2_file_box
-void JtvLiveUiMain::Tab2_togglePipeCheck(bool file_ckecked)
-{
-    if(file_ckecked)
-    {
-        ui_tab2_pipe_box->setChecked(false);
-    }
-    else
-    {
-        ui_tab2_pipe_box->setChecked(true);
-    }
-}
-
-void JtvLiveUiMain::Tab2_savePipe(const QString &text)
-{
-    settings->setValue("rtmpdump/pipe", text);
-}
-
-void JtvLiveUiMain::Tab2_startRtmpdump()
-{
-    QStringList args = collectRtmpParams();
-    if(args.isEmpty())
-    {
-        QMessageBox::warning(this, "Parameters", "RTMP parameters are empty.");
-    }
-    else
-    {
-        args << "-f";
-        args << settings->value("flash/version", "WIN 11,1,102,62").toString();
-        args << "-v";
-        if(ui_tab2_file_box->isChecked())
-        {
-            if(ui_tab2_file->text().isEmpty())
-            {
-                QMessageBox::warning(this, "Output file", "No output path provided.");
-            }
-            else
-            {
-                if(ui_tab2_verbosity_verbose->isChecked())
-                {
-                    args << "-V";
-                }
-                else if(ui_tab2_verbosity_debug->isChecked())
-                {
-                    args << "-z";
-                }
-                args << "-o";
-                args << ui_tab2_file->text();
-#ifdef Q_OS_WIN
-                if(!QProcess::startDetached(settings->value("rtmpdump/rtmpdump", "rtmpdump.exe").toString(), args))
-#else
-                if(!QProcess::startDetached(settings->value("terminal/terminal", "xterm").toString(), QStringList() << settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2").arg(settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), getCommandEscaped(args).replace("&", "\\&")))) //"&" is meaningful under Linux ;) -> replace("&", "\\&")
-#endif
-                {
-                    QMessageBox::warning(this, "Launching rtmpdump", "Unable to create the process, check the path.");
-                }
-            }
-        }
-        else if(ui_tab2_pipe_box->isChecked())
-        {
-            if(ui_tab2_pipe->text().isEmpty())
-            {
-                QMessageBox::warning(this, "Piping", "Right side of the pipe is empty.");
-            }
-            else
-            {
-                args << "-q";
-#ifdef Q_OS_WIN
-                if(!QProcess::startDetached(QString("cmd.exe /c \"%1 %2 | %3\"").arg(settings->value("rtmpdump/rtmpdump", "rtmpdump.exe").toString(), getCommandEscaped(args).replace("\\\"", "\"\"\""), ui_tab2_pipe->text()))) //epic Windows crap ! -> replace("\\\"", "\"\"\"")
-#else
-                if(!QProcess::startDetached(settings->value("terminal/terminal", "xterm").toString(), QStringList() << settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2 | %3").arg(settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), getCommandEscaped(args).replace("&", "\\&"), ui_tab2_pipe->text()))) //"&" is meaningful under Linux ;) -> replace("&", "\\&")
-#endif
-                {
-                    QMessageBox::warning(this, "Launching rtmpdump", "Unable to create the process, check the path.");
-                }
-            }
-        }
-    }
-}
 
 
 
