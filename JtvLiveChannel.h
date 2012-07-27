@@ -40,8 +40,7 @@ class JtvLiveStream
 {
 public:
     enum JtvServerType {UsherServer, AkamaiServer};
-    //FIXME : remove channel_name
-    QString channel_name, swf, swf_vfy, web, tag_name, height, rtmp_url, usher_token, bitrate, part, id, viewers, node;
+    QString swf, swf_vfy, web, tag_name, height, rtmp_url, usher_token, bitrate, part, id, viewers, node;
     JtvServerType server_type;
 };
 
@@ -55,7 +54,6 @@ public:
     const QString & getLastMessage() const;
     const QString & getHttpReferer() const;
     const QString & getPlayerUrl() const;
-    //QList<JtvLiveStream> * getStreams();
     QStringList getStreamsDisplayName() const;
     /* Parameters getters/generators */
     QString getStreamRtmp() const;

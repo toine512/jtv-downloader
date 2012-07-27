@@ -17,21 +17,18 @@
  */
 
 #include "JtvLiveChannel.h"
-#include <QDebug>
+
 #define implementGetOnStream(getSuffix, streamMember) \
 QString JtvLiveChannel::getStream##getSuffix() const\
 {\
-    qDebug() << i_current_stream;\
     return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? l_streams.at(i_current_stream).streamMember : QString();\
 }
 
 #define implementSetOnStream(setSuffix, streamMember) \
 void JtvLiveChannel::setStream##setSuffix(const QString &param)\
 {\
-    qDebug() << "setstream called";\
     if(i_current_stream >= 0 && i_current_stream < l_streams.size())\
     {\
-    qDebug() << "set";\
     l_streams[i_current_stream].streamMember = param;\
         emit paramsChanged();\
     }\
@@ -98,51 +95,12 @@ QStringList JtvLiveChannel::getStreamsDisplayName() const
     return list;
 }
 
-/*QList<JtvLiveStream>* JtvLiveChannel::getStreams()
-{
-    return pl_streams;
-}*/
-
 /* Parameters getters/generators */
 implementGetOnStream(Rtmp, rtmp_url)
 implementGetOnStream(Swf, swf)
 implementGetOnStream(SwfVfy, swf_vfy)
 implementGetOnStream(UsherToken, usher_token)
 implementGetOnStream(Web, web)
-/*const QString & JtvLiveChannel::getStreamRtmp() const
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-        return l_streams.at(i_current_stream).rtmp_url;
-    return QString();
-}
-
-const QString & JtvLiveChannel::getStreamSwf() const
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-        return l_streams.at(i_current_stream).swf;
-    return QString();
-}
-
-const QString & JtvLiveChannel::getStreamSwfVfy() const
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-        return l_streams.at(i_current_stream).swf_vfy;
-    return QString();
-}
-
-const QString & JtvLiveChannel::getStreamUsherToken() const
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-        return l_streams.at(i_current_stream).usher_token;
-    return QString();
-}
-
-const QString & JtvLiveChannel::getStreamWeb() const
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-        return l_streams.at(i_current_stream).web;
-    return QString();
-}*/
 /***********************************/
 
 /* Stream stats accessors */
@@ -153,48 +111,6 @@ implementGetOnStream(Part, part)
 implementGetOnStream(Id, id)
 implementGetOnStream(Viewers, viewers)
 implementGetOnStream(Node, node)
-/*const QString & JtvLiveChannel::getStreamTagName() const
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-        return l_streams.at(i_current_stream).tag_name;
-    return QString();
-}
-
-const QString & JtvLiveChannel::getStreamHeigth() const
-{
-    return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? l_streams.at(i_current_stream).height : QString();
-}
-
-const QString & JtvLiveChannel::getStreamBitrate() const
-{
-    return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? l_streams.at(i_current_stream).bitrate : QString();
-}
-
-const QString & JtvLiveChannel::getStreamPart() const
-{
-    return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? l_streams.at(i_current_stream).part : QString();
-}
-
-const QString & JtvLiveChannel::getStreamId() const
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-        return l_streams.at(i_current_stream).id;
-    return QString();
-}
-
-const QString & JtvLiveChannel::getStreamViewers() const
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-        return l_streams.at(i_current_stream).viewers;
-    return QString();
-}
-
-const QString & JtvLiveChannel::getStreamNode() const
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-        return l_streams.at(i_current_stream).node;
-    return QString();
-}*/
 /**************************/
 
 QStringList JtvLiveChannel::getRtmpParams() const
@@ -317,50 +233,6 @@ implementSetOnStream(Swf, swf)
 implementSetOnStream(SwfVfy, swf_vfy)
 implementSetOnStream(UsherToken, usher_token)
 implementSetOnStream(Web, web)
-/*void JtvLiveChannel::setStreamRtmp(const QString &param)
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-    {
-        l_streams[i_current_stream].rtmp_url = param;
-        emit paramsChanged();
-    }
-}
-
-void JtvLiveChannel::setStreamSwf(const QString &param)
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-    {
-        l_streams[i_current_stream].swf = param;
-        emit paramsChanged();
-    }
-}
-
-void JtvLiveChannel::setStreamSwfVfy(const QString &param)
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-    {
-        l_streams[i_current_stream].swf_vfy = param;
-        emit paramsChanged();
-    }
-}
-
-void JtvLiveChannel::setStreamUsherToken(const QString &param)
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-    {
-        l_streams[i_current_stream].usher_token = param;
-        emit paramsChanged();
-    }
-}
-
-void JtvLiveChannel::setStreamWeb(const QString &param)
-{
-    if(i_current_stream >= 0 && i_current_stream < l_streams.size())
-    {
-        l_streams[i_current_stream].web = param;
-        emit paramsChanged();
-    }
-}*/
 /**********************/
 
 void JtvLiveChannel::gotPlayerRedirect()
@@ -402,7 +274,6 @@ void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
     //Workaround for invalid Jtv XML !
     clean_datas.replace(QRegExp("<(\\d+p)>"), "<live-\\1>");
     clean_datas.replace(QRegExp("</(\\d+p)>"), "</live-\\1>");
-    qDebug() << clean_datas;
     QDomDocument dom;
     if(dom.setContent(clean_datas))
     {
@@ -416,44 +287,45 @@ void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
                 QDomElement t = stream.toElement();
                 logMessage(QString("Found <%1> node ...").arg(t.tagName()));
                 live_stream.tag_name = t.tagName();
+                QDomNode n;
                 //Creating display_name : tagname + <video_height>
-                QDomNode n = t.elementsByTagName("video_height").item(0);
+                n = t.elementsByTagName("video_height").item(0);
                 if(!n.isNull())
                 {
                     live_stream.height = n.toElement().text().trimmed();
                     //live_stream.display_name = QString("%1\tHeight : %2").arg(t.tagName(), n.toElement().text().trimmed());
                     //Creating rtmp_url : <connect> + <play>
-                    QDomNode n = t.elementsByTagName("connect").item(0);
+                    n = t.elementsByTagName("connect").item(0);
                     if(!n.isNull())
                     {
                         QString v = n.toElement().text().trimmed();
-                        QDomNode n = t.elementsByTagName("play").item(0);
+                        n = t.elementsByTagName("play").item(0);
                         if(!n.isNull())
                         {
                             live_stream.rtmp_url = v.append("/").append(n.toElement().text().trimmed());
                             //<token>
-                            QDomNode n = t.elementsByTagName("token").item(0);
+                            n = t.elementsByTagName("token").item(0);
                             if(!n.isNull())
                             {
                                 live_stream.usher_token = n.toElement().text().trimmed();
                                 //<bitrate>
-                                QDomNode n = t.elementsByTagName("bitrate").item(0);
+                                n = t.elementsByTagName("bitrate").item(0);
                                 if(!n.isNull())
                                 {
                                     live_stream.bitrate = n.toElement().text().trimmed();
                                     //<broadcast_part>
-                                    QDomNode n = t.elementsByTagName("broadcast_part").item(0);
+                                    n = t.elementsByTagName("broadcast_part").item(0);
                                     if(!n.isNull())
                                     {
                                         live_stream.part = n.toElement().text().trimmed();
                                         //<broadcast_id>
-                                        QDomNode n = t.elementsByTagName("broadcast_id").item(0);
+                                        n = t.elementsByTagName("broadcast_id").item(0);
                                         if(!n.isNull())
                                         {
                                             live_stream.id = n.toElement().text().trimmed();
                                             //<viewer_count>
                                             //NOTE: ams01 cluster doesn't provide viewer_count [2707/2012]
-                                            QDomNode n = t.elementsByTagName("viewer_count").item(0);
+                                            n = t.elementsByTagName("viewer_count").item(0);
                                             if(n.isNull())
                                             {
                                                 live_stream.viewers = QString("unknown");
@@ -463,7 +335,7 @@ void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
                                                 live_stream.viewers = n.toElement().text().trimmed();
                                             }
                                             //<node> -> server_type
-                                            QDomNode n = t.elementsByTagName("node").item(0);
+                                            n = t.elementsByTagName("node").item(0);
                                             if(!n.isNull())
                                             {
                                                 QString v = n.toElement().text().trimmed();
@@ -550,6 +422,4 @@ void JtvLiveChannel::parseXml(const QByteArray &raw_datas)
 }
 
 JtvLiveChannel::~JtvLiveChannel()
-{
-    //delete pl_streams;
-}
+{ }
