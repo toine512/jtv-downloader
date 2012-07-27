@@ -51,6 +51,7 @@ class JtvLiveChannel : public QObject
 public:
     explicit JtvLiveChannel(QNetworkAccessManager *net_manager, const QString &base_player_url = "http://fr.justin.tv/widgets/live_embed_player.swf", const QString &base_http_referer = "http://fr.justin.tv/", QObject *parent = 0);
     ~JtvLiveChannel();
+    bool isReady();
     const QString & getLastMessage() const;
     const QString & getHttpReferer() const;
     const QString & getPlayerUrl() const;

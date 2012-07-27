@@ -51,6 +51,11 @@ JtvLiveChannel::JtvLiveChannel(QNetworkAccessManager *network_manager, const QSt
     connect(p_player_reply, SIGNAL(finished()), this, SLOT(gotPlayerRedirect()));
 }
 
+bool JtvLiveChannel::isReady()
+{
+    return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? true : false;
+}
+
 void JtvLiveChannel::logMessage(const QString &message)
 {
     if(!message.isEmpty())
