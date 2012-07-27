@@ -36,7 +36,7 @@ You need **qt4-qmake** and **libqt4-dev** (>= 4.7.4) packages to achieve that.
 	sudo apt-get install git qt4-qmake libqt4-dev
 	git clone git://github.com/toine512/jtv-downloader.git
 	cd jtv-downloader/
-	qmake --makefile
+	qmake -makefile
 	make
 
 At runtime you'll need **libqtcore4**, **libqt4-xml**, **libqtgui4**, **libqt4-network** :
