@@ -207,6 +207,7 @@ QStringList JtvLiveChannel::getRtmpParams() const
     args << getStreamWeb();
     args << "-j";
     args << getStreamUsherToken();
+    args << "-v";
     return args;
 }
 
