@@ -131,7 +131,7 @@ void JtvLiveUiTabRtmpdump::startRtmpdump()
 #ifdef Q_OS_WIN
                 if(!QProcess::startDetached(p_settings->value("rtmpdump/rtmpdump", "rtmpdump.exe").toString(), args))
 #else
-                if(!QProcess::startDetached(p_settings->value("terminal/terminal", "xterm").toString(), QStringList() << p_settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2").arg(p_settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), JtvLiveChannel::escape4CLI(p_live_channel->getRtmpParams())))
+                if(!QProcess::startDetached(p_settings->value("terminal/terminal", "xterm").toString(), QStringList() << p_settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2").arg(p_settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), JtvLiveChannel::escape4CLI(p_live_channel->getRtmpParams()))))
 #endif
                 {
                     QMessageBox::warning(this, "Launching rtmpdump", "Unable to create the process, check the path.");
