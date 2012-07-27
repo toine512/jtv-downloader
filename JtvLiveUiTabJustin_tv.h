@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QStringList>
+#include "JtvLiveChannel.h"
 
 #include <QWidget>
 #include <QLabel>
@@ -15,8 +16,6 @@
 #include <QMessageBox>
 #include "QSIRPushButton.h"
 
-#include "JtvLiveChannel.h"
-
 class JtvLiveUiTabJustin_tv : public QWidget
 {
     Q_OBJECT
@@ -26,6 +25,7 @@ public:
     
 signals:
     void gotoWatchAndStart();
+    void askClearParams();
 
 public slots:
     void btn_watchEnable();

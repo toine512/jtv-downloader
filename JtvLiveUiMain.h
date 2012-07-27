@@ -53,6 +53,7 @@
 #include <QMessageBox>
 #include <QPixmap>
 #include "JtvLiveUiTabJustin_tv.h"
+#include "JtvLiveUiTabParams.h"
 
 class JtvLiveUiMain : public QMainWindow
 {
@@ -64,8 +65,6 @@ public:
     ~JtvLiveUiMain();
 
 protected slots:
-
-    void Tab1_buildCliFriendly();
     void Tab2_browseFile();
     void Tab2_toggleFileCheck(bool pipe_ckecked);
     void Tab2_togglePipeCheck(bool file_ckecked);
@@ -85,8 +84,7 @@ protected slots:
 
 protected:
 
-    void Tab1_defaultParams();
-    void Tab1_fillParams(const JtvLiveStream &stream);
+
     void Tab2_startRtmpdumpFile(const QString &path);
     void Tab3_linkedProcessesTerminate();
     QStringList collectRtmpParams();
@@ -94,16 +92,12 @@ protected:
     //UI
     //QStatusBar *ui_bottom_statusBar;
     QTabWidget *ui_widget;
-    QWidget *ui_tab1, *ui_tab2, *ui_tab3, *ui_tab4, *ui_tab5, *ui_tabUpdate;
+    QWidget *ui_tab2, *ui_tab3, *ui_tab4, *ui_tab5, *ui_tabUpdate;
 
     JtvLiveUiTabJustin_tv *ui_tab0;
+    JtvLiveUiTabParams *ui_tab1;
 
-    //Tab 1 : Parameters
-    QLabel *ui_tab1_l_rtmp, *ui_tab1_l_swf, *ui_tab1_l_swfVfy, *ui_tab1_l_web, *ui_tab1_l_usherToken, *ui_tab1_l_cliFriendly;
-    QLineEdit *ui_tab1_rtmp, *ui_tab1_swf, *ui_tab1_swfVfy, *ui_tab1_web, *ui_tab1_usherToken;
-    QFrame *ui_tab1_hSeparator;
-    QPlainTextEdit *ui_tab1_cliFriendly;
-    QGridLayout *ui_tab1_layout;
+
 
     //Tab 2 : rtmpdump
     QGroupBox *ui_tab2_file_box, *ui_tab2_pipe_box, *ui_tab2_verbosity_box;

@@ -80,44 +80,8 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 
 
         //Tab 1 : Parameters
-        ui_tab1 = new QWidget;
-        ui_tab1_rtmp = new QLineEdit;
-        ui_tab1_l_rtmp = new QLabel("RTMP (-r)");
-        ui_tab1_l_rtmp->setBuddy(ui_tab1_rtmp);
-        ui_tab1_swf = new QLineEdit;
-        ui_tab1_l_swf = new QLabel("SWF (-s)");
-        ui_tab1_l_swf->setBuddy(ui_tab1_swf);
-        ui_tab1_swfVfy = new QLineEdit;
-        ui_tab1_l_swfVfy = new QLabel("SWF verif (-W)");
-        ui_tab1_l_swfVfy->setBuddy(ui_tab1_swfVfy);
-        ui_tab1_web = new QLineEdit;
-        ui_tab1_l_web = new QLabel("Web page (-p)");
-        ui_tab1_l_web->setBuddy(ui_tab1_web);
-        ui_tab1_usherToken = new QLineEdit;
-        ui_tab1_l_usherToken = new QLabel("UsherToken (-j)");
-        ui_tab1_l_usherToken->setBuddy(ui_tab1_usherToken);
-        ui_tab1_hSeparator = new QFrame;
-        ui_tab1_hSeparator->setFrameShape(QFrame::HLine);
-        ui_tab1_hSeparator->setFrameShadow(QFrame::Sunken);
-        ui_tab1_l_cliFriendly = new QLabel("Command line input firendly :");
-        ui_tab1_cliFriendly = new QPlainTextEdit;
-        ui_tab1_cliFriendly->setReadOnly(true);
-        //Layout
-        ui_tab1_layout = new QGridLayout;
-        ui_tab1_layout->addWidget(ui_tab1_l_rtmp, 0, 0);
-        ui_tab1_layout->addWidget(ui_tab1_rtmp, 0, 1);
-        ui_tab1_layout->addWidget(ui_tab1_l_swf, 1, 0);
-        ui_tab1_layout->addWidget(ui_tab1_swf, 1, 1);
-        ui_tab1_layout->addWidget(ui_tab1_l_swfVfy, 2, 0);
-        ui_tab1_layout->addWidget(ui_tab1_swfVfy, 2, 1);
-        ui_tab1_layout->addWidget(ui_tab1_l_web, 3, 0);
-        ui_tab1_layout->addWidget(ui_tab1_web, 3, 1);
-        ui_tab1_layout->addWidget(ui_tab1_l_usherToken, 4, 0);
-        ui_tab1_layout->addWidget(ui_tab1_usherToken, 4, 1);
-        ui_tab1_layout->addWidget(ui_tab1_hSeparator, 5, 0, 1, 2);
-        ui_tab1_layout->addWidget(ui_tab1_l_cliFriendly, 6, 0, 1, 2);
-        ui_tab1_layout->addWidget(ui_tab1_cliFriendly, 7, 0, 1, 2);
-        ui_tab1->setLayout(ui_tab1_layout);
+    ui_tab1 = new JtvLiveUiTabParams(live_channel);
+
 
         //Tab 2 : rtmpdump
         ui_tab2 = new QWidget;
@@ -260,12 +224,8 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     ui_widget->addTab(ui_tab5, "About");
 
     //Central signals/slots
+    connect(ui_tab0, SIGNAL(askClearParams()), ui_tab1, SLOT(clearParams()));
 
-    connect(ui_tab1_rtmp, SIGNAL(textEdited(QString)), this, SLOT(Tab1_buildCliFriendly()));
-    connect(ui_tab1_swf, SIGNAL(textEdited(QString)), this, SLOT(Tab1_buildCliFriendly()));
-    connect(ui_tab1_swfVfy, SIGNAL(textEdited(QString)), this, SLOT(Tab1_buildCliFriendly()));
-    connect(ui_tab1_web, SIGNAL(textEdited(QString)), this, SLOT(Tab1_buildCliFriendly()));
-    connect(ui_tab1_usherToken, SIGNAL(textEdited(QString)), this, SLOT(Tab1_buildCliFriendly()));
     connect(ui_tab2_file_btn, SIGNAL(clicked()), this, SLOT(Tab2_browseFile()));
     connect(ui_tab2_pipe_box, SIGNAL(toggled(bool)), this, SLOT(Tab2_toggleFileCheck(bool)));
     connect(ui_tab2_file_box, SIGNAL(toggled(bool)), this, SLOT(Tab2_togglePipeCheck(bool)));
@@ -287,38 +247,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 
 
 
-//Tab 1 slot
-void JtvLiveUiMain::Tab1_buildCliFriendly()
-{
-    ui_tab1_cliFriendly->setPlainText(QString(getCommandEscaped(collectRtmpParams())).append(" -v"));
-}
 
-//Tab 1 protected
-void JtvLiveUiMain::Tab1_defaultParams()
-{
-    ui_tab1_rtmp->clear();
-    ui_tab1_swf->clear();
-    ui_tab1_web->clear();
-    ui_tab1_swfVfy->clear();
-    ui_tab1_usherToken->clear();
-    ui_tab1_cliFriendly->clear();
-}
-
-void JtvLiveUiMain::Tab1_fillParams(const JtvLiveStream &stream)
-{
-    ui_tab1_rtmp->setText(stream.rtmp_url);
-    ui_tab1_swf->setText(live_channel->getPlayerUrl());
-    ui_tab1_web->setText(QString(live_channel->getHttpReferer()).append(stream.channel_name));
-    if(stream.server_type == JtvLiveStream::UsherServer)
-    {
-        ui_tab1_usherToken->setText(stream.usher_token);
-    }
-    else if(stream.server_type == JtvLiveStream::AkamaiServer)
-    {
-        ui_tab1_swfVfy->setText(live_channel->getPlayerUrl());
-    }
-    Tab1_buildCliFriendly();
-}
 
 //Tab 2 slots
 void JtvLiveUiMain::Tab2_browseFile()
@@ -592,31 +521,31 @@ void JtvLiveUiMain::TabUpdate_show(const QString &new_version_human, const QStri
 QStringList JtvLiveUiMain::collectRtmpParams()
 {
     QStringList args;
-    if(!ui_tab1_rtmp->text().isEmpty())
+    /*if(!ui_tab1_rtmp->text().isEmpty())
     {
         args << "-r";
         args << ui_tab1_rtmp->text();
     }
-    if(!ui_tab1_swf->text().isEmpty())
+    if(!lne_swf->text().isEmpty())
     {
         args << "-s";
-        args << ui_tab1_swf->text();
+        args << lne_swf->text();
     }
-    if(!ui_tab1_swfVfy->text().isEmpty())
+    if(!lne_swf_vfy->text().isEmpty())
     {
         args << "-W";
-        args << ui_tab1_swfVfy->text();
+        args << lne_swf_vfy->text();
     }
-    if(!ui_tab1_web->text().isEmpty())
+    if(!lne_web->text().isEmpty())
     {
         args << "-p";
-        args << ui_tab1_web->text();
+        args << lne_web->text();
     }
-    if(!ui_tab1_usherToken->text().isEmpty())
+    if(!lne_usher_token->text().isEmpty())
     {
         args << "-j";
-        args << ui_tab1_usherToken->text();
-    }
+        args << lne_usher_token->text();
+    }*/
     return args;
 }
 

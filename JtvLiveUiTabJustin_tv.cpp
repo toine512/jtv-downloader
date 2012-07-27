@@ -116,8 +116,7 @@ void JtvLiveUiTabJustin_tv::searchChannel()
         cbo_selector->setDisabled(true);
         cbo_selector->clear();
         btn_watch->setDisabled(true);
-        //FIXME : should not be useful
-        //Tab1_defaultParams();
+        emit askClearParams();
         p_live_channel->startSearch(lne_channel->text(), lne_password->text());
     }
 }
@@ -144,24 +143,6 @@ void JtvLiveUiTabJustin_tv::onSearchError(const QString &error)
     QMessageBox::warning(this, "Search live channel", QString("An error occured : %1").arg(error));
     unlock();
 }
-
-/*void JtvLiveUiTabJustin_tv::Tab0_updateStreamDatas(int index)
-{
-    defaultStats();
-    Tab1_defaultParams();
-    if(index >= 0) //Avoiding crash when the QComboBox is cleared
-    {
-        const JtvLiveStream &stream = live_channel->getStreams()->at(index);
-        Tab0_fillStats(stream);
-        Tab1_fillParams(stream);
-    }
-}*/
-
-/*void JtvLiveUiTabJustin_tv::Tab0_gotoWatchAndStart()
-{
-    ui_widget->setCurrentIndex(ui_widget->indexOf(ui_tab3));
-    Tab3_linkedProcessesStart();
-}*/
 
 void JtvLiveUiTabJustin_tv::lock()
 {
