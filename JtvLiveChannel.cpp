@@ -17,19 +17,22 @@
  */
 
 #include "JtvLiveChannel.h"
-
+#include <QDebug>
 #define implementGetOnStream(getSuffix, streamMember) \
-const QString & JtvLiveChannel::getStream##getSuffix() const\
+QString JtvLiveChannel::getStream##getSuffix() const\
 {\
+    qDebug() << i_current_stream;\
     return (i_current_stream >= 0 && i_current_stream < l_streams.size()) ? l_streams.at(i_current_stream).streamMember : QString();\
 }
 
 #define implementSetOnStream(setSuffix, streamMember) \
 void JtvLiveChannel::setStream##setSuffix(const QString &param)\
 {\
+    qDebug() << "setstream called";\
     if(i_current_stream >= 0 && i_current_stream < l_streams.size())\
     {\
-        l_streams[i_current_stream].streamMember = param;\
+    qDebug() << "set";\
+    l_streams[i_current_stream].streamMember = param;\
         emit paramsChanged();\
     }\
 }
@@ -197,16 +200,37 @@ const QString & JtvLiveChannel::getStreamNode() const
 QStringList JtvLiveChannel::getRtmpParams() const
 {
     QStringList args;
-    args << "-r";
-    args << getStreamRtmp();
-    args << "-s";
-    args << getStreamSwf();
-    args << "-W";
-    args << getStreamSwfVfy();
-    args << "-p";
-    args << getStreamWeb();
-    args << "-j";
-    args << getStreamUsherToken();
+    QString a;
+    a = getStreamRtmp();
+    if(!a.isEmpty())
+    {
+        args << "-r";
+        args << a;
+    }
+    a = getStreamSwf();
+    if(!a.isEmpty())
+    {
+        args << "-s";
+        args << a;
+    }
+    a = getStreamSwfVfy();
+    if(!a.isEmpty())
+    {
+        args << "-W";
+        args << a;
+    }
+    a = getStreamWeb();
+    if(!a.isEmpty())
+    {
+        args << "-p";
+        args << a;
+    }
+    a = getStreamUsherToken();
+    if(!a.isEmpty())
+    {
+        args << "-j";
+        args << a;
+    }
     args << "-v";
     return args;
 }

@@ -58,20 +58,20 @@ public:
     //QList<JtvLiveStream> * getStreams();
     QStringList getStreamsDisplayName() const;
     /* Parameters getters/generators */
-    const QString & getStreamRtmp() const;
-    const QString & getStreamSwf() const;
-    const QString & getStreamSwfVfy() const;
-    const QString & getStreamUsherToken() const;
-    const QString & getStreamWeb() const;
+    QString getStreamRtmp() const;
+    QString getStreamSwf() const;
+    QString getStreamSwfVfy() const;
+    QString getStreamUsherToken() const;
+    QString getStreamWeb() const;
     /***********************************/
     /* Stream stats accessors */
-    const QString & getStreamTagName() const;
-    const QString & getStreamHeight() const;
-    const QString & getStreamBitrate() const;
-    const QString & getStreamPart() const;
-    const QString & getStreamId() const;
-    const QString & getStreamViewers() const;
-    const QString & getStreamNode() const;
+    QString getStreamTagName() const;
+    QString getStreamHeight() const;
+    QString getStreamBitrate() const;
+    QString getStreamPart() const;
+    QString getStreamId() const;
+    QString getStreamViewers() const;
+    QString getStreamNode() const;
     /**************************/
     QStringList getRtmpParams() const;
     static QString escape4CLI(QStringList args);
