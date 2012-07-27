@@ -53,6 +53,7 @@
 #include <QMessageBox>
 #include <QPixmap>
 #include "JtvLiveUiTabJustin_tv.h"
+#include "JtvLiveUiTabWatch.h"
 #include "JtvLiveUiTabParams.h"
 
 class JtvLiveUiMain : public QMainWindow
@@ -65,17 +66,14 @@ public:
     ~JtvLiveUiMain();
 
 protected slots:
+    void onGotoWatchAndStart();
+
     void Tab2_browseFile();
     void Tab2_toggleFileCheck(bool pipe_ckecked);
     void Tab2_togglePipeCheck(bool file_ckecked);
     void Tab2_savePipe(const QString &text);
     void Tab2_startRtmpdump();
-    void Tab3_savePlayerPath(const QString &path);
-    void Tab3_linkedProcessesStart();
-    void Tab3_linkedProcessesError(const QProcess::ProcessError &error);
-    void Tab3_linkedProcessesDisconnectTerminate();
-    void Tab3_rtmpgwOut();
-    void Tab3_playerOut();
+
     void Tab4_saveIp(const QString &ip);
     void Tab4_savePort(int port);
     void Tab4_startRtmpgw();
@@ -86,18 +84,17 @@ protected:
 
 
     void Tab2_startRtmpdumpFile(const QString &path);
-    void Tab3_linkedProcessesTerminate();
+
     QStringList collectRtmpParams();
 
     //UI
     //QStatusBar *ui_bottom_statusBar;
     QTabWidget *ui_widget;
-    QWidget *ui_tab2, *ui_tab3, *ui_tab4, *ui_tab5, *ui_tabUpdate;
+    QWidget *ui_tab2, *ui_tab4, *ui_tab5, *ui_tabUpdate;
 
     JtvLiveUiTabJustin_tv *ui_tab0;
     JtvLiveUiTabParams *ui_tab1;
-
-
+    JtvLiveUiTabWatch *ui_tab3;
 
     //Tab 2 : rtmpdump
     QGroupBox *ui_tab2_file_box, *ui_tab2_pipe_box, *ui_tab2_verbosity_box;
@@ -107,14 +104,7 @@ protected:
     QRadioButton *ui_tab2_verbosity_normal, *ui_tab2_verbosity_verbose, *ui_tab2_verbosity_debug;
     QVBoxLayout *ui_tab2_layout;
 
-    //Tab 3 : Play
-    QHBoxLayout *ui_tab3_player_layout;
-    QLabel *ui_tab3_player_label;
-    QLineEdit *ui_tab3_player;
-    QPushButton *ui_tab3_watchBtn;
-    QFrame *ui_tab3_hSeparator;
-    QPlainTextEdit *ui_tab3_rtmpgwOut, *ui_tab3_playerOut;
-    QVBoxLayout *ui_tab3_layout;
+
 
     //Tab 4 : rtmpdump
     QGroupBox *ui_tab4_params_box, *ui_tab4_verbosity_box;
@@ -142,8 +132,7 @@ protected:
     QNetworkAccessManager *net_manager;
     JtvLiveChannel *live_channel;
     UpdateChecker *updater;
-    QProcess *linkedProcess_rtmpgw;
-    QProcess *linkedProcess_player;
+
 };
 
 #endif // JTVLIVEUIMAIN_H

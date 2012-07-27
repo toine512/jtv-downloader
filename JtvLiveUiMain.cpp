@@ -46,11 +46,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     //UpdateChecker setup
     updater = new UpdateChecker(net_manager, "http://toine.fr.nf/jtvdl/", uuid, JTV_LIVE_VERSION, this);
 
-    //Hosted QProcesses setup
-    linkedProcess_rtmpgw = new QProcess(this);
-    linkedProcess_rtmpgw->setProcessChannelMode(QProcess::MergedChannels);
-    linkedProcess_player = new QProcess(this);
-    linkedProcess_player->setProcessChannelMode(QProcess::MergedChannels);
+
 
     //Core connections
 
@@ -82,6 +78,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         //Tab 1 : Parameters
     ui_tab1 = new JtvLiveUiTabParams(live_channel);
 
+    ui_tab3 = new JtvLiveUiTabWatch(settings, live_channel);
 
         //Tab 2 : rtmpdump
         ui_tab2 = new QWidget;
@@ -122,37 +119,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         ui_tab2_layout->addWidget(ui_tab2_start);
         ui_tab2->setLayout(ui_tab2_layout);
 
-        //Tab 3 : Watch
-        ui_tab3 = new QWidget;
-        ui_tab3_player = new QLineEdit;
-#ifdef Q_OS_WIN
-        ui_tab3_player_label = new QLabel("Player path :");
-        ui_tab3_player->setText(settings->value("watch/player", "%programfiles%\\VideoLAN\\VLC\\vlc.exe").toString());
-#else
-        ui_tab3_player_label = new QLabel("Player command :");
-        ui_tab3_player->setText(settings->value("watch/player", "vlc").toString());
-#endif
-        ui_tab3_player_layout = new QHBoxLayout;
-        ui_tab3_player_layout->addWidget(ui_tab3_player_label);
-        ui_tab3_player_layout->addWidget(ui_tab3_player);
-        ui_tab3_watchBtn = new QPushButton("Watch");
-        ui_tab3_watchBtn->setIcon(QIcon(":img/television.png"));
-        ui_tab3_hSeparator = new QFrame;
-        ui_tab3_hSeparator->setFrameShape(QFrame::HLine);
-        ui_tab3_hSeparator->setFrameShadow(QFrame::Sunken);
-        ui_tab3_rtmpgwOut = new QPlainTextEdit;
-        ui_tab3_rtmpgwOut->setReadOnly(true);
-        ui_tab3_rtmpgwOut->setOverwriteMode(true);
-        ui_tab3_playerOut = new QPlainTextEdit;
-        ui_tab3_playerOut->setReadOnly(true);
-        //Layout
-        ui_tab3_layout = new QVBoxLayout;
-        ui_tab3_layout->addLayout(ui_tab3_player_layout);
-        ui_tab3_layout->addWidget(ui_tab3_watchBtn);
-        ui_tab3_layout->addWidget(ui_tab3_hSeparator);
-        ui_tab3_layout->addWidget(ui_tab3_rtmpgwOut);
-        ui_tab3_layout->addWidget(ui_tab3_playerOut);
-        ui_tab3->setLayout(ui_tab3_layout);
+
 
         //Tab 4 : rtmpgw
         ui_tab4 = new QWidget;
@@ -225,28 +192,32 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 
     //Central signals/slots
     connect(ui_tab0, SIGNAL(askClearParams()), ui_tab1, SLOT(clearParams()));
+    connect(ui_tab0, SIGNAL(gotoWatchAndStart()), this, SLOT(onGotoWatchAndStart()));
+    connect(ui_tab3, SIGNAL(askBtn_watchEnable()), ui_tab0, SLOT(btn_watchEnable()));
+    connect(ui_tab3, SIGNAL(askBtn_watchDisable()), ui_tab0, SLOT(btn_watchDisable()));
 
     connect(ui_tab2_file_btn, SIGNAL(clicked()), this, SLOT(Tab2_browseFile()));
     connect(ui_tab2_pipe_box, SIGNAL(toggled(bool)), this, SLOT(Tab2_toggleFileCheck(bool)));
     connect(ui_tab2_file_box, SIGNAL(toggled(bool)), this, SLOT(Tab2_togglePipeCheck(bool)));
     connect(ui_tab2_pipe, SIGNAL(textEdited(const QString &)), this, SLOT(Tab2_savePipe(const QString &)));
     connect(ui_tab2_start, SIGNAL(clicked()), this, SLOT(Tab2_startRtmpdump()));
-    connect(ui_tab3_player, SIGNAL(textEdited(const QString &)), this, SLOT(Tab3_savePlayerPath(const QString &)));
-    connect(ui_tab3_watchBtn, SIGNAL(clicked()), this, SLOT(Tab3_linkedProcessesStart()));
+
     connect(ui_tab4_params_ip, SIGNAL(textEdited(const QString &)), this, SLOT(Tab4_saveIp(const QString &)));
     connect(ui_tab4_params_port, SIGNAL(valueChanged(int)), this, SLOT(Tab4_savePort(int)));
     connect(ui_tab4_start, SIGNAL(clicked()), this, SLOT(Tab4_startRtmpgw()));
     connect(ui_tab5_aboutQt, SIGNAL(clicked()), this, SLOT(aboutQt()));
     connect(updater, SIGNAL(updateAvailable(const QString &, const QString &)), this, SLOT(TabUpdate_show(const QString &, const QString &)));
     connect(updater, SIGNAL(updateNotes(const QString &)), ui_tabUpdate_notes, SLOT(setPlainText(const QString &)));
-    connect(linkedProcess_rtmpgw, SIGNAL(readyReadStandardOutput()), this, SLOT(Tab3_rtmpgwOut()));
-    connect(linkedProcess_player, SIGNAL(readyReadStandardOutput()), this, SLOT(Tab3_playerOut()));
+
 
     setCentralWidget(ui_widget);
 }
 
-
-
+void JtvLiveUiMain::onGotoWatchAndStart()
+{
+    ui_widget->setCurrentIndex(ui_widget->indexOf(ui_tab3));
+    ui_tab3->linkedProcessesStart();
+}
 
 
 //Tab 2 slots
@@ -348,113 +319,7 @@ void JtvLiveUiMain::Tab2_startRtmpdump()
     }
 }
 
-//Tab 3 slots
-void JtvLiveUiMain::Tab3_savePlayerPath(const QString &path)
-{
-    settings->setValue("watch/player", path);
-}
 
-void JtvLiveUiMain::Tab3_linkedProcessesStart()
-{
-    //FIXME
-    //ui_tab0_gotoWatch->setDisabled(true);
-    ui_tab3_watchBtn->setDisabled(true);
-    if(ui_tab3_player->text().isEmpty())
-    {
-        QMessageBox::warning(this, "Player", "No player path/command provided.");
-        //FIXME
-        //ui_tab0_gotoWatch->setEnabled(true);
-        ui_tab3_watchBtn->setEnabled(true);
-    }
-    else
-    {
-        QStringList args = collectRtmpParams();
-        if(args.isEmpty())
-        {
-            QMessageBox::warning(this, "Parameters", "RTMP parameters are empty.");
-            //FIXME
-            //ui_tab0_gotoWatch->setEnabled(true);
-            ui_tab3_watchBtn->setEnabled(true);
-        }
-        else
-        {
-            args << "-g";
-            args << settings->value("watch/port", "21080").toString();
-            args << "-f";
-            args << settings->value("flash/version", "WIN 11,1,102,62").toString();
-            args << "-v";
-            //args << QString("-V");
-            connect(linkedProcess_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Tab3_linkedProcessesError(const QProcess::ProcessError &)));
-            connect(linkedProcess_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Tab3_linkedProcessesError(const QProcess::ProcessError &)));
-            connect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Tab3_linkedProcessesDisconnectTerminate()));
-            connect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Tab3_linkedProcessesDisconnectTerminate()));
-#ifdef Q_OS_WIN
-            linkedProcess_rtmpgw->start(settings->value("watch/rtmpgw", "rtmpgw.exe").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
-#else
-            linkedProcess_rtmpgw->start(settings->value("watch/rtmpgw", "rtmpgw").toString(), args, QIODevice::ReadOnly | QIODevice::Unbuffered);
-#endif
-            linkedProcess_player->start(ui_tab3_player->text(), QStringList(QString("http://127.0.0.1:").append(settings->value("watch/port", "21080").toString())), QIODevice::ReadOnly | QIODevice::Unbuffered);
-        }
-    }
-}
-
-void JtvLiveUiMain::Tab3_linkedProcessesError(const QProcess::ProcessError &error)
-{
-    disconnect(linkedProcess_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Tab3_linkedProcessesError(const QProcess::ProcessError &)));
-    disconnect(linkedProcess_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Tab3_linkedProcessesError(const QProcess::ProcessError &)));
-    disconnect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Tab3_linkedProcessesDisconnectTerminate()));
-    disconnect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Tab3_linkedProcessesDisconnectTerminate()));
-    if(error == QProcess::FailedToStart)
-    {
-        QMessageBox::warning(this, "Startig process", "Unable to start the process, check rtmpgw & player path and your permissions.");
-    }
-    else if(error == QProcess::Crashed)
-    {
-        QMessageBox::critical(this, "Process crash", "The process has crashed.");
-    }
-    else if(error == QProcess::ReadError)
-    {
-        QMessageBox::critical(this, "Process read error", "Unable to read process output.");
-    }
-    else
-    {
-        QMessageBox::critical(this, "Process error", "An error has occured.");
-    }
-    Tab3_linkedProcessesTerminate();
-}
-
-void JtvLiveUiMain::Tab3_linkedProcessesDisconnectTerminate()
-{
-    disconnect(linkedProcess_rtmpgw, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Tab3_linkedProcessesError(const QProcess::ProcessError &)));
-    disconnect(linkedProcess_player, SIGNAL(error(const QProcess::ProcessError &)), this, SLOT(Tab3_linkedProcessesError(const QProcess::ProcessError &)));
-    disconnect(linkedProcess_rtmpgw, SIGNAL(finished(int)), this, SLOT(Tab3_linkedProcessesDisconnectTerminate()));
-    disconnect(linkedProcess_player, SIGNAL(finished(int)), this, SLOT(Tab3_linkedProcessesDisconnectTerminate()));
-    Tab3_linkedProcessesTerminate();
-}
-
-void JtvLiveUiMain::Tab3_rtmpgwOut()
-{
-    ui_tab3_rtmpgwOut->appendPlainText(linkedProcess_rtmpgw->readAll());
-}
-
-void JtvLiveUiMain::Tab3_playerOut()
-{
-    ui_tab3_playerOut->appendPlainText(linkedProcess_player->readAll());
-}
-
-//Tab 3 protected
-void JtvLiveUiMain::Tab3_linkedProcessesTerminate()
-{
-#ifdef Q_OS_WIN
-    linkedProcess_rtmpgw->kill();
-#else
-    linkedProcess_rtmpgw->terminate();
-#endif
-    linkedProcess_player->terminate();
-    //FIXME
-    //ui_tab0_gotoWatch->setEnabled(true);
-    ui_tab3_watchBtn->setEnabled(true);
-}
 
 //Tab 4 : slots
 void JtvLiveUiMain::Tab4_saveIp(const QString &ip)

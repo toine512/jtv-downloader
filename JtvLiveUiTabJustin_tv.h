@@ -37,7 +37,6 @@ protected slots:
     void onSearchSuccess(QStringList names);
     void onSearchError(const QString &error);
     void fillStats();
-    //void Tab0_updateStreamDatas(int index);
 
 
 protected:

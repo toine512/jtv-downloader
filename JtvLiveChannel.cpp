@@ -29,7 +29,7 @@ void JtvLiveChannel::setStream##setSuffix(const QString &param)\
 {\
     if(i_current_stream >= 0 && i_current_stream < l_streams.size())\
     {\
-    l_streams[i_current_stream].streamMember = param;\
+        l_streams[i_current_stream].streamMember = param;\
         emit paramsChanged();\
     }\
 }
