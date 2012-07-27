@@ -33,7 +33,7 @@ Building on Debian-based distributions
 
 You need **qt4-qmake** and **libqt4-dev** (>= 4.7.4) packages to achieve that.
 
-	sudo apt-get install git qt4-qmake libqt4-dev
+	sudo apt-get install git g++ qt4-qmake libqt4-dev
 	git clone git://github.com/toine512/jtv-downloader.git
 	cd jtv-downloader/
 	qmake -makefile
