@@ -22,6 +22,7 @@
 #include "defines.h"
 
 #include <QtCore/Qt>
+#include <QString>
 #include <QSettings>
 #include <QUuid>
 #include "qt-jtvlive/JtvLiveChannel.h"
@@ -34,6 +35,7 @@
 #include <QWidget>
 #include <QDesktopWidget>
 #include <QRect>
+#include <QTabWidget>
 #include "JtvLiveUiTabJustin_tv.h"
 #include "JtvLiveUiTabWatch.h"
 #include "JtvLiveUiTabParams.h"
