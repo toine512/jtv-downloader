@@ -30,7 +30,10 @@
 #include "UpdateChecker.h"
 
 //#include <QStatusBar>
+#include <QMainWindow>
 #include <QWidget>
+#include <QDesktopWidget>
+#include <QRect>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPlainTextEdit>

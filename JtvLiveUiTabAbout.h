@@ -28,6 +28,7 @@
 #include <QPixmap>
 #include <QPushButton>
 #include <QGridLayout>
+#include <QMessageBox>
 
 class JtvLiveUiTabAbout : public QWidget
 {
@@ -37,7 +38,7 @@ public:
     explicit JtvLiveUiTabAbout(QWidget *parent = 0);
     
 protected slots:
-    aboutQt();
+    void aboutQt();
 
 protected:
     QLabel *lab_notice, *lab_gplv3;

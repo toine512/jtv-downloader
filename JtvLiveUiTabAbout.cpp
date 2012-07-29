@@ -35,12 +35,12 @@ JtvLiveUiTabAbout::JtvLiveUiTabAbout(QWidget *parent) :
     layout->addWidget(lab_gplv3, 1, 0, 1, 1);
     layout->addWidget(btn_aboutQt, 1, 1, 1, 1);
 
-    ui_tab5->setLayout(layout);
+    setLayout(layout);
 
     connect(btn_aboutQt, SIGNAL(clicked()), this, SLOT(aboutQt()));
 }
 
-JtvLiveUiTabAbout::aboutQt()
+void JtvLiveUiTabAbout::aboutQt()
 {
     QMessageBox::aboutQt(this);
 }
