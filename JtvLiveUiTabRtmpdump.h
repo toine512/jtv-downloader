@@ -1,6 +1,8 @@
 #ifndef JTVLIVEUITABRTMPDUMP_H
 #define JTVLIVEUITABRTMPDUMP_H
 
+#include <QtGlobal>
+#include <QString>
 #include <QSettings>
 #include <QProcess>
 #include "qt-jtvlive/JtvLiveChannel.h"

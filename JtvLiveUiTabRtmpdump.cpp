@@ -131,7 +131,7 @@ void JtvLiveUiTabRtmpdump::startRtmpdump()
 #ifdef Q_OS_WIN
                 if(!QProcess::startDetached(p_settings->value("rtmpdump/rtmpdump", "rtmpdump.exe").toString(), args))
 #else
-                if(!QProcess::startDetached(p_settings->value("terminal/terminal", "xterm").toString(), QStringList() << p_settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2").arg(p_settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), JtvLiveChannel::escape4CLI(p_live_channel->getRtmpParams()))))
+                if(!QProcess::startDetached(p_settings->value("terminal/terminal", "xterm").toString(), QStringList() << p_settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2").arg(p_settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), JtvLiveChannel::escape4CLI(args))))
 #endif
                 {
                     QMessageBox::warning(this, "Launching rtmpdump", "Unable to create the process, check the path.");
@@ -148,9 +148,9 @@ void JtvLiveUiTabRtmpdump::startRtmpdump()
             {
                 args << "-q";
 #ifdef Q_OS_WIN
-                if(!QProcess::startDetached(QString("cmd.exe /c \"%1 %2 | %3\"").arg(p_settings->value("rtmpdump/rtmpdump", "rtmpdump.exe").toString(), JtvLiveChannel::escape4CLI(p_live_channel->getRtmpParams()).replace("\\\"", "\"\"\""), lne_pipe->text()))) //epic Windows crap ! -> replace("\\\"", "\"\"\"")
+                if(!QProcess::startDetached(QString("cmd.exe /c \"%1 %2 | %3\"").arg(p_settings->value("rtmpdump/rtmpdump", "rtmpdump.exe").toString(), JtvLiveChannel::escape4CLI(args).replace("\\\"", "\"\"\""), lne_pipe->text()))) //epic Windows crap ! -> replace("\\\"", "\"\"\"")
 #else
-                if(!QProcess::startDetached(p_settings->value("terminal/terminal", "xterm").toString(), QStringList() << p_settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2 | %3").arg(p_settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), JtvLiveChannel::escape4CLI(p_live_channel->getRtmpParams()), lne_pipe->text())))
+                if(!QProcess::startDetached(p_settings->value("terminal/terminal", "xterm").toString(), QStringList() << p_settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2 | %3").arg(p_settings->value("rtmpdump/rtmpdump", "rtmpdump").toString(), JtvLiveChannel::escape4CLI(args), lne_pipe->text())))
 #endif
                 {
                     QMessageBox::warning(this, "Launching rtmpdump", "Unable to create the process, check the path.");
