@@ -19,6 +19,7 @@
 #ifndef JTVLIVEUITABPARAMS_H
 #define JTVLIVEUITABPARAMS_H
 
+#include <QString>
 #include "qt-jtvlive/JtvLiveChannel.h"
 
 #include <QWidget>
