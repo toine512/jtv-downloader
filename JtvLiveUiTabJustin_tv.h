@@ -3,7 +3,7 @@
 
 #include <QString>
 #include <QStringList>
-#include "JtvLiveChannel.h"
+#include "qt-jtvlive/JtvLiveChannel.h"
 
 #include <QWidget>
 #include <QLabel>

@@ -26,7 +26,7 @@
 #include <QUuid>
 #include <QStringList>
 #include <QProcess>
-#include "JtvLiveChannel.h"
+#include "qt-jtvlive/JtvLiveChannel.h"
 
 #include <QNetworkAccessManager>
 #include "UpdateChecker.h"

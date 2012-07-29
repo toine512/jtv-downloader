@@ -4,7 +4,7 @@
 #include <QSettings>
 #include <QString>
 #include <QProcess>
-#include "JtvLiveChannel.h"
+#include "qt-jtvlive/JtvLiveChannel.h"
 
 #include <QWidget>
 #include <QLabel>

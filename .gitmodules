@@ -1,0 +1,3 @@
+[submodule "qt-jtvlive"]
+	path = qt-jtvlive
+	url = https://github.com/toine512/qt-jtvlive.git

@@ -1,7 +1,7 @@
 #ifndef JTVLIVEUITABPARAMS_H
 #define JTVLIVEUITABPARAMS_H
 
-#include "JtvLiveChannel.h"
+#include "qt-jtvlive/JtvLiveChannel.h"
 
 #include <QWidget>
 #include <QLabel>

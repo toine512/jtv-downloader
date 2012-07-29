@@ -12,7 +12,7 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         JtvLiveUiMain.cpp \
-    JtvLiveChannel.cpp \
+    qt-jtvlive/JtvLiveChannel.cpp \
     QSIRPushButton.cpp \
     UpdateChecker.cpp \
     JtvLiveUiTabJustin_tv.cpp \
@@ -21,7 +21,7 @@ SOURCES += main.cpp\
     JtvLiveUiTabRtmpdump.cpp
 
 HEADERS  += JtvLiveUiMain.h \
-    JtvLiveChannel.h \
+    qt-jtvlive/JtvLiveChannel.h \
     defines.h \
     QSIRPushButton.h \
     UpdateChecker.h \

@@ -3,7 +3,7 @@
 
 #include <QSettings>
 #include <QProcess>
-#include "JtvLiveChannel.h"
+#include "qt-jtvlive/JtvLiveChannel.h"
 
 #include <QWidget>
 #include <QGroupBox>
