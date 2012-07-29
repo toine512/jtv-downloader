@@ -34,16 +34,13 @@
 #include <QWidget>
 #include <QDesktopWidget>
 #include <QRect>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QPlainTextEdit>
-
 #include "JtvLiveUiTabJustin_tv.h"
 #include "JtvLiveUiTabWatch.h"
 #include "JtvLiveUiTabParams.h"
 #include "JtvLiveUiTabRtmpdump.h"
 #include "JtvLiveUiTabRtmpgw.h"
 #include "JtvLiveUiTabAbout.h"
+#include "NewUpdateTab.h"
 
 class JtvLiveUiMain : public QMainWindow
 {
@@ -56,25 +53,17 @@ public:
 protected slots:
     void onGotoWatchAndStart();
 
-    void TabUpdate_show(const QString &new_version_human, const QString &dl_link);
-
 protected:
     //UI
     //QStatusBar *ui_bottom_statusBar;
     QTabWidget *ui_widget;
-    QWidget *ui_tabUpdate;
-
-    JtvLiveUiTabJustin_tv *ui_tab0;
-    JtvLiveUiTabParams *ui_tab1;
-    JtvLiveUiTabWatch *ui_tab3;
-    JtvLiveUiTabRtmpdump *ui_tab2;
-    JtvLiveUiTabRtmpgw *ui_tab4;
-    JtvLiveUiTabAbout *ui_tab5;
-
-    //Update Tab
-    QLabel *ui_tabUpdate_notice;
-    QPlainTextEdit *ui_tabUpdate_notes;
-    QVBoxLayout *ui_tabUpdate_layout;
+    JtvLiveUiTabJustin_tv *ui_jtv;
+    JtvLiveUiTabParams *ui_params;
+    JtvLiveUiTabWatch *ui_watch;
+    JtvLiveUiTabRtmpdump *ui_rtmpdump;
+    JtvLiveUiTabRtmpgw *ui_rtmpgw;
+    JtvLiveUiTabAbout *ui_about;
+    NewUpdateTab *ui_update;
 
     //Core
     QSettings *settings;

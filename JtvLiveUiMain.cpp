@@ -65,67 +65,35 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     //Central zone
     ui_widget = new QTabWidget;
 
-        //Tab 0 : Justin.tv
-    ui_tab0 = new JtvLiveUiTabJustin_tv(live_channel);
+    ui_jtv = new JtvLiveUiTabJustin_tv(live_channel);
+    ui_watch = new JtvLiveUiTabWatch(settings, live_channel);
+    ui_params = new JtvLiveUiTabParams(live_channel);
+    ui_rtmpdump = new JtvLiveUiTabRtmpdump(settings, live_channel);
+    ui_rtmpgw = new JtvLiveUiTabRtmpgw(settings, live_channel);
+    ui_about = new JtvLiveUiTabAbout;
+    ui_update = new NewUpdateTab(true, ui_widget, this);
 
-        //Tab 1 : Parameters
-    ui_tab1 = new JtvLiveUiTabParams(live_channel);
+    ui_widget->addTab(ui_jtv, "Justin.tv");
+    ui_widget->addTab(ui_watch, "Watch");
+    ui_widget->addTab(ui_params, "Params");
+    ui_widget->addTab(ui_rtmpdump, "rtmpdump");
+    ui_widget->addTab(ui_rtmpgw, "rtmpgw");
+    ui_widget->addTab(ui_about, "About");
 
-    ui_tab3 = new JtvLiveUiTabWatch(settings, live_channel);
-
-        //Tab 2 : rtmpdump
-    ui_tab2 = new JtvLiveUiTabRtmpdump(settings, live_channel);
-
-        //Tab 4 : rtmpgw
-    ui_tab4 = new JtvLiveUiTabRtmpgw(settings, live_channel);
-
-    //Tab 5 : About
-    ui_tab5 = new JtvLiveUiTabAbout;
-
-        //Update Tab
-        ui_tabUpdate = new QWidget(this);
-        ui_tabUpdate_notice = new QLabel;
-        ui_tabUpdate_notice->setOpenExternalLinks(true);
-        ui_tabUpdate_notes = new QPlainTextEdit;
-        ui_tabUpdate_notes->setReadOnly(true);
-        ui_tabUpdate_layout = new QVBoxLayout;
-        ui_tabUpdate_layout->addWidget(ui_tabUpdate_notice);
-        ui_tabUpdate_layout->addWidget(ui_tabUpdate_notes);
-        ui_tabUpdate->setLayout(ui_tabUpdate_layout);
-
-    //QTabWidget setup
-    ui_widget->addTab(ui_tab0, "Justin.tv");
-    ui_widget->addTab(ui_tab3, "Watch");
-    ui_widget->addTab(ui_tab1, "Params");
-    ui_widget->addTab(ui_tab2, "rtmpdump");
-    ui_widget->addTab(ui_tab4, "rtmpgw");
-    ui_widget->addTab(ui_tab5, "About");
-
-    //Central signals/slots
-    connect(ui_tab0, SIGNAL(askClearParams()), ui_tab1, SLOT(clearParams()));
-    connect(ui_tab0, SIGNAL(gotoWatchAndStart()), this, SLOT(onGotoWatchAndStart()));
-    connect(ui_tab3, SIGNAL(askBtn_watchEnable()), ui_tab0, SLOT(btn_watchEnable()));
-    connect(ui_tab3, SIGNAL(askBtn_watchDisable()), ui_tab0, SLOT(btn_watchDisable()));
-
-    connect(updater, SIGNAL(updateAvailable(const QString &, const QString &)), this, SLOT(TabUpdate_show(const QString &, const QString &)));
-    connect(updater, SIGNAL(updateNotes(const QString &)), ui_tabUpdate_notes, SLOT(setPlainText(const QString &)));
+    connect(ui_jtv, SIGNAL(askClearParams()), ui_params, SLOT(clearParams()));
+    connect(ui_jtv, SIGNAL(gotoWatchAndStart()), this, SLOT(onGotoWatchAndStart()));
+    connect(ui_watch, SIGNAL(askBtn_watchEnable()), ui_jtv, SLOT(btn_watchEnable()));
+    connect(ui_watch, SIGNAL(askBtn_watchDisable()), ui_jtv, SLOT(btn_watchDisable()));
+    connect(updater, SIGNAL(updateAvailable(const QString &, const QString &)), ui_update, SLOT(setUpdateInfos(const QString &, const QString &)));
+    connect(updater, SIGNAL(updateNotes(const QString &)), ui_update, SLOT(setUpdateNotes(const QString &)));
 
     setCentralWidget(ui_widget);
 }
 
 void JtvLiveUiMain::onGotoWatchAndStart()
 {
-    ui_widget->setCurrentIndex(ui_widget->indexOf(ui_tab3));
-    ui_tab3->linkedProcessesStart();
-}
-
-//Update Tab slots
-void JtvLiveUiMain::TabUpdate_show(const QString &new_version_human, const QString &dl_link)
-{
-    QString notice = QString("Update %1 is available. <a href=\"%2\">%2</a>").arg(new_version_human, dl_link);
-    ui_tabUpdate_notice->setText(notice);
-    ui_widget->addTab(ui_tabUpdate, QString("A new update is available! (v. %1)").arg(new_version_human));
-    //ui_widget->tabBar()->setTabTextColor(ui_widget->indexOf(ui_tabUpdate), QColor(255, 127, 13)); -> NOPE!
+    ui_widget->setCurrentIndex(ui_widget->indexOf(ui_watch));
+    ui_watch->linkedProcessesStart();
 }
 
 JtvLiveUiMain::~JtvLiveUiMain()

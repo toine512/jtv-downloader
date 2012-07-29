@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     JtvLiveUiTabWatch.cpp \
     JtvLiveUiTabRtmpdump.cpp \
     JtvLiveUiTabRtmpgw.cpp \
-    JtvLiveUiTabAbout.cpp
+    JtvLiveUiTabAbout.cpp \
+    NewUpdateTab.cpp
 
 HEADERS  += JtvLiveUiMain.h \
     qt-jtvlive/JtvLiveChannel.h \
@@ -32,7 +33,8 @@ HEADERS  += JtvLiveUiMain.h \
     JtvLiveUiTabWatch.h \
     JtvLiveUiTabRtmpdump.h \
     JtvLiveUiTabRtmpgw.h \
-    JtvLiveUiTabAbout.h
+    JtvLiveUiTabAbout.h \
+    NewUpdateTab.h
 
 RESOURCES += \
     ressources.qrc
