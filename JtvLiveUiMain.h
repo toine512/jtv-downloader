@@ -24,39 +24,23 @@
 #include <QtCore/Qt>
 #include <QSettings>
 #include <QUuid>
-#include <QStringList>
-#include <QProcess>
 #include "qt-jtvlive/JtvLiveChannel.h"
 
 #include <QNetworkAccessManager>
 #include "UpdateChecker.h"
 
 //#include <QStatusBar>
-#include <QMainWindow>
-#include <QDesktopWidget>
-#include <QTabWidget>
 #include <QWidget>
 #include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QIcon>
-#include <QFrame>
-#include <QComboBox>
-#include <QHBoxLayout>
-#include <QGridLayout>
 #include <QVBoxLayout>
 #include <QPlainTextEdit>
-#include <QGroupBox>
-#include <QRadioButton>
-#include <QSpinBox>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QPixmap>
+
 #include "JtvLiveUiTabJustin_tv.h"
 #include "JtvLiveUiTabWatch.h"
 #include "JtvLiveUiTabParams.h"
 #include "JtvLiveUiTabRtmpdump.h"
 #include "JtvLiveUiTabRtmpgw.h"
+#include "JtvLiveUiTabAbout.h"
 
 class JtvLiveUiMain : public QMainWindow
 {
@@ -69,42 +53,20 @@ public:
 protected slots:
     void onGotoWatchAndStart();
 
-
-
-
     void TabUpdate_show(const QString &new_version_human, const QString &dl_link);
-    void aboutQt();
 
 protected:
-
-
-
-
-
-
     //UI
     //QStatusBar *ui_bottom_statusBar;
     QTabWidget *ui_widget;
-    QWidget *ui_tab5, *ui_tabUpdate;
+    QWidget *ui_tabUpdate;
 
     JtvLiveUiTabJustin_tv *ui_tab0;
     JtvLiveUiTabParams *ui_tab1;
     JtvLiveUiTabWatch *ui_tab3;
     JtvLiveUiTabRtmpdump *ui_tab2;
     JtvLiveUiTabRtmpgw *ui_tab4;
-
-    //Tab 2 : rtmpdump
-
-
-
-
-    //Tab 4 : rtmpdump
-
-
-    //Tab 5 : About
-    QLabel *ui_tab5_copyrightNotice, *ui_tab5_gplv3;
-    QPushButton *ui_tab5_aboutQt;
-    QGridLayout *ui_tab5_layout;
+    JtvLiveUiTabAbout *ui_tab5;
 
     //Update Tab
     QLabel *ui_tabUpdate_notice;
