@@ -56,6 +56,7 @@
 #include "JtvLiveUiTabWatch.h"
 #include "JtvLiveUiTabParams.h"
 #include "JtvLiveUiTabRtmpdump.h"
+#include "JtvLiveUiTabRtmpgw.h"
 
 class JtvLiveUiMain : public QMainWindow
 {
@@ -63,7 +64,6 @@ class JtvLiveUiMain : public QMainWindow
 
 public:
     JtvLiveUiMain(QWidget *parent = 0);
-    QString getCommandEscaped(QStringList args);
     ~JtvLiveUiMain();
 
 protected slots:
@@ -71,9 +71,7 @@ protected slots:
 
 
 
-    void Tab4_saveIp(const QString &ip);
-    void Tab4_savePort(int port);
-    void Tab4_startRtmpgw();
+
     void TabUpdate_show(const QString &new_version_human, const QString &dl_link);
     void aboutQt();
 
@@ -82,17 +80,18 @@ protected:
 
 
 
-    QStringList collectRtmpParams();
+
 
     //UI
     //QStatusBar *ui_bottom_statusBar;
     QTabWidget *ui_widget;
-    QWidget *ui_tab4, *ui_tab5, *ui_tabUpdate;
+    QWidget *ui_tab5, *ui_tabUpdate;
 
     JtvLiveUiTabJustin_tv *ui_tab0;
     JtvLiveUiTabParams *ui_tab1;
     JtvLiveUiTabWatch *ui_tab3;
     JtvLiveUiTabRtmpdump *ui_tab2;
+    JtvLiveUiTabRtmpgw *ui_tab4;
 
     //Tab 2 : rtmpdump
 
@@ -100,15 +99,7 @@ protected:
 
 
     //Tab 4 : rtmpdump
-    QGroupBox *ui_tab4_params_box, *ui_tab4_verbosity_box;
-    QGridLayout *ui_tab4_params_layout;
-    QLineEdit *ui_tab4_params_ip;
-    QSpinBox *ui_tab4_params_port;
-    QLabel *ui_tab4_params_l_ip, *ui_tab4_params_l_port, *ui_tab4_params_colon;
-    QHBoxLayout *ui_tab4_verbosity_layout;
-    QRadioButton *ui_tab4_verbosity_normal, *ui_tab4_verbosity_verbose, *ui_tab4_verbosity_debug;
-    QPushButton *ui_tab4_start;
-    QVBoxLayout *ui_tab4_layout;
+
 
     //Tab 5 : About
     QLabel *ui_tab5_copyrightNotice, *ui_tab5_gplv3;

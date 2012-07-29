@@ -87,40 +87,8 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 
 
         //Tab 4 : rtmpgw
-        ui_tab4 = new QWidget;
-        ui_tab4_params_box = new QGroupBox("Parameters :");
-        ui_tab4_params_l_ip = new QLabel("Binding address :");
-        ui_tab4_params_l_port = new QLabel("Listening port :");
-        ui_tab4_params_colon = new QLabel(":");
-        ui_tab4_params_ip = new QLineEdit;
-        ui_tab4_params_ip->setText(settings->value("rtmpgw/ip", "0.0.0.0").toString());
-        ui_tab4_params_port = new QSpinBox;
-        ui_tab4_params_port->setRange(1,65335);
-        ui_tab4_params_port->setValue(settings->value("rtmpgw/port", 80).toInt());
-        ui_tab4_params_layout = new QGridLayout;
-        ui_tab4_params_layout->addWidget(ui_tab4_params_l_ip, 0, 0);
-        ui_tab4_params_layout->addWidget(ui_tab4_params_l_port, 0, 2);
-        ui_tab4_params_layout->addWidget(ui_tab4_params_ip, 1, 0);
-        ui_tab4_params_layout->addWidget(ui_tab4_params_colon, 1, 1);
-        ui_tab4_params_layout->addWidget(ui_tab4_params_port, 1, 2);
-        ui_tab4_params_box->setLayout(ui_tab4_params_layout);
-        ui_tab4_verbosity_box = new QGroupBox("Verbosity :");
-        ui_tab4_verbosity_normal = new QRadioButton("Normal");
-        ui_tab4_verbosity_normal->setChecked(true);
-        ui_tab4_verbosity_verbose = new QRadioButton("Verbose");
-        ui_tab4_verbosity_debug = new QRadioButton("Debug");
-        ui_tab4_verbosity_layout = new QHBoxLayout;
-        ui_tab4_verbosity_layout->addWidget(ui_tab4_verbosity_normal);
-        ui_tab4_verbosity_layout->addWidget(ui_tab4_verbosity_verbose);
-        ui_tab4_verbosity_layout->addWidget(ui_tab4_verbosity_debug);
-        ui_tab4_verbosity_box->setLayout(ui_tab4_verbosity_layout);
-        ui_tab4_start = new QPushButton("Start");
-        //Layout
-        ui_tab4_layout = new QVBoxLayout;
-        ui_tab4_layout->addWidget(ui_tab4_params_box);
-        ui_tab4_layout->addWidget(ui_tab4_verbosity_box);
-        ui_tab4_layout->addWidget(ui_tab4_start);
-        ui_tab4->setLayout(ui_tab4_layout);
+    ui_tab4 = new JtvLiveUiTabRtmpgw(settings, live_channel);
+
 
         //Tab 5 : About
         ui_tab5 = new QWidget;
@@ -163,9 +131,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
 
 
 
-    connect(ui_tab4_params_ip, SIGNAL(textEdited(const QString &)), this, SLOT(Tab4_saveIp(const QString &)));
-    connect(ui_tab4_params_port, SIGNAL(valueChanged(int)), this, SLOT(Tab4_savePort(int)));
-    connect(ui_tab4_start, SIGNAL(clicked()), this, SLOT(Tab4_startRtmpgw()));
+
     connect(ui_tab5_aboutQt, SIGNAL(clicked()), this, SLOT(aboutQt()));
     connect(updater, SIGNAL(updateAvailable(const QString &, const QString &)), this, SLOT(TabUpdate_show(const QString &, const QString &)));
     connect(updater, SIGNAL(updateNotes(const QString &)), ui_tabUpdate_notes, SLOT(setPlainText(const QString &)));
@@ -186,57 +152,7 @@ void JtvLiveUiMain::onGotoWatchAndStart()
 
 
 //Tab 4 : slots
-void JtvLiveUiMain::Tab4_saveIp(const QString &ip)
-{
-    settings->setValue("rtmpgw/ip", ip);
-}
 
-void JtvLiveUiMain::Tab4_savePort(int port)
-{
-    settings->setValue("rtmpgw/port", port);
-}
-
-void JtvLiveUiMain::Tab4_startRtmpgw()
-{
-    QStringList args = collectRtmpParams();
-    if(args.isEmpty())
-    {
-        QMessageBox::warning(this, "Parameters", "RTMP parameters are empty.");
-    }
-    else
-    {
-        args << "-f";
-        args << settings->value("flash/version", "WIN 11,1,102,62").toString();
-        args << "-v";
-        if(ui_tab4_params_ip->text().isEmpty())
-        {
-            QMessageBox::warning(this, "Binding IP", "No binding address provided.");
-        }
-        else
-        {
-            args << "-D";
-            args << ui_tab4_params_ip->text();
-            args << "-g";
-            args << QString("%1").arg(ui_tab4_params_port->value());
-            if(ui_tab4_verbosity_verbose->isChecked())
-            {
-                args << "-V";
-            }
-            else if(ui_tab4_verbosity_debug->isChecked())
-            {
-                args << "-z";
-            }
-#ifdef Q_OS_WIN
-            if(!QProcess::startDetached(settings->value("rtmpgw/rtmpgw", "rtmpgw.exe").toString(), args))
-#else
-            if(!QProcess::startDetached(settings->value("terminal/terminal", "xterm").toString(), QStringList() << settings->value("terminal/cmdswitch", "-e").toString() << QString("%1 %2").arg(settings->value("rtmpgw/rtmpgw", "rtmpgw").toString(), getCommandEscaped(args).replace("&", "\\&"))))
-#endif
-            {
-                QMessageBox::warning(this, "Launching rtmpgw", "Unable to create the process, check the path.");
-            }
-        }
-    }
-}
 
 //Update Tab slots
 void JtvLiveUiMain::TabUpdate_show(const QString &new_version_human, const QString &dl_link)
@@ -247,54 +163,7 @@ void JtvLiveUiMain::TabUpdate_show(const QString &new_version_human, const QStri
     //ui_widget->tabBar()->setTabTextColor(ui_widget->indexOf(ui_tabUpdate), QColor(255, 127, 13));
 }
 
-QStringList JtvLiveUiMain::collectRtmpParams()
-{
-    QStringList args;
-    /*if(!ui_tab1_rtmp->text().isEmpty())
-    {
-        args << "-r";
-        args << ui_tab1_rtmp->text();
-    }
-    if(!lne_swf->text().isEmpty())
-    {
-        args << "-s";
-        args << lne_swf->text();
-    }
-    if(!lne_swf_vfy->text().isEmpty())
-    {
-        args << "-W";
-        args << lne_swf_vfy->text();
-    }
-    if(!lne_web->text().isEmpty())
-    {
-        args << "-p";
-        args << lne_web->text();
-    }
-    if(!lne_usher_token->text().isEmpty())
-    {
-        args << "-j";
-        args << lne_usher_token->text();
-    }*/
-    return args;
-}
 
-QString JtvLiveUiMain::getCommandEscaped(QStringList args)
-{
-    args.replaceInStrings("\"", "\\\"");
-    int s = args.size();
-    QString temp;
-    for (int i = 0 ; i < s ; ++i)
-    {
-        temp = args.at(i);
-        if(temp.contains(" "))
-        {
-            temp.prepend("\"");
-            temp.append("\"");
-            args.replace(i, temp);
-        }
-    }
-    return args.join(" ");
-}
 
 void JtvLiveUiMain::aboutQt()
 {
