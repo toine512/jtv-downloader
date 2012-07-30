@@ -4,6 +4,7 @@ Version=1.0
 Type=Application
 Name=Jtv live downloader
 Comment=Grabs streams from Justin.tv using rtmpdump.
+Icon=jtv-downloader
 Categories=AudioVideo
 Exec=/usr/bin/jtv-downloader
 Terminal=false

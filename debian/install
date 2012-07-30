@@ -1,2 +1,3 @@
 jtv-downloader usr/bin
 debian/jtv-downloader.desktop usr/share/applications
+debian/jtv-downloader.png /usr/share/icons/hicolor/64x64/apps

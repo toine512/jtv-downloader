@@ -38,3 +38,6 @@ HEADERS  += JtvLiveUiMain.h \
 
 RESOURCES += \
     ressources.qrc
+
+RC_FILE += \
+    jtv-downloader.rc
