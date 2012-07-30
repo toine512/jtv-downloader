@@ -10,13 +10,16 @@ Getting an up to date version of rtmpdump:
 ------------------------------------------
 ### Ubuntu Precise or under & Debian Squeeze or under
 - i386
-        wget http://ftp.fr.debian.org/debian/pool/main/r/rtmpdump/rtmpdump_2.4+20111222.git4e06e21-1_i386.deb
-        sudo dpkg -i rtmpdump_2.4+20111222.git4e06e21-1_i386.deb
-        rm rtmpdump_2.4+20111222.git4e06e21-1_i386.deb
+
+		wget http://ftp.fr.debian.org/debian/pool/main/r/rtmpdump/rtmpdump_2.4+20111222.git4e06e21-1_i386.deb
+		sudo dpkg -i rtmpdump_2.4+20111222.git4e06e21-1_i386.deb
+		rm rtmpdump_2.4+20111222.git4e06e21-1_i386.deb
+
 - AMD64
-        wget http://ftp.fr.debian.org/debian/pool/main/r/rtmpdump/rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
-        sudo dpkg -i rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
-        rm rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
+
+		wget http://ftp.fr.debian.org/debian/pool/main/r/rtmpdump/rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
+		sudo dpkg -i rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
+		rm rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
 
 ### Ubuntu Quantal or above & Debian Wheezy and above
 	sudo apt-get rtmpdump
