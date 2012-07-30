@@ -22,7 +22,7 @@ Getting an up to date version of rtmpdump:
 		rm rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
 
 ### Ubuntu Quantal and above & Debian Wheezy and above
-	sudo apt-get rtmpdump
+	sudo apt-get install rtmpdump
 
 PPA for Ubuntu-based distributions
 ----------------------------------
