@@ -29,8 +29,11 @@ NewUpdateTab::NewUpdateTab(bool auto_self_insert, QTabWidget *tab_widget, QWidge
 
 void NewUpdateTab::setUpdateInfos(const QString &new_version_human, const QString &dl_link)
 {
-    QString notice = QString("Update %1 is available. <a href=\"%2\">%2</a>").arg(new_version_human, dl_link);
-    lab_notice->setText(notice);
+#ifdef Q_OS_WIN
+    lab_notice->setText(QString("Update <b>%1</b> is available. <a href=\"%2\">%2</a>").arg(new_version_human, dl_link));
+#else
+    lab_notice->setText(QString("Update <b>%1</b> is available.<br />Please wait until the PPA is updated.<br />If you've installed manually, get the packet here: <a href=\"%2\">%2</a>.<br />Or recompile from <a href=\"https://github.com/toine512/jtv-downloader\">sources</a>.").arg(new_version_human, dl_link));
+#endif
     if(b_auto_insert)
         p_bar->addTab(this, QString("Update available! (v. %1)").arg(new_version_human));
 }
