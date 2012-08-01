@@ -27,12 +27,20 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
+/* 0x 0A 00 00 00 = alpha
+   0x 0B 00 00 00 = beta
+   0x 0F 00 00 00 = release */
+#define UPDATE_MASK_ALPHA 0x0A000000
+#define UPDATE_MASK_BETA 0x0B000000
+#define UPDATE_MASK_RELEASE 0x0F000000
+
 class UpdateChecker : public QObject
 {
     Q_OBJECT
 
 public:
     explicit UpdateChecker(QNetworkAccessManager *network_manager, const QString &base_url, const QString &client_uuid, quint32 version, QObject *parent = 0);
+    static QString whichRelease(quint32 version);
     
 signals:
     void updateAvailable(const QString &new_version_human, const QString &dl_link);

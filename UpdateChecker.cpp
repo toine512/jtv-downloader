@@ -33,6 +33,26 @@ UpdateChecker::UpdateChecker(QNetworkAccessManager *network_manager, const QStri
     connect(net_reply, SIGNAL(finished()), this, SLOT(checkDone()));
 }
 
+QString UpdateChecker::whichRelease(quint32 version)
+{
+    if((version & UPDATE_MASK_RELEASE) == UPDATE_MASK_RELEASE)
+    {
+        return QString("release");
+    }
+    else if((version & UPDATE_MASK_BETA) == UPDATE_MASK_BETA)
+    {
+        return QString("beta");
+    }
+    else if((version & UPDATE_MASK_ALPHA) == UPDATE_MASK_ALPHA)
+    {
+        return QString("alpha");
+    }
+    else
+    {
+        return QString("unknown");
+    }
+}
+
 void UpdateChecker::checkDone()
 {
     disconnect(net_reply, SIGNAL(finished()), this, SLOT(checkDone()));

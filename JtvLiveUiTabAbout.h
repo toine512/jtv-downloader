@@ -22,6 +22,7 @@
 #include "defines.h"
 
 #include <QString>
+#include "UpdateChecker.h"
 
 #include <QWidget>
 #include <QLabel>
