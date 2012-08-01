@@ -1,5 +1,5 @@
 #include "NewUpdateTab.h"
-#include <QDebug>
+
 NewUpdateTab::NewUpdateTab(bool auto_self_insert, QTabWidget *tab_widget, QWidget *parent) :
     QWidget(parent)
 {
