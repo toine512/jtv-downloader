@@ -1,3 +1,6 @@
 [submodule "qt-jtvlive"]
 	path = qt-jtvlive
 	url = https://github.com/toine512/qt-jtvlive.git
+[submodule "qt-shared"]
+	path = qt-shared
+	url = https://github.com/toine512/qt-shared.git
