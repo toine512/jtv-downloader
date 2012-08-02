@@ -44,7 +44,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     }
 
     //UpdateChecker setup
-    updater = new UpdateChecker(net_manager, "http://toine.fr.nf/jtvdl/", uuid, JTV_LIVE_VERSION, this);
+    updater = new UpdateChecker(net_manager, "http://jtv-downloader.fr.nf/upd/", uuid, JTV_LIVE_VERSION, this);
 
     /* GUI */
     setWindowTitle("Justin.tv / Twitch.tv live downloader");
