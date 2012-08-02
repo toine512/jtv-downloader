@@ -34,7 +34,7 @@ Install **jtv-downloader** package :
 
 	sudo apt-get install jtv-downloader
 
-Debian binary packages compiled in Ubuntu Oneiric
+Debian binary packages compiled in Ubuntu Precise
 -------------------------------------------------
 
 1.0 :
