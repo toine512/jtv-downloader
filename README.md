@@ -1,6 +1,6 @@
 Windows binaries
 ================
-- [temporary 1.1 (31/07/2012)] (https://github.com/downloads/toine512/jtv-downloader/jtv-downloader_1.1x.7z)
+- [1.1 beta] (https://github.com/downloads/toine512/jtv-downloader/jtv-downloader_b1.1.7z)
   Includes rtmpdump builds by svnpenn.
 - [1.0] (https://github.com/downloads/toine512/jtv-downloader/Jtv_downloader-b1.7z "In fact it's b1 but who cares ?")
 
@@ -36,6 +36,10 @@ Install **jtv-downloader** package :
 
 Debian binary packages compiled in Ubuntu Precise
 -------------------------------------------------
+
+1.1 beta :
+- [i386] (https://launchpad.net/~toine512/+archive/jtv-downloader/+build/3698718/+files/jtv-downloader_1.0%2B1SNAPSHOT6-0build1_i386.deb)
+- [AMD64] (https://launchpad.net/~toine512/+archive/jtv-downloader/+build/3698717/+files/jtv-downloader_1.0%2B1SNAPSHOT6-0build1_amd64.deb)
 
 1.0 :
 - [i386] (https://launchpad.net/~toine512/+archive/jtv-downloader/+files/jtv-downloader_1.0-0ubuntu7_i386.deb "jtv-downloader_1.0-0ubuntu7_i386.deb")
