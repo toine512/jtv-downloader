@@ -50,7 +50,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     setWindowTitle("Justin.tv / Twitch.tv live downloader");
 
     layout()->setSizeConstraint(QLayout::SetNoConstraint); //the main layout won't resize the QMainWindow
-    resize(496, 270);
+    resize(596, 270);
     setMinimumSize(496, 270);
 
     //Center on the current screen
@@ -73,12 +73,12 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     ui_about = new JtvLiveUiTabAbout;
     ui_update = new NewUpdateTab(true, ui_widget, this);
 
-    ui_widget->addTab(ui_jtv, "Justin.tv");
-    ui_widget->addTab(ui_watch, "Watch");
-    ui_widget->addTab(ui_params, "Params");
-    ui_widget->addTab(ui_rtmpdump, "rtmpdump");
-    ui_widget->addTab(ui_rtmpgw, "rtmpgw");
-    ui_widget->addTab(ui_about, "About");
+    ui_widget->addTab(ui_jtv, QIcon(":img/jtv.png"), "Justin.tv");
+    ui_widget->addTab(ui_watch, QIcon(":img/television.png"), "Watch");
+    ui_widget->addTab(ui_params, QIcon(":img/gear.png"), "Params");
+    ui_widget->addTab(ui_rtmpdump, QIcon(":img/hdd.png"), "rtmpdump");
+    ui_widget->addTab(ui_rtmpgw, QIcon(":img/netdd.png"), "rtmpgw");
+    ui_widget->addTab(ui_about, QIcon(":img/lightbulb.png"), "About");
 
     connect(ui_jtv, SIGNAL(askClearParams()), ui_params, SLOT(clearParams()));
     connect(ui_jtv, SIGNAL(gotoWatchAndStart()), this, SLOT(onGotoWatchAndStart()));

@@ -64,7 +64,7 @@ JtvLiveUiTabRtmpgw::JtvLiveUiTabRtmpgw(QSettings *settings, JtvLiveChannel *live
 
     group_verbosity->setLayout(layout_verbosity);
 
-    btn_start = new QPushButton("Start");
+    btn_start = new QPushButton(QIcon(":img/player.png"), "Start");
 
     //Layout
     layout = new QVBoxLayout;

@@ -36,6 +36,7 @@
 #include <QDesktopWidget>
 #include <QRect>
 #include <QTabWidget>
+#include <QIcon>
 #include "JtvLiveUiTabJustin_tv.h"
 #include "JtvLiveUiTabWatch.h"
 #include "JtvLiveUiTabParams.h"

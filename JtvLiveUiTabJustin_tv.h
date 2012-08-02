@@ -32,7 +32,7 @@
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QMessageBox>
-#include "QSIRPushButton.h"
+#include "qt-shared/buttons/QSquareIconResizingPushButton.h"
 
 class JtvLiveUiTabJustin_tv : public QWidget
 {
@@ -66,7 +66,8 @@ protected:
 
     QLabel *lab_channel, *lab_password, *lab_infos, *lab_bitrate, *lab_viewers, *lab_part, *lab_id, *lab_node;
     QLineEdit *lne_channel, *lne_password;
-    QPushButton *btn_favourite, *btn_search, *btn_watch;
+    QSquareIconResizingPushButton *btn_search;
+    QPushButton *btn_favourite, *btn_watch;
     QFrame *fra_separator;
     QComboBox *cbo_selector;
     QHBoxLayout *layout_stream;

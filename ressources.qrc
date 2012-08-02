@@ -1,7 +1,15 @@
 <RCC>
     <qresource prefix="/img">
-        <file alias="zoom.png">img/zoom.png</file>
         <file alias="television.png">img/television.png</file>
         <file alias="gplv3.png">img/gplv3-127x51.png</file>
+        <file alias="search.png">img/search.png</file>
+        <file alias="jtv.png">img/jtv.png</file>
+        <file alias="gear.png">img/gear.png</file>
+        <file alias="hdd.png">img/hard-drive.png</file>
+        <file alias="netdd.png">img/networked-drive.png</file>
+        <file alias="lightbulb.png">img/lightbulb.png</file>
+        <file alias="update.png">img/update.png</file>
+        <file alias="player.png">img/media-player.png</file>
+        <file alias="explorer.png">img/explorer.png</file>
     </qresource>
 </RCC>

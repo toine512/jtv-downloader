@@ -29,7 +29,9 @@ JtvLiveUiTabRtmpdump::JtvLiveUiTabRtmpdump(QSettings *settings, JtvLiveChannel *
     group_file->setChecked(true);
 
     lne_file = new QLineEdit;
-    btn_file = new QPushButton("...");
+    btn_file = new QPushButton;
+    btn_file->setIcon(QIcon(":img/explorer.png"));
+    btn_file->setToolTip("Browse...");
 
     layout_file = new QHBoxLayout();
     layout_file->addWidget(lne_file);
@@ -66,7 +68,7 @@ JtvLiveUiTabRtmpdump::JtvLiveUiTabRtmpdump(QSettings *settings, JtvLiveChannel *
 
     group_verbosity->setLayout(layout_verbosity);
 
-    btn_start = new QPushButton("Start");
+    btn_start = new QPushButton(QIcon(":img/player.png"), "Start");
 
     //Layout
     layout = new QVBoxLayout;

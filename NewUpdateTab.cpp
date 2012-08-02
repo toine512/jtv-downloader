@@ -35,7 +35,7 @@ void NewUpdateTab::setUpdateInfos(const QString &new_version_human, const QStrin
     lab_notice->setText(QString("Update <b>%1</b> is available.<br />Please wait until the PPA is updated.<br />If you've installed manually, get the packet here: <a href=\"%2\">%2</a>.<br />Or recompile from <a href=\"https://github.com/toine512/jtv-downloader\">sources</a>.").arg(new_version_human, dl_link));
 #endif
     if(b_auto_insert)
-        p_bar->addTab(this, QString("Update available! (v. %1)").arg(new_version_human));
+        p_bar->addTab(this, QIcon(":img/update.png"), QString("Update available! (v. %1)").arg(new_version_human));
 }
 
 void NewUpdateTab::setUpdateNotes(const QString &notes)

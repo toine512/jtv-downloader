@@ -5,6 +5,7 @@
 
 #include <QWidget>
 #include <QTabWidget>
+#include <QIcon>
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QVBoxLayout>

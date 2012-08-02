@@ -28,6 +28,7 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QPushButton>
+#include <QIcon>
 #include <QGridLayout>
 #include <QMessageBox>
 

@@ -4,40 +4,40 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network xml
+QT += core gui network xml
 
 TARGET = jtv-downloader
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        JtvLiveUiMain.cpp \
-    qt-jtvlive/JtvLiveChannel.cpp \
-    QSIRPushButton.cpp \
-    UpdateChecker.cpp \
-    JtvLiveUiTabJustin_tv.cpp \
-    JtvLiveUiTabParams.cpp \
-    JtvLiveUiTabWatch.cpp \
-    JtvLiveUiTabRtmpdump.cpp \
-    JtvLiveUiTabRtmpgw.cpp \
-    JtvLiveUiTabAbout.cpp \
-    NewUpdateTab.cpp
+           JtvLiveUiMain.cpp \
+           qt-jtvlive/JtvLiveChannel.cpp \
+           UpdateChecker.cpp \
+           JtvLiveUiTabJustin_tv.cpp \
+           JtvLiveUiTabParams.cpp \
+           JtvLiveUiTabWatch.cpp \
+           JtvLiveUiTabRtmpdump.cpp \
+           JtvLiveUiTabRtmpgw.cpp \
+           JtvLiveUiTabAbout.cpp \
+           qt-shared/buttons/QSquarePushButton.cpp \
+           qt-shared/buttons/QSquareIconResizingPushButton.cpp \
+           NewUpdateTab.cpp
 
-HEADERS  += JtvLiveUiMain.h \
-    qt-jtvlive/JtvLiveChannel.h \
-    defines.h \
-    QSIRPushButton.h \
-    UpdateChecker.h \
-    JtvLiveUiTabJustin_tv.h \
-    JtvLiveUiTabParams.h \
-    JtvLiveUiTabWatch.h \
-    JtvLiveUiTabRtmpdump.h \
-    JtvLiveUiTabRtmpgw.h \
-    JtvLiveUiTabAbout.h \
-    NewUpdateTab.h
+HEADERS += defines.h \
+           JtvLiveUiMain.h \
+           qt-jtvlive/JtvLiveChannel.h \
+           UpdateChecker.h \
+           JtvLiveUiTabJustin_tv.h \
+           JtvLiveUiTabParams.h \
+           JtvLiveUiTabWatch.h \
+           JtvLiveUiTabRtmpdump.h \
+           JtvLiveUiTabRtmpgw.h \
+           JtvLiveUiTabAbout.h \
+           qt-shared/buttons/QSquarePushButton.h \
+           qt-shared/buttons/QSquareIconResizingPushButton.h \
+           NewUpdateTab.h
 
-RESOURCES += \
-    ressources.qrc
+RESOURCES += ressources.qrc
 
-RC_FILE += \
-    jtv-downloader.rc
+RC_FILE += jtv-downloader.rc

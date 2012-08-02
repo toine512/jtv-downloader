@@ -34,6 +34,7 @@
 #include <QHBoxLayout>
 #include <QRadioButton>
 #include <QPushButton>
+#include <QIcon>
 #include <QVBoxLayout>
 #include <QMessageBox>
 

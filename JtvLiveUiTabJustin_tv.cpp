@@ -35,7 +35,7 @@ JtvLiveUiTabJustin_tv::JtvLiveUiTabJustin_tv(JtvLiveChannel *live_channel, QWidg
     lab_password = new QLabel("Channel password :");
     lab_password->setBuddy(lne_password);
 
-    btn_search = new QSIRPushButton(":img/zoom.png");
+    btn_search = new QSquareIconResizingPushButton(":img/search.png");
 
     lab_infos = new QLabel("First, type the channel name in the field above and the password if any.");
     lab_infos->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
