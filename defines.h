@@ -22,7 +22,7 @@
 /* 0x 0A 00 00 00 = alpha
    0x 0B 00 00 00 = beta
    0x 0F 00 00 00 = release */
-#define JTV_LIVE_VERSION 0x0B010100 //uint32_t For The Win !
+#define JTV_LIVE_VERSION 0x0A010200 //uint32_t For The Win !
 
 // Human readable version
 #define JTV_LIVE_VERSION_HUMAN "1.1"
