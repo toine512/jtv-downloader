@@ -1,3 +1,10 @@
+jtv-downloader (1.1.1-0build1) quantal; urgency=low
+
+  * 1.1.1 Release (12/01/2013).
+  * Streams using fplive.net are fixed.
+
+ -- toine512 <toine512@gmail.com>  Sat, 12 Jan 2013 22:33:09 +0100
+
 jtv-downloader (1.0+1SNAPSHOT6-0build1) precise; urgency=low
 
   * 1.1 Beta.
