@@ -25,6 +25,6 @@
 #define JTV_LIVE_VERSION 0x0A010200 //uint32_t For The Win !
 
 // Human readable version
-#define JTV_LIVE_VERSION_HUMAN "1.1"
+#define JTV_LIVE_VERSION_HUMAN "1.2"
 
 #endif // DEFINES_H

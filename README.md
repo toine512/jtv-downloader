@@ -1,5 +1,7 @@
 Windows binaries
 ================
+- [1.1.1] (http://dl0.toine512.fr/jtvdl/jtv-downloader_1.1.1.7z)
+  Includes rtmpdump builds by svnpenn.
 - [1.1 beta] (https://github.com/downloads/toine512/jtv-downloader/jtv-downloader_b1.1.7z)
   Includes rtmpdump builds by svnpenn.
 - [1.0] (https://github.com/downloads/toine512/jtv-downloader/Jtv_downloader-b1.7z "In fact it's b1 but who cares ?")
