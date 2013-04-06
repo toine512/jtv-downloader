@@ -1,10 +1,10 @@
+Latest stable version : **1.1.1**.
 Windows binaries
 ================
-- [1.1.1] (http://dl0.toine512.fr/jtvdl/jtv-downloader_1.1.1.7z)
-  Includes rtmpdump builds by svnpenn.
-- [1.1 beta] (https://github.com/downloads/toine512/jtv-downloader/jtv-downloader_b1.1.7z)
-  Includes rtmpdump builds by svnpenn.
-- [1.0] (https://github.com/downloads/toine512/jtv-downloader/Jtv_downloader-b1.7z "In fact it's b1 but who cares ?")
+- [1.1.1] (http://sourceforge.net/projects/jtv-downloader/files/release/jtv-downloader_1.1.1.7z/download)
+  Includes official rtmpdump builds. Hosted on SourceForge.
+
+Previous packages available [here] (https://github.com/toine512/jtv-downloader/wiki/Previous-releases "Wiki:Previous-releases").
 
 Linux binaries
 ==============
@@ -38,14 +38,11 @@ Install **jtv-downloader** package :
 
 Debian binary packages compiled in Ubuntu Precise
 -------------------------------------------------
+1.1.1 :
+- [i386] (https://launchpad.net/~toine512/+archive/jtv-downloader/+build/4212285/+files/jtv-downloader_1.1.1-0build1_i386.deb "jtv-downloader_1.1.1-0build1_i386.deb")
+- [AMD64] (https://launchpad.net/~toine512/+archive/jtv-downloader/+build/4212284/+files/jtv-downloader_1.1.1-0build1_amd64.deb "jtv-downloader_1.1.1-0build1_amd64.deb")
 
-1.1 beta :
-- [i386] (https://launchpad.net/~toine512/+archive/jtv-downloader/+build/3698718/+files/jtv-downloader_1.0%2B1SNAPSHOT6-0build1_i386.deb)
-- [AMD64] (https://launchpad.net/~toine512/+archive/jtv-downloader/+build/3698717/+files/jtv-downloader_1.0%2B1SNAPSHOT6-0build1_amd64.deb)
-
-1.0 :
-- [i386] (https://launchpad.net/~toine512/+archive/jtv-downloader/+files/jtv-downloader_1.0-0ubuntu7_i386.deb "jtv-downloader_1.0-0ubuntu7_i386.deb")
-- [AMD64] (https://launchpad.net/~toine512/+archive/jtv-downloader/+files/jtv-downloader_1.0-0ubuntu7_amd64.deb "jtv-downloader_1.0-0ubuntu7_amd64.deb")
+Previous packages available [here] (https://github.com/toine512/jtv-downloader/wiki/Previous-releases "Wiki:Previous-releases").
 
 Building on Debian-based distributions
 ======================================
