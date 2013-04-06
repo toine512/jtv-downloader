@@ -1,6 +1,8 @@
 Latest stable version : **1.1.1**.
+
 Windows binaries
 ================
+
 - [1.1.1] (http://sourceforge.net/projects/jtv-downloader/files/release/jtv-downloader_1.1.1.7z/download)
   Includes official rtmpdump builds. Hosted on SourceForge.
 
@@ -8,8 +10,10 @@ Previous packages available [here] (https://github.com/toine512/jtv-downloader/w
 
 Linux binaries
 ==============
-Getting an up to date version of rtmpdump:
+
+You need an up to date version of rtmpdump
 ------------------------------------------
+
 ### Ubuntu Quantal and above & Debian Wheezy and above
 	sudo apt-get install rtmpdump
 
@@ -28,6 +32,7 @@ Getting an up to date version of rtmpdump:
 
 PPA for Ubuntu-based distributions
 ----------------------------------
+
 ppa:toine512/jtv-downloader
 
 	sudo add-apt-repository ppa:toine512/jtv-downloader
@@ -36,8 +41,9 @@ Install **jtv-downloader** package :
 
 	sudo apt-get install jtv-downloader
 
-Debian binary packages compiled in Ubuntu Precise
+Debian binary packages compiled on Ubuntu Quantal
 -------------------------------------------------
+
 1.1.1 :
 - [i386] (https://launchpad.net/~toine512/+archive/jtv-downloader/+build/4212285/+files/jtv-downloader_1.1.1-0build1_i386.deb "jtv-downloader_1.1.1-0build1_i386.deb")
 - [AMD64] (https://launchpad.net/~toine512/+archive/jtv-downloader/+build/4212284/+files/jtv-downloader_1.1.1-0build1_amd64.deb "jtv-downloader_1.1.1-0build1_amd64.deb")
