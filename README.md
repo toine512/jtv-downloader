@@ -10,6 +10,9 @@ Linux binaries
 ==============
 Getting an up to date version of rtmpdump:
 ------------------------------------------
+### Ubuntu Quantal and above & Debian Wheezy and above
+	sudo apt-get install rtmpdump
+
 ### Ubuntu Precise and under & Debian Squeeze and under
 - i386
 
@@ -22,9 +25,6 @@ Getting an up to date version of rtmpdump:
 		wget http://ftp.fr.debian.org/debian/pool/main/r/rtmpdump/rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
 		sudo dpkg -i rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
 		rm rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
-
-### Ubuntu Quantal and above & Debian Wheezy and above
-	sudo apt-get install rtmpdump
 
 PPA for Ubuntu-based distributions
 ----------------------------------
