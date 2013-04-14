@@ -1,6 +1,6 @@
 /* This file is part of "Jtv live downloader"
  *
- * Copyright (C) 2012 toine512 <toine512@gmail.com>
+ * Copyright (C) 2012-2013 toine512 <toine512@gmail.com>
  *
  * "Jtv live downloader" is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +19,11 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-/* 0x 0A 00 00 00 = alpha
-   0x 0B 00 00 00 = beta
-   0x 0F 00 00 00 = release */
-#define JTV_LIVE_VERSION 0x0A010200 //uint32_t For The Win !
+/*    MA MI FI
+   0x 00 00 00 0A = alpha
+   0x 00 00 00 0B = beta
+   0x 00 00 00 0F = release */
+#define JTV_LIVE_VERSION 0x0102000A //uint32_t For The Win !
 
 // Human readable version
 #define JTV_LIVE_VERSION_HUMAN "1.2"

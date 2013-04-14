@@ -1,6 +1,6 @@
 /* This file is part of "Jtv live downloader"
  *
- * Copyright (C) 2012 toine512 <toine512@gmail.com>
+ * Copyright (C) 2012-2013 toine512 <toine512@gmail.com>
  *
  * "Jtv live downloader" is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,12 +27,12 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-/* 0x 0A 00 00 00 = alpha
-   0x 0B 00 00 00 = beta
-   0x 0F 00 00 00 = release */
-#define UPDATE_MASK_ALPHA 0x0A000000
-#define UPDATE_MASK_BETA 0x0B000000
-#define UPDATE_MASK_RELEASE 0x0F000000
+/* 0x 00 00 00 0A = alpha
+   0x 00 00 00 0B = beta
+   0x 00 00 00 0F = release */
+#define UPDATE_MASK_ALPHA 0x0000000A
+#define UPDATE_MASK_BETA 0x0000000B
+#define UPDATE_MASK_RELEASE 0x0000000F
 
 class UpdateChecker : public QObject
 {
