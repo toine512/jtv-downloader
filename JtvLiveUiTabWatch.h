@@ -1,6 +1,6 @@
 /* This file is part of "Jtv live downloader"
  *
- * Copyright (C) 2012 toine512 <toine512@gmail.com>
+ * Copyright (C) 2012-2013 toine512 <toine512@gmail.com>
  *
  * "Jtv live downloader" is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include <QFileDialog>
 
 class JtvLiveUiTabWatch : public QWidget
 {
@@ -49,6 +50,7 @@ public slots:
     void linkedProcessesStart();
 
 protected slots:
+    void openFileBrowser();
     void settingsSetPlayerPath(const QString &path);
     void linkedProcessesError(const QProcess::ProcessError &error);
     void linkedProcessesDisconnectTerminate();
@@ -64,7 +66,7 @@ protected:
     
     QLabel *lab_player;
     QLineEdit *lne_player;
-    QPushButton *btn_watch;
+    QPushButton *btn_player, *btn_watch;
     QFrame *fra_separator;
     QPlainTextEdit *pte_rtmpgw, *pte_player;
     QHBoxLayout *layout_player;

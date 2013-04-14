@@ -1,6 +1,6 @@
 /* This file is part of "Jtv live downloader"
  *
- * Copyright (C) 2012 toine512 <toine512@gmail.com>
+ * Copyright (C) 2012-2013 toine512 <toine512@gmail.com>
  *
  * "Jtv live downloader" is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,9 @@ JtvLiveUiTabWatch::JtvLiveUiTabWatch(QSettings *settings, JtvLiveChannel *live_c
     lab_player = new QLabel("Player command :");
     lne_player->setText(p_settings->value("watch/player", "vlc").toString());
 #endif
+    btn_player = new QPushButton;
+    btn_player->setIcon(QIcon(":img/explorer.png"));
+    btn_player->setToolTip("Browse...");
 
     btn_watch = new QPushButton("Watch");
     btn_watch->setIcon(QIcon(":img/television.png"));
@@ -57,6 +60,7 @@ JtvLiveUiTabWatch::JtvLiveUiTabWatch(QSettings *settings, JtvLiveChannel *live_c
     layout_player = new QHBoxLayout;
     layout_player->addWidget(lab_player);
     layout_player->addWidget(lne_player);
+    layout_player->addWidget(btn_player);
 
     layout = new QVBoxLayout;
     layout->addLayout(layout_player);
@@ -67,13 +71,27 @@ JtvLiveUiTabWatch::JtvLiveUiTabWatch(QSettings *settings, JtvLiveChannel *live_c
 
     setLayout(layout);
 
-    connect(lne_player, SIGNAL(textEdited(const QString &)), this, SLOT(settingsSetPlayerPath(const QString &)));
+    connect(lne_player, SIGNAL(textChanged(const QString &)), this, SLOT(settingsSetPlayerPath(const QString &)));
+    connect(btn_player, SIGNAL(clicked()), this, SLOT(openFileBrowser()));
     connect(btn_watch, SIGNAL(clicked()), this, SLOT(linkedProcessesStart()));
     connect(qproc_rtmpgw, SIGNAL(readyReadStandardOutput()), this, SLOT(rtmpgwOut()));
     connect(qproc_player, SIGNAL(readyReadStandardOutput()), this, SLOT(playerOut()));
 }
 
 //Tab 3 slots
+void JtvLiveUiTabWatch::openFileBrowser()
+{
+#ifdef Q_OS_WIN
+    QString player = QFileDialog::getOpenFileName(this, "Choose player", QString(), "Executable (*.exe)");
+#else
+    QString player = QFileDialog::getOpenFileName(this, "Choose player");
+#endif
+    if(!player.isEmpty())
+    {
+        lne_player->setText(player);
+    }
+}
+
 void JtvLiveUiTabWatch::settingsSetPlayerPath(const QString &path)
 {
     p_settings->setValue("watch/player", path);
