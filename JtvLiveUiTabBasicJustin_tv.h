@@ -1,6 +1,6 @@
 /* This file is part of "Jtv live downloader"
  *
- * Copyright (C) 2012 toine512 <toine512@gmail.com>
+ * Copyright (C) 2012-2013 toine512 <toine512@gmail.com>
  *
  * "Jtv live downloader" is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  * along with "Jtv live downloader".  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef JTVLIVEUITABJUSTIN_TV_H
-#define JTVLIVEUITABJUSTIN_TV_H
+#ifndef JTVLIVEUITABBASICJUSTIN_TV_H
+#define JTVLIVEUITABBASICJUSTIN_TV_H
 
 #include <QString>
 #include <QStringList>
@@ -30,21 +30,20 @@
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QGridLayout>
-#include <QVBoxLayout>
 #include <QMessageBox>
 #include "qt-shared/buttons/QSquareIconResizingPushButton.h"
 
-class JtvLiveUiTabJustin_tv : public QWidget
+class JtvLiveUiTabBasicJustin_tv : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit JtvLiveUiTabJustin_tv(JtvLiveChannel *live_channel, QWidget *parent = 0);
-    
+    explicit JtvLiveUiTabBasicJustin_tv(JtvLiveChannel *live_channel, QWidget *parent = 0);
+
 signals:
     void toggleUi();
+    void gotoRecord();
     void gotoWatchAndStart();
-    void askClearParams();
 
 public slots:
     void btn_watchEnable();
@@ -52,27 +51,24 @@ public slots:
 
 protected slots:
     void searchChannel();
-    void onMessageChanged(const QString &message);
+    //void onMessageChanged(const QString &message);
     void onSearchSuccess(QStringList names);
     void onSearchError(const QString &error);
-    void fillStats();
 
 protected:
     void lock();
     void unlock();
-    void defaultStats();
 
     JtvLiveChannel *p_live_channel;
 
-    QLabel *lab_channel, *lab_password, *lab_infos, *lab_bitrate, *lab_viewers, *lab_part, *lab_id, *lab_node;
+    QLabel *lab_channel, *lab_password, *lab_stream, /**lab_infos*/;
     QLineEdit *lne_channel, *lne_password;
     QSquareIconResizingPushButton *btn_search;
-    QPushButton *btn_favourite, *btn_watch, *btn_simplified;
+    QPushButton *btn_favourite, *btn_record, *btn_watch, *btn_advanced;
     QFrame *fra_separator;
     QComboBox *cbo_selector;
-    QHBoxLayout *layout_stream;
-    QGridLayout *layout_search, *layout_stats;
-    QVBoxLayout *layout;
+    QHBoxLayout *layout_actions;
+    QGridLayout *layout;
 };
 
-#endif // JTVLIVEUITABJUSTIN_TV_H
+#endif // JTVLIVEUITABBASICJUSTIN_TV_H

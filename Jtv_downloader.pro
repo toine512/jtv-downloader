@@ -22,7 +22,9 @@ SOURCES += main.cpp\
            JtvLiveUiTabAbout.cpp \
            qt-shared/buttons/QSquarePushButton.cpp \
            qt-shared/buttons/QSquareIconResizingPushButton.cpp \
-           NewUpdateTab.cpp
+           NewUpdateTab.cpp \
+           JtvLiveUiTabBasicJustin_tv.cpp \
+           JtvLiveUiTabBasicRtmpdump.cpp
 
 HEADERS += defines.h \
            JtvLiveUiMain.h \
@@ -36,7 +38,9 @@ HEADERS += defines.h \
            JtvLiveUiTabAbout.h \
            qt-shared/buttons/QSquarePushButton.h \
            qt-shared/buttons/QSquareIconResizingPushButton.h \
-           NewUpdateTab.h
+           NewUpdateTab.h \
+           JtvLiveUiTabBasicJustin_tv.h \
+           JtvLiveUiTabBasicRtmpdump.h
 
 RESOURCES += ressources.qrc
 

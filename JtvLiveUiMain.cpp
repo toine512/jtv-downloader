@@ -49,23 +49,33 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     /* GUI */
     setWindowTitle("Justin.tv / Twitch.tv live downloader");
 
-    layout()->setSizeConstraint(QLayout::SetNoConstraint); //the main layout won't resize the QMainWindow
-    resize(596, 270);
-    setMinimumSize(496, 270);
+    ui_widget = new QTabWidget;
+    ui_update = new NewUpdateTab(true, ui_widget, this);
 
-    //Center on the current screen
-    QDesktopWidget desktop_widget;
-    QRect screen_geometry = desktop_widget.availableGeometry();
-    move(screen_geometry.width() / 2 - width() / 2, screen_geometry.height() / 2 - height() / 2);
+    //Which interface do we load ?
+    b_is_advanced_ui = settings->value("gui/advanced", false).toBool();
+    if(b_is_advanced_ui) //Load advanced interface
+    {
+        loadAdvancedUi();
+    }
+    else //Load simplified interface
+    {
+        loadBasicUi();
+    }
+
+    /*layout()->setSizeConstraint(QLayout::SetNoConstraint); //the main layout won't resize the QMainWindow
+    resize(596, 270);
+    setMinimumSize(496, 270);*/
+    //setFixedSize(400, 250);
 
     //Statusbar
     /*ui_bottom_statusBar = statusBar();
     ui_bottom_statusBar->showMessage("I'm an useless status bar !");*/
 
     //Central zone
-    ui_widget = new QTabWidget;
-
+/*
     ui_jtv = new JtvLiveUiTabJustin_tv(live_channel);
+    ui_basic_jtv = new JtvLiveUiTabBasicJustin_tv(live_channel);
     ui_watch = new JtvLiveUiTabWatch(settings, live_channel);
     ui_params = new JtvLiveUiTabParams(live_channel);
     ui_rtmpdump = new JtvLiveUiTabRtmpdump(settings, live_channel);
@@ -74,6 +84,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     ui_update = new NewUpdateTab(true, ui_widget, this);
 
     ui_widget->addTab(ui_jtv, QIcon(":img/jtv.png"), "Justin.tv");
+    ui_widget->addTab(ui_basic_jtv, QIcon(":img/jtv.png"), "Justin.tv");
     ui_widget->addTab(ui_watch, QIcon(":img/television.png"), "Watch");
     ui_widget->addTab(ui_params, QIcon(":img/gear.png"), "Params");
     ui_widget->addTab(ui_rtmpdump, QIcon(":img/hdd.png"), "rtmpdump");
@@ -84,16 +95,131 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     connect(ui_jtv, SIGNAL(gotoWatchAndStart()), this, SLOT(onGotoWatchAndStart()));
     connect(ui_watch, SIGNAL(askBtn_watchEnable()), ui_jtv, SLOT(btn_watchEnable()));
     connect(ui_watch, SIGNAL(askBtn_watchDisable()), ui_jtv, SLOT(btn_watchDisable()));
+    connect(ui_basic_jtv, SIGNAL(gotoWatchAndStart()), this, SLOT(onGotoWatchAndStart()));
+    connect(ui_basic_jtv, SIGNAL(gotoRecord()), this, SLOT(onGotoRecord()));
+    connect(ui_watch, SIGNAL(askBtn_watchEnable()), ui_basic_jtv, SLOT(btn_watchEnable()));
+    connect(ui_watch, SIGNAL(askBtn_watchDisable()), ui_basic_jtv, SLOT(btn_watchDisable()));*/
+
     connect(updater, SIGNAL(updateAvailable(const QString &, const QString &)), ui_update, SLOT(setUpdateInfos(const QString &, const QString &)));
     connect(updater, SIGNAL(updateNotes(const QString &)), ui_update, SLOT(setUpdateNotes(const QString &)));
 
+    //Center on the current screen
+    QDesktopWidget desktop_widget;
+    QRect screen_geometry = desktop_widget.availableGeometry();
+    move(screen_geometry.width() / 2 - width() / 2, screen_geometry.height() / 2 - height() / 2);
+
     setCentralWidget(ui_widget);
+}
+
+void JtvLiveUiMain::toggleUi()
+{
+    if(b_is_advanced_ui) //Load simplified GUI
+    {
+        clearAdvancedUi();
+        b_is_advanced_ui = false;
+        loadBasicUi();
+    }
+    else //Load advanced GUI
+    {
+        clearBasicUi();
+        b_is_advanced_ui = true;
+        loadAdvancedUi();
+    }
+    settings->setValue("gui/advanced", b_is_advanced_ui);
+}
+
+void JtvLiveUiMain::onGotoRecord()
+{
+    ui_widget->setCurrentIndex(ui_widget->indexOf(ui_basic_rtmpdump));
 }
 
 void JtvLiveUiMain::onGotoWatchAndStart()
 {
     ui_widget->setCurrentIndex(ui_widget->indexOf(ui_watch));
     ui_watch->linkedProcessesStart();
+}
+
+void JtvLiveUiMain::loadAdvancedUi()
+{
+    layout()->setSizeConstraint(QLayout::SetNoConstraint); //the main layout won't resize the QMainWindow
+    setMinimumSize(496, 270);
+    setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    resize(596, 270);
+
+    ui_jtv = new JtvLiveUiTabJustin_tv(live_channel);
+    ui_watch = new JtvLiveUiTabWatch(settings, live_channel);
+    ui_params = new JtvLiveUiTabParams(live_channel);
+    ui_rtmpdump = new JtvLiveUiTabRtmpdump(settings, live_channel);
+    ui_rtmpgw = new JtvLiveUiTabRtmpgw(settings, live_channel);
+    ui_about = new JtvLiveUiTabAbout;
+
+    ui_widget->addTab(ui_jtv, QIcon(":img/jtv.png"), "Justin.tv");
+    ui_widget->addTab(ui_watch, QIcon(":img/television.png"), "Watch");
+    ui_widget->addTab(ui_params, QIcon(":img/gear.png"), "Params");
+    ui_widget->addTab(ui_rtmpdump, QIcon(":img/hdd.png"), "rtmpdump");
+    ui_widget->addTab(ui_rtmpgw, QIcon(":img/netdd.png"), "rtmpgw");
+    ui_widget->addTab(ui_about, QIcon(":img/lightbulb.png"), "About");
+
+    connect(ui_jtv, SIGNAL(askClearParams()), ui_params, SLOT(clearParams()));
+    connect(ui_jtv, SIGNAL(gotoWatchAndStart()), this, SLOT(onGotoWatchAndStart()));
+    connect(ui_jtv, SIGNAL(toggleUi()), this, SLOT(toggleUi()));
+    connect(ui_watch, SIGNAL(askBtn_watchEnable()), ui_jtv, SLOT(btn_watchEnable()));
+    connect(ui_watch, SIGNAL(askBtn_watchDisable()), ui_jtv, SLOT(btn_watchDisable()));
+}
+
+void JtvLiveUiMain::clearAdvancedUi()
+{
+    ui_widget->clear();
+
+    disconnect(ui_jtv, SIGNAL(askClearParams()), ui_params, SLOT(clearParams()));
+    disconnect(ui_jtv, SIGNAL(gotoWatchAndStart()), this, SLOT(onGotoWatchAndStart()));
+    disconnect(ui_jtv, SIGNAL(toggleUi()), this, SLOT(toggleUi()));
+    disconnect(ui_watch, SIGNAL(askBtn_watchEnable()), ui_jtv, SLOT(btn_watchEnable()));
+    disconnect(ui_watch, SIGNAL(askBtn_watchDisable()), ui_jtv, SLOT(btn_watchDisable()));
+
+    delete ui_jtv;
+    delete ui_watch;
+    delete ui_params;
+    delete ui_rtmpdump;
+    delete ui_rtmpgw;
+    delete ui_about;
+}
+
+void JtvLiveUiMain::loadBasicUi()
+{
+    setFixedSize(400, 250);
+
+    ui_basic_jtv = new JtvLiveUiTabBasicJustin_tv(live_channel);
+    ui_watch = new JtvLiveUiTabWatch(settings, live_channel);
+    ui_basic_rtmpdump = new JtvLiveUiTabBasicRtmpdump(settings, live_channel);
+    ui_about = new JtvLiveUiTabAbout;
+
+    ui_widget->addTab(ui_basic_jtv, QIcon(":img/jtv.png"), "Justin.tv");
+    ui_widget->addTab(ui_watch, QIcon(":img/television.png"), "Watch");
+    ui_widget->addTab(ui_basic_rtmpdump, QIcon(":img/hdd.png"), "Record");
+    ui_widget->addTab(ui_about, QIcon(":img/lightbulb.png"), "About");
+
+    connect(ui_basic_jtv, SIGNAL(gotoWatchAndStart()), this, SLOT(onGotoWatchAndStart()));
+    connect(ui_basic_jtv, SIGNAL(gotoRecord()), this, SLOT(onGotoRecord()));
+    connect(ui_basic_jtv, SIGNAL(toggleUi()), this, SLOT(toggleUi()));
+    connect(ui_watch, SIGNAL(askBtn_watchEnable()), ui_basic_jtv, SLOT(btn_watchEnable()));
+    connect(ui_watch, SIGNAL(askBtn_watchDisable()), ui_basic_jtv, SLOT(btn_watchDisable()));
+}
+
+void JtvLiveUiMain::clearBasicUi()
+{
+    ui_widget->clear();
+
+    disconnect(ui_basic_jtv, SIGNAL(gotoWatchAndStart()), this, SLOT(onGotoWatchAndStart()));
+    disconnect(ui_basic_jtv, SIGNAL(gotoRecord()), this, SLOT(onGotoRecord()));
+    disconnect(ui_basic_jtv, SIGNAL(toggleUi()), this, SLOT(toggleUi()));
+    disconnect(ui_watch, SIGNAL(askBtn_watchEnable()), ui_basic_jtv, SLOT(btn_watchEnable()));
+    disconnect(ui_watch, SIGNAL(askBtn_watchDisable()), ui_basic_jtv, SLOT(btn_watchDisable()));
+
+    delete ui_basic_jtv;
+    delete ui_watch;
+    delete ui_basic_rtmpdump;
+    delete ui_about;
 }
 
 JtvLiveUiMain::~JtvLiveUiMain()

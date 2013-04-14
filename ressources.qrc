@@ -11,5 +11,7 @@
         <file alias="update.png">img/update.png</file>
         <file alias="player.png">img/media-player.png</file>
         <file alias="explorer.png">img/explorer.png</file>
+        <file alias="television32.png">img/television32.png</file>
+        <file alias="hdd32.png">img/hard-drive32.png</file>
     </qresource>
 </RCC>

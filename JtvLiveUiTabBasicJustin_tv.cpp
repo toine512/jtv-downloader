@@ -16,9 +16,9 @@
  * along with "Jtv live downloader".  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "JtvLiveUiTabJustin_tv.h"
+#include "JtvLiveUiTabBasicJustin_tv.h"
 
-JtvLiveUiTabJustin_tv::JtvLiveUiTabJustin_tv(JtvLiveChannel *live_channel, QWidget *parent) :
+JtvLiveUiTabBasicJustin_tv::JtvLiveUiTabBasicJustin_tv(JtvLiveChannel *live_channel, QWidget *parent) :
     QWidget(parent)
 {
     p_live_channel = live_channel;
@@ -37,69 +37,54 @@ JtvLiveUiTabJustin_tv::JtvLiveUiTabJustin_tv(JtvLiveChannel *live_channel, QWidg
 
     btn_search = new QSquareIconResizingPushButton(":img/search.png");
 
-    lab_infos = new QLabel("First, type the channel name in the field above and the password if any.");
-    lab_infos->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    /*lab_infos = new QLabel("First, type the channel name in the field above and the password if any.");
+    lab_infos->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);*/
 
     fra_separator = new QFrame;
     fra_separator->setFrameShape(QFrame::HLine);
     fra_separator->setFrameShadow(QFrame::Sunken);
 
+    lab_stream = new QLabel("Select a stream:");
+
     cbo_selector = new QComboBox;
     cbo_selector->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     cbo_selector->setDisabled(true);
 
-    btn_watch = new QPushButton;
-    btn_watch->setIcon(QIcon(":img/television.png"));
+    btn_record = new QPushButton("Record");
+    btn_record->setIcon(QIcon(":img/hdd32.png"));
+    btn_record->setIconSize(QSize(32, 32));
+    btn_record->setToolTip("Record this stream");
+    btn_record->setDisabled(true);
+
+    btn_watch = new QPushButton("Watch");
+    btn_watch->setIcon(QIcon(":img/television32.png"));
+    btn_watch->setIconSize(QSize(32, 32));
     btn_watch->setToolTip("Watch this stream");
     btn_watch->setDisabled(true);
 
-    lab_bitrate = new QLabel;
-    lab_bitrate->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-
-    lab_viewers = new QLabel;
-    lab_viewers->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-
-    lab_part = new QLabel;
-    lab_part->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-
-    lab_id = new QLabel;
-    lab_id->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-
-    lab_node = new QLabel;
-    lab_node->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-
-    btn_simplified = new QPushButton("Simplified GUI");
-
-    //Init with defaults
-    defaultStats();
+    btn_advanced = new QPushButton("Use advanced interface");
 
     //Layouts
-    layout_search = new QGridLayout;
-    layout_search->addWidget(lab_channel, 0, 0);
-    layout_search->addWidget(lne_channel, 0, 1);
-    layout_search->addWidget(btn_favourite, 0, 2);
-    layout_search->addWidget(lab_password, 1, 0);
-    layout_search->addWidget(lne_password, 1, 1, 1, 2);
-    layout_search->addWidget(btn_search, 0, 3, 2, 1);
+    layout_actions = new QHBoxLayout;
+    layout_actions->addWidget(btn_record);
+    layout_actions->addWidget(btn_watch);
 
-    layout_stream = new QHBoxLayout;
-    layout_stream->addWidget(cbo_selector);
-    layout_stream->addWidget(btn_watch);
-
-    layout_stats = new QGridLayout;
-    layout_stats->addWidget(lab_bitrate, 0, 0);
-    layout_stats->addWidget(lab_viewers, 0, 1);
-    layout_stats->addWidget(lab_part, 0, 2);
-    layout_stats->addWidget(lab_id, 1, 0);
-    layout_stats->addWidget(lab_node, 1, 1);
-    layout_stats->addWidget(btn_simplified, 1, 2);
-
-    layout = new QVBoxLayout();
-    layout->addLayout(layout_search);
-    layout->addWidget(lab_infos);
-    layout->addWidget(fra_separator);
-    layout->addLayout(layout_stream);
-    layout->addLayout(layout_stats);
+    layout = new QGridLayout;
+    layout->addWidget(lab_channel, 0, 0);
+    layout->addWidget(lne_channel, 0, 1);
+    layout->addWidget(btn_favourite, 0, 2);
+    layout->addWidget(lab_password, 1, 0);
+    layout->addWidget(lne_password, 1, 1, 1, 2);
+    layout->addWidget(btn_search, 0, 3, 2, 1);
+    layout->addWidget(fra_separator, 2, 0, 1, 4);
+    layout->addWidget(lab_stream, 3, 0, 1, 4);
+    layout->addWidget(cbo_selector, 4, 0, 1, 4);
+    layout->addLayout(layout_actions, 5, 0, 1, 4);
+    layout->addWidget(btn_advanced, 6, 0, 1, 4);
+    //layout->setRowStretch(3, 2);
+    //layout->setRowStretch(4, 2);
+    //layout->setRowStretch(5, 2);
+    layout->setRowStretch(6, 1);
 
     setLayout(layout);
 
@@ -107,25 +92,25 @@ JtvLiveUiTabJustin_tv::JtvLiveUiTabJustin_tv(JtvLiveChannel *live_channel, QWidg
     connect(lne_password, SIGNAL(returnPressed()), this, SLOT(searchChannel()));
     connect(btn_search, SIGNAL(clicked()), this, SLOT(searchChannel()));
     connect(cbo_selector, SIGNAL(currentIndexChanged(int)), p_live_channel, SLOT(setCurrentStream(int)));
+    connect(btn_record, SIGNAL(clicked()), this, SIGNAL(gotoRecord()));
     connect(btn_watch, SIGNAL(clicked()), this, SIGNAL(gotoWatchAndStart()));
-    connect(btn_simplified, SIGNAL(clicked()), this, SIGNAL(toggleUi()));
-    connect(p_live_channel, SIGNAL(messageChanged(const QString &)), this, SLOT(onMessageChanged(const QString &)));
+    connect(btn_advanced, SIGNAL(clicked()), this, SIGNAL(toggleUi()));
+    //connect(p_live_channel, SIGNAL(messageChanged(const QString &)), this, SLOT(onMessageChanged(const QString &)));
     connect(p_live_channel, SIGNAL(channelSearchSuccess(QStringList)), this, SLOT(onSearchSuccess(QStringList)));
     connect(p_live_channel, SIGNAL(channelSearchError(const QString &)), this, SLOT(onSearchError(const QString &)));
-    connect(p_live_channel, SIGNAL(streamChanged()), this, SLOT(fillStats()));
 }
 
-void JtvLiveUiTabJustin_tv::btn_watchEnable()
+void JtvLiveUiTabBasicJustin_tv::btn_watchEnable()
 {
     btn_watch->setEnabled(true);
 }
 
-void JtvLiveUiTabJustin_tv::btn_watchDisable()
+void JtvLiveUiTabBasicJustin_tv::btn_watchDisable()
 {
     btn_watch->setDisabled(true);
 }
 
-void JtvLiveUiTabJustin_tv::searchChannel()
+void JtvLiveUiTabBasicJustin_tv::searchChannel()
 {
     if(lne_channel->text().isEmpty())
     {
@@ -133,22 +118,21 @@ void JtvLiveUiTabJustin_tv::searchChannel()
     }
     else
     {
-        defaultStats();
         lock();
         cbo_selector->setDisabled(true);
         cbo_selector->clear();
+        btn_record->setDisabled(true);
         btn_watch->setDisabled(true);
-        emit askClearParams();
         p_live_channel->startSearch(lne_channel->text(), lne_password->text());
     }
 }
 
-void JtvLiveUiTabJustin_tv::onMessageChanged(const QString &message)
+/*void JtvLiveUiTabBasicJustin_tv::onMessageChanged(const QString &message)
 {
     lab_infos->setText(message);
-}
+}*/
 
-void JtvLiveUiTabJustin_tv::onSearchSuccess(QStringList names)
+void JtvLiveUiTabBasicJustin_tv::onSearchSuccess(QStringList names)
 {
     foreach(const QString &name, names)
     {
@@ -156,44 +140,27 @@ void JtvLiveUiTabJustin_tv::onSearchSuccess(QStringList names)
     }
     cbo_selector->setCurrentIndex(0); //Will call Tab0_updateStreamDatas(int) [slot]
     cbo_selector->setEnabled(true);
+    btn_record->setEnabled(true);
     btn_watch->setEnabled(true);
     unlock();
 }
 
-void JtvLiveUiTabJustin_tv::onSearchError(const QString &error)
+void JtvLiveUiTabBasicJustin_tv::onSearchError(const QString &error)
 {
     QMessageBox::warning(this, "Search live channel", QString("An error occured : %1").arg(error));
     unlock();
 }
 
-void JtvLiveUiTabJustin_tv::lock()
+void JtvLiveUiTabBasicJustin_tv::lock()
 {
     lne_channel->setDisabled(true);
     btn_search->setDisabled(true);
     lne_password->setDisabled(true);
 }
 
-void JtvLiveUiTabJustin_tv::unlock()
+void JtvLiveUiTabBasicJustin_tv::unlock()
 {
     lne_channel->setEnabled(true);
     btn_search->setEnabled(true);
     lne_password->setEnabled(true);
-}
-
-void JtvLiveUiTabJustin_tv::defaultStats()
-{
-    lab_bitrate->setText("bitrate : n/a");
-    lab_viewers->setText("viewers : n/a");
-    lab_part->setText("part : n/a");
-    lab_id->setText("id : n/a");
-    lab_node->setText("node : n/a");
-}
-
-void JtvLiveUiTabJustin_tv::fillStats()
-{
-    lab_bitrate->setText(QString("bitrate : ").append(p_live_channel->getStreamBitrate()));
-    lab_viewers->setText(QString("viewers : ").append(p_live_channel->getStreamViewers()));
-    lab_part->setText(QString("part : ").append(p_live_channel->getStreamPart()));
-    lab_id->setText(QString("id : ").append(p_live_channel->getStreamId()));
-    lab_node->setText(QString("node : ").append(p_live_channel->getStreamNode()));
 }

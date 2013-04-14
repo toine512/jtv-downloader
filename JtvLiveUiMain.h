@@ -1,6 +1,6 @@
 /* This file is part of "Jtv live downloader"
  *
- * Copyright (C) 2012 toine512 <toine512@gmail.com>
+ * Copyright (C) 2012-2013 toine512 <toine512@gmail.com>
  *
  * "Jtv live downloader" is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,9 +38,11 @@
 #include <QTabWidget>
 #include <QIcon>
 #include "JtvLiveUiTabJustin_tv.h"
+#include "JtvLiveUiTabBasicJustin_tv.h"
 #include "JtvLiveUiTabWatch.h"
 #include "JtvLiveUiTabParams.h"
 #include "JtvLiveUiTabRtmpdump.h"
+#include "JtvLiveUiTabBasicRtmpdump.h"
 #include "JtvLiveUiTabRtmpgw.h"
 #include "JtvLiveUiTabAbout.h"
 #include "NewUpdateTab.h"
@@ -54,16 +56,26 @@ public:
     ~JtvLiveUiMain();
 
 protected slots:
+    void toggleUi();
+    void onGotoRecord();
     void onGotoWatchAndStart();
 
 protected:
     //UI
+    void loadAdvancedUi();
+    void clearAdvancedUi();
+    void loadBasicUi();
+    void clearBasicUi();
+
     //QStatusBar *ui_bottom_statusBar;
+    bool b_is_advanced_ui;
     QTabWidget *ui_widget;
     JtvLiveUiTabJustin_tv *ui_jtv;
+    JtvLiveUiTabBasicJustin_tv *ui_basic_jtv;
     JtvLiveUiTabParams *ui_params;
     JtvLiveUiTabWatch *ui_watch;
     JtvLiveUiTabRtmpdump *ui_rtmpdump;
+    JtvLiveUiTabBasicRtmpdump *ui_basic_rtmpdump;
     JtvLiveUiTabRtmpgw *ui_rtmpgw;
     JtvLiveUiTabAbout *ui_about;
     NewUpdateTab *ui_update;
