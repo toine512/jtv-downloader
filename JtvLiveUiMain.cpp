@@ -1,6 +1,6 @@
 /* This file is part of "Jtv live downloader"
  *
- * Copyright (C) 2012 toine512 <toine512@gmail.com>
+ * Copyright (C) 2012-2013 toine512 <toine512@gmail.com>
  *
  * "Jtv live downloader" is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     }
 
     //UpdateChecker setup
-    updater = new UpdateChecker(net_manager, "http://jtv-downloader.fr.nf/upd/", uuid, JTV_LIVE_VERSION, this);
+    updater = new UpdateChecker(net_manager, "http://toine512.fr/t-upd/jtvdl/", uuid, JTV_LIVE_VERSION, this);
 
     /* GUI */
     setWindowTitle("Justin.tv / Twitch.tv live downloader");
