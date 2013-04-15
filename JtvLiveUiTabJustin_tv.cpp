@@ -30,9 +30,6 @@ JtvLiveUiTabJustin_tv::JtvLiveUiTabJustin_tv(QSettings *settings, JtvLiveChannel
     lab_channel = new QLabel("Channel name :");
     lab_channel->setBuddy(lne_channel);
 
-    /*btn_favourite = new QPushButton("F");
-    btn_favourite->setToolTip("favourite: TODO");
-    btn_favourite->setDisabled(true);*/
     btn_favourite = new QPushButton;
     btn_favouriteSetState(false);
 

@@ -30,9 +30,6 @@ JtvLiveUiTabBasicJustin_tv::JtvLiveUiTabBasicJustin_tv(QSettings *settings, JtvL
     lab_channel = new QLabel("Channel name :");
     lab_channel->setBuddy(lne_channel);
 
-    /*btn_favourite = new QPushButton("F");
-    btn_favourite->setToolTip("favourite: TODO");
-    btn_favourite->setDisabled(true);*/
     btn_favourite = new QPushButton;
     btn_favouriteSetState(false);
 
@@ -86,9 +83,6 @@ JtvLiveUiTabBasicJustin_tv::JtvLiveUiTabBasicJustin_tv(QSettings *settings, JtvL
     layout->addWidget(cbo_selector, 4, 0, 1, 4);
     layout->addLayout(layout_actions, 5, 0, 1, 4);
     layout->addWidget(btn_advanced, 6, 0, 1, 4);
-    //layout->setRowStretch(3, 2);
-    //layout->setRowStretch(4, 2);
-    //layout->setRowStretch(5, 2);
     layout->setRowStretch(6, 1);
 
     setLayout(layout);
