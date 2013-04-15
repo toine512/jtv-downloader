@@ -19,9 +19,11 @@
 #ifndef JTVLIVEUITABBASICJUSTIN_TV_H
 #define JTVLIVEUITABBASICJUSTIN_TV_H
 
+#include <QSettings>
 #include <QString>
 #include <QStringList>
 #include "qt-jtvlive/JtvLiveChannel.h"
+#include "qt-shared/favourites/FavCompleter.h"
 
 #include <QWidget>
 #include <QLabel>
@@ -38,7 +40,7 @@ class JtvLiveUiTabBasicJustin_tv : public QWidget
     Q_OBJECT
 
 public:
-    explicit JtvLiveUiTabBasicJustin_tv(JtvLiveChannel *live_channel, QWidget *parent = 0);
+    explicit JtvLiveUiTabBasicJustin_tv(QSettings *settings, JtvLiveChannel *live_channel, QWidget *parent = 0);
 
 signals:
     void toggleUi();
@@ -50,6 +52,8 @@ public slots:
     void btn_watchDisable();
 
 protected slots:
+    void toggleChannelFavourite();
+    void verifyChannelFavouriting(const QString &s);
     void searchChannel();
     //void onMessageChanged(const QString &message);
     void onSearchSuccess(QStringList names);
@@ -58,8 +62,11 @@ protected slots:
 protected:
     void lock();
     void unlock();
+    void btn_favouriteSetState(bool isFav);
+    bool b_btn_favourite_isFav;
 
     JtvLiveChannel *p_live_channel;
+    FavCompleter *p_favourites;
 
     QLabel *lab_channel, *lab_password, *lab_stream, /**lab_infos*/;
     QLineEdit *lne_channel, *lne_password;

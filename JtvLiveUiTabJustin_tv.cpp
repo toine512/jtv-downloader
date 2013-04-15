@@ -18,18 +18,23 @@
 
 #include "JtvLiveUiTabJustin_tv.h"
 
-JtvLiveUiTabJustin_tv::JtvLiveUiTabJustin_tv(JtvLiveChannel *live_channel, QWidget *parent) :
+JtvLiveUiTabJustin_tv::JtvLiveUiTabJustin_tv(QSettings *settings, JtvLiveChannel *live_channel, QWidget *parent) :
     QWidget(parent)
 {
     p_live_channel = live_channel;
 
+    p_favourites = new FavCompleter(settings, "justin.tv/favourites", this);
+
     lne_channel = new QLineEdit;
+    lne_channel->setCompleter(p_favourites);
     lab_channel = new QLabel("Channel name :");
     lab_channel->setBuddy(lne_channel);
 
-    btn_favourite = new QPushButton("F");
+    /*btn_favourite = new QPushButton("F");
     btn_favourite->setToolTip("favourite: TODO");
-    btn_favourite->setDisabled(true);
+    btn_favourite->setDisabled(true);*/
+    btn_favourite = new QPushButton;
+    btn_favouriteSetState(false);
 
     lne_password = new QLineEdit;
     lab_password = new QLabel("Channel password :");
@@ -104,7 +109,9 @@ JtvLiveUiTabJustin_tv::JtvLiveUiTabJustin_tv(JtvLiveChannel *live_channel, QWidg
     setLayout(layout);
 
     connect(lne_channel, SIGNAL(returnPressed()), this, SLOT(searchChannel()));
+    connect(lne_channel, SIGNAL(textChanged(const QString &)), this, SLOT(verifyChannelFavouriting(const QString &)));
     connect(lne_password, SIGNAL(returnPressed()), this, SLOT(searchChannel()));
+    connect(btn_favourite, SIGNAL(clicked()), this, SLOT(toggleChannelFavourite()));
     connect(btn_search, SIGNAL(clicked()), this, SLOT(searchChannel()));
     connect(cbo_selector, SIGNAL(currentIndexChanged(int)), p_live_channel, SLOT(setCurrentStream(int)));
     connect(btn_watch, SIGNAL(clicked()), this, SIGNAL(gotoWatchAndStart()));
@@ -123,6 +130,26 @@ void JtvLiveUiTabJustin_tv::btn_watchEnable()
 void JtvLiveUiTabJustin_tv::btn_watchDisable()
 {
     btn_watch->setDisabled(true);
+}
+
+void JtvLiveUiTabJustin_tv::toggleChannelFavourite()
+{
+    QString ch = lne_channel->text();
+    if(!ch.isEmpty())
+    {
+        btn_favouriteSetState(p_favourites->toggleFavourite(ch));
+    }
+}
+
+void JtvLiveUiTabJustin_tv::verifyChannelFavouriting(const QString &s)
+{
+    if(!s.isEmpty())
+    {
+        if(b_btn_favourite_isFav != p_favourites->isFavourited(s))
+        {
+            btn_favouriteSetState(!b_btn_favourite_isFav);
+        }
+    }
 }
 
 void JtvLiveUiTabJustin_tv::searchChannel()
@@ -169,6 +196,7 @@ void JtvLiveUiTabJustin_tv::onSearchError(const QString &error)
 void JtvLiveUiTabJustin_tv::lock()
 {
     lne_channel->setDisabled(true);
+    btn_favourite->setDisabled(true);
     btn_search->setDisabled(true);
     lne_password->setDisabled(true);
 }
@@ -176,8 +204,22 @@ void JtvLiveUiTabJustin_tv::lock()
 void JtvLiveUiTabJustin_tv::unlock()
 {
     lne_channel->setEnabled(true);
+    btn_favourite->setEnabled(true);
     btn_search->setEnabled(true);
     lne_password->setEnabled(true);
+}
+
+void JtvLiveUiTabJustin_tv::btn_favouriteSetState(bool isFav)
+{
+    b_btn_favourite_isFav = isFav;
+    if(b_btn_favourite_isFav)
+    {
+        btn_favourite->setIcon(QIcon(":img/delete.png"));
+    }
+    else
+    {
+        btn_favourite->setIcon(QIcon(":img/heart.png"));
+    }
 }
 
 void JtvLiveUiTabJustin_tv::defaultStats()

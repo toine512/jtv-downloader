@@ -1,6 +1,6 @@
 /* This file is part of "Jtv live downloader"
  *
- * Copyright (C) 2012 toine512 <toine512@gmail.com>
+ * Copyright (C) 2012-2013 toine512 <toine512@gmail.com>
  *
  * "Jtv live downloader" is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,11 @@
 #ifndef JTVLIVEUITABJUSTIN_TV_H
 #define JTVLIVEUITABJUSTIN_TV_H
 
+#include <QSettings>
 #include <QString>
 #include <QStringList>
 #include "qt-jtvlive/JtvLiveChannel.h"
+#include "qt-shared/favourites/FavCompleter.h"
 
 #include <QWidget>
 #include <QLabel>
@@ -39,7 +41,7 @@ class JtvLiveUiTabJustin_tv : public QWidget
     Q_OBJECT
 
 public:
-    explicit JtvLiveUiTabJustin_tv(JtvLiveChannel *live_channel, QWidget *parent = 0);
+    explicit JtvLiveUiTabJustin_tv(QSettings *settings, JtvLiveChannel *live_channel, QWidget *parent = 0);
     
 signals:
     void toggleUi();
@@ -51,6 +53,8 @@ public slots:
     void btn_watchDisable();
 
 protected slots:
+    void toggleChannelFavourite();
+    void verifyChannelFavouriting(const QString &s);
     void searchChannel();
     void onMessageChanged(const QString &message);
     void onSearchSuccess(QStringList names);
@@ -60,9 +64,12 @@ protected slots:
 protected:
     void lock();
     void unlock();
+    void btn_favouriteSetState(bool isFav);
+    bool b_btn_favourite_isFav;
     void defaultStats();
 
     JtvLiveChannel *p_live_channel;
+    FavCompleter *p_favourites;
 
     QLabel *lab_channel, *lab_password, *lab_infos, *lab_bitrate, *lab_viewers, *lab_part, *lab_id, *lab_node;
     QLineEdit *lne_channel, *lne_password;

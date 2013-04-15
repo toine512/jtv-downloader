@@ -13,5 +13,7 @@
         <file alias="explorer.png">img/explorer.png</file>
         <file alias="television32.png">img/television32.png</file>
         <file alias="hdd32.png">img/hard-drive32.png</file>
+        <file alias="delete.png">img/delete.png</file>
+        <file alias="heart.png">img/heart.png</file>
     </qresource>
 </RCC>

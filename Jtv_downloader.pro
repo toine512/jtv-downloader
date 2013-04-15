@@ -24,7 +24,8 @@ SOURCES += main.cpp\
            qt-shared/buttons/QSquareIconResizingPushButton.cpp \
            NewUpdateTab.cpp \
            JtvLiveUiTabBasicJustin_tv.cpp \
-           JtvLiveUiTabBasicRtmpdump.cpp
+           JtvLiveUiTabBasicRtmpdump.cpp \
+           qt-shared/favourites/FavCompleter.cpp
 
 HEADERS += defines.h \
            JtvLiveUiMain.h \
@@ -40,7 +41,8 @@ HEADERS += defines.h \
            qt-shared/buttons/QSquareIconResizingPushButton.h \
            NewUpdateTab.h \
            JtvLiveUiTabBasicJustin_tv.h \
-           JtvLiveUiTabBasicRtmpdump.h
+           JtvLiveUiTabBasicRtmpdump.h \
+           qt-shared/favourites/FavCompleter.h
 
 RESOURCES += ressources.qrc
 

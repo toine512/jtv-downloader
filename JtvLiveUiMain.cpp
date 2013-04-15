@@ -146,7 +146,7 @@ void JtvLiveUiMain::loadAdvancedUi()
     setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     resize(596, 270);
 
-    ui_jtv = new JtvLiveUiTabJustin_tv(live_channel);
+    ui_jtv = new JtvLiveUiTabJustin_tv(settings, live_channel);
     ui_watch = new JtvLiveUiTabWatch(settings, live_channel);
     ui_params = new JtvLiveUiTabParams(live_channel);
     ui_rtmpdump = new JtvLiveUiTabRtmpdump(settings, live_channel);
@@ -189,7 +189,7 @@ void JtvLiveUiMain::loadBasicUi()
 {
     setFixedSize(400, 250);
 
-    ui_basic_jtv = new JtvLiveUiTabBasicJustin_tv(live_channel);
+    ui_basic_jtv = new JtvLiveUiTabBasicJustin_tv(settings, live_channel);
     ui_watch = new JtvLiveUiTabWatch(settings, live_channel);
     ui_basic_rtmpdump = new JtvLiveUiTabBasicRtmpdump(settings, live_channel);
     ui_about = new JtvLiveUiTabAbout;
