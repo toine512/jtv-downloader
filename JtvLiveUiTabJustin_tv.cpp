@@ -143,12 +143,9 @@ void JtvLiveUiTabJustin_tv::toggleChannelFavourite()
 
 void JtvLiveUiTabJustin_tv::verifyChannelFavouriting(const QString &s)
 {
-    if(!s.isEmpty())
+    if(b_btn_favourite_isFav != p_favourites->isFavourited(s))
     {
-        if(b_btn_favourite_isFav != p_favourites->isFavourited(s))
-        {
-            btn_favouriteSetState(!b_btn_favourite_isFav);
-        }
+        btn_favouriteSetState(!b_btn_favourite_isFav);
     }
 }
 
