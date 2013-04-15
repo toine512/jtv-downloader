@@ -215,10 +215,12 @@ void JtvLiveUiTabJustin_tv::btn_favouriteSetState(bool isFav)
     if(b_btn_favourite_isFav)
     {
         btn_favourite->setIcon(QIcon(":img/delete.png"));
+        btn_favourite->setToolTip("Remove bookmark");
     }
     else
     {
         btn_favourite->setIcon(QIcon(":img/heart.png"));
+        btn_favourite->setToolTip("Add bookmark");
     }
 }
 
