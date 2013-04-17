@@ -34,6 +34,7 @@ JtvLiveUiTabJustin_tv::JtvLiveUiTabJustin_tv(QSettings *settings, JtvLiveChannel
     btn_favouriteSetState(false);
 
     lne_password = new QLineEdit;
+    lne_password->setEchoMode(QLineEdit::Password);
     lab_password = new QLabel("Channel password :");
     lab_password->setBuddy(lne_password);
 
