@@ -24,9 +24,11 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     /* Core */
     //QSettings setup
 #ifdef Q_OS_WIN
-    settings = new QSettings("jtvdl.conf", QSettings::IniFormat, this);
+    settings = new QSettings("jtvdl.ini", QSettings::IniFormat, this);
 #else
-    settings = new QSettings("$HOME/.config/jtv-downloader/jtvdl.conf", QSettings::IniFormat, this);
+    //settings = new QSettings("$HOME/.config/jtv-downloader/jtvdl.conf", QSettings::IniFormat, this);
+    //Config file should be located in $HOME/.config/toine512/jtvdl.ini
+    settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "toine512", "jtvdl", this);
 #endif
 
     //QNetworkAccessManager setup
