@@ -1,4 +1,4 @@
-Latest stable version : **1.2**.
+Latest stable version : **1.2**
 
 Windows binaries
 ================
@@ -11,25 +11,6 @@ Previous packages available [here] (https://github.com/toine512/jtv-downloader/w
 Linux binaries
 ==============
 
-You need an up to date version of rtmpdump
-------------------------------------------
-
-### Ubuntu Quantal and above & Debian Wheezy and above
-	sudo apt-get install rtmpdump
-
-### Ubuntu Precise and under & Debian Squeeze and under
-- i386
-
-		wget http://ftp.fr.debian.org/debian/pool/main/r/rtmpdump/rtmpdump_2.4+20111222.git4e06e21-1_i386.deb
-		sudo dpkg -i rtmpdump_2.4+20111222.git4e06e21-1_i386.deb
-		rm rtmpdump_2.4+20111222.git4e06e21-1_i386.deb
-
-- AMD64
-
-		wget http://ftp.fr.debian.org/debian/pool/main/r/rtmpdump/rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
-		sudo dpkg -i rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
-		rm rtmpdump_2.4+20111222.git4e06e21-1_amd64.deb
-
 PPA for Ubuntu-based distributions
 ----------------------------------
 
@@ -41,19 +22,24 @@ Install **jtv-downloader** package :
 
 	sudo apt-get install jtv-downloader
 
-Debian binary packages compiled on Ubuntu Quantal
--------------------------------------------------
+Debian binary packages
+----------------------
 
-1.1.1 :
-- [i386] (https://launchpad.net/~toine512/+archive/jtv-downloader/+build/4212285/+files/jtv-downloader_1.1.1-0build1_i386.deb "jtv-downloader_1.1.1-0build1_i386.deb")
-- [AMD64] (https://launchpad.net/~toine512/+archive/jtv-downloader/+build/4212284/+files/jtv-downloader_1.1.1-0build1_amd64.deb "jtv-downloader_1.1.1-0build1_amd64.deb")
+1.2 :
+- [i386] (http://sourceforge.net/projects/jtv-downloader/files/release/jtv-downloader_1.2-0build1_i386.deb/download "jtv-downloader_1.2-0build1_i386.deb")
+- [AMD64] (http://sourceforge.net/projects/jtv-downloader/files/release/jtv-downloader_1.2-0build1_amd64.deb/download "jtv-downloader_1.2-0build1_amd64.deb")
 
 Previous packages available [here] (https://github.com/toine512/jtv-downloader/wiki/Previous-releases "Wiki:Previous-releases").
+
+Changelog
+=========
+
+[On the wiki] (https://github.com/toine512/jtv-downloader/wiki/Changelog)
 
 Building on Debian-based distributions
 ======================================
 
-You need **qt4-qmake** and **libqt4-dev** (>= 4.7.4) packages to achieve that.
+You need **g++**, **qt4-qmake** and **libqt4-dev** (>= 4.7.4) packages to achieve that.
 
 	sudo apt-get install git g++ qt4-qmake libqt4-dev
 	git clone git://github.com/toine512/jtv-downloader.git
@@ -61,10 +47,9 @@ You need **qt4-qmake** and **libqt4-dev** (>= 4.7.4) packages to achieve that.
 	qmake -makefile
 	make
 
-At runtime you'll need **libqtcore4**, **libqt4-xml**, **libqtgui4**, **libqt4-network** :
+At runtime you'll need **rtmpdump**, **libqtcore4**, **libqt4-xml**, **libqtgui4**, **libqt4-network** :
 
-	sudo apt-get install libqtcore4 libqt4-xml libqtgui4 libqt4-network
-See rtmpdump binaries above.
+	sudo apt-get install rtmpdump libqtcore4 libqt4-xml libqtgui4 libqt4-network
 
 Configuration file samples
 ==========================
