@@ -23,9 +23,9 @@
    0x 00 00 00 0A = alpha
    0x 00 00 00 0B = beta
    0x 00 00 00 0F = release */
-#define JTV_LIVE_VERSION 0x0102000F //uint32_t For The Win !
+#define JTV_LIVE_VERSION 0x0103000A //uint32_t For The Win !
 
 // Human readable version
-#define JTV_LIVE_VERSION_HUMAN "1.2"
+#define JTV_LIVE_VERSION_HUMAN "1.3"
 
 #endif // DEFINES_H
