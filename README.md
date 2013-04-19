@@ -1,9 +1,9 @@
-Latest stable version : **1.1.1**.
+Latest stable version : **1.2**.
 
 Windows binaries
 ================
 
-- [1.1.1] (http://sourceforge.net/projects/jtv-downloader/files/release/jtv-downloader_1.1.1.7z/download)
+- [1.2] (http://sourceforge.net/projects/jtv-downloader/files/release/jtv-downloader_1.2.7z/download)
   Includes official rtmpdump builds. Hosted on SourceForge.
 
 Previous packages available [here] (https://github.com/toine512/jtv-downloader/wiki/Previous-releases "Wiki:Previous-releases").

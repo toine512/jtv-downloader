@@ -1,2 +1,6 @@
-Release 1.1.1 (12/01/2013) :
-- Streams using fplive.net are fixed.
+Release 1.2 (19/04/2013) :
+- Adds simplified GUI
+- Adds bookmarking system
+- Adds "Browse" button for the player path
+- BREAKING Changes configuration file (jtvdl.ini)
+- Fixes password shown
