@@ -36,6 +36,9 @@
 #include <QMessageBox>
 #include "qt-shared/buttons/QSquareIconResizingPushButton.h"
 
+
+
+
 class JtvLiveUiTabJustin_tv : public QWidget
 {
     Q_OBJECT
@@ -76,10 +79,13 @@ protected:
     QSquareIconResizingPushButton *btn_search;
     QPushButton *btn_favourite, *btn_watch, *btn_simplified;
     QFrame *fra_separator;
+    QComboBox *cbo_geo;
     QComboBox *cbo_selector;
     QHBoxLayout *layout_stream;
     QGridLayout *layout_search, *layout_stats;
     QVBoxLayout *layout;
+
+
 };
 
 #endif // JTVLIVEUITABJUSTIN_TV_H
