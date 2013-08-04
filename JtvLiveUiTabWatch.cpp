@@ -33,7 +33,7 @@ JtvLiveUiTabWatch::JtvLiveUiTabWatch(QSettings *settings, JtvLiveChannel *live_c
     lne_player = new QLineEdit;
 #ifdef Q_OS_WIN
     lab_player = new QLabel("Player path :");
-    lne_player->setText(p_settings->value("watch/player", "%programfiles%\\VideoLAN\\VLC\\vlc.exe").toString());
+    lne_player->setText(p_settings->value("watch/player", "\"C:\\progra~2\\VideoLAN\\VLC\\vlc.exe\"" " --network-caching=8400").toString());
 #else
     lab_player = new QLabel("Player command :");
     lne_player->setText(p_settings->value("watch/player", "vlc").toString());
