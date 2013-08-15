@@ -33,7 +33,9 @@ JtvLiveUiTabWatch::JtvLiveUiTabWatch(QSettings *settings, JtvLiveChannel *live_c
     lne_player = new QLineEdit;
 #ifdef Q_OS_WIN
     lab_player = new QLabel("Player path :");
-    lne_player->setText(p_settings->value("watch/player", "%programfiles%\\VideoLAN\\VLC\\vlc.exe").toString());
+    //Get the VLC default path in the Windows registry
+    QSettings qs_registry("HKEY_LOCAL_MACHINE\\SOFTWARE\\VideoLAN\\VLC", QSettings::NativeFormat);
+    lne_player->setText(p_settings->value("watch/player", qs_registry.value("Default").toString()).toString());
 #else
     lab_player = new QLabel("Player command :");
     lne_player->setText(p_settings->value("watch/player", "vlc").toString());
