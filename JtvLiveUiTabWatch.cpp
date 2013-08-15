@@ -53,10 +53,11 @@ JtvLiveUiTabWatch::JtvLiveUiTabWatch(QSettings *settings, JtvLiveChannel *live_c
 
     pte_rtmpgw = new QPlainTextEdit;
     pte_rtmpgw->setReadOnly(true);
-    pte_rtmpgw->setOverwriteMode(true);
+    pte_rtmpgw->setUndoRedoEnabled(false);
 
     pte_player = new QPlainTextEdit;
     pte_player->setReadOnly(true);
+    pte_rtmpgw->setUndoRedoEnabled(false);
 
     //Layouts
     layout_player = new QHBoxLayout;
@@ -112,6 +113,8 @@ void JtvLiveUiTabWatch::linkedProcessesStart()
         {
             emit askBtn_watchDisable();
             btn_watch->setDisabled(true);
+            pte_rtmpgw->clear();
+            pte_player->clear();
             QStringList args = p_live_channel->getRtmpParams();
             args << "-g";
             args << p_settings->value("watch/port", "21080").toString();
@@ -172,7 +175,20 @@ void JtvLiveUiTabWatch::linkedProcessesDisconnectTerminate()
 
 void JtvLiveUiTabWatch::rtmpgwOut()
 {
-    pte_rtmpgw->appendPlainText(qproc_rtmpgw->readAll());
+    QByteArray out = qproc_rtmpgw->readAll();
+    int line = out.size() - out.lastIndexOf('\r');
+    if(line < 3) //We have CR LF, empty line or something that we won't care for at the end of line
+    {
+        pte_rtmpgw->appendPlainText(out);
+    }
+    else //Here we get the last line and overwrite the last one in the QPlainTextEdit
+    {
+        pte_rtmpgw->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+        pte_rtmpgw->moveCursor(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
+        pte_rtmpgw->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);
+        pte_rtmpgw->textCursor().removeSelectedText();
+        pte_rtmpgw->insertPlainText(out.right(line - 1));
+    }
 }
 
 void JtvLiveUiTabWatch::playerOut()

@@ -22,6 +22,7 @@
 #include <QSettings>
 #include <QString>
 #include <QProcess>
+#include <QByteArray>
 #include "qt-jtvlive/JtvLiveChannel.h"
 
 #include <QWidget>
@@ -30,6 +31,7 @@
 #include <QPushButton>
 #include <QFrame>
 #include <QPlainTextEdit>
+#include <QTextCursor>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QMessageBox>
