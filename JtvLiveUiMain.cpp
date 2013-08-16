@@ -34,7 +34,7 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     //QNetworkAccessManager setup
     net_manager = new QNetworkAccessManager(this);
 
-    //Justin.tv setup
+    //Justin.tv back-end setup
     live_channel = new JtvLiveChannel(net_manager, settings->value("justin.tv/player", "http://fr.twitch.tv/widgets/live_embed_player.swf").toString(), settings->value("justin.tv/referer", "http://fr.twitch.tv/").toString(), this);
 
     //Generate an UUID for the update checker
@@ -51,8 +51,13 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
     /* GUI */
     setWindowTitle("Justin.tv / Twitch.tv live downloader");
 
+    //Central main widget
     ui_widget = new QTabWidget;
+
+    //Create the tab for the updater
     ui_update = new NewUpdateTab(true, ui_widget, this);
+    connect(updater, SIGNAL(updateAvailable(const QString &, const QString &)), ui_update, SLOT(setUpdateInfos(const QString &, const QString &)));
+    connect(updater, SIGNAL(updateNotes(const QString &)), ui_update, SLOT(setUpdateNotes(const QString &)));
 
     //Which interface do we load ?
     b_is_advanced_ui = settings->value("gui/advanced", false).toBool();
@@ -65,47 +70,11 @@ JtvLiveUiMain::JtvLiveUiMain(QWidget *parent) :
         loadBasicUi();
     }
 
-    /*layout()->setSizeConstraint(QLayout::SetNoConstraint); //the main layout won't resize the QMainWindow
-    resize(596, 270);
-    setMinimumSize(496, 270);*/
-    //setFixedSize(400, 250);
-
     //Statusbar
     /*ui_bottom_statusBar = statusBar();
     ui_bottom_statusBar->showMessage("I'm an useless status bar !");*/
 
-    //Central zone
-/*
-    ui_jtv = new JtvLiveUiTabJustin_tv(live_channel);
-    ui_basic_jtv = new JtvLiveUiTabBasicJustin_tv(live_channel);
-    ui_watch = new JtvLiveUiTabWatch(settings, live_channel);
-    ui_params = new JtvLiveUiTabParams(live_channel);
-    ui_rtmpdump = new JtvLiveUiTabRtmpdump(settings, live_channel);
-    ui_rtmpgw = new JtvLiveUiTabRtmpgw(settings, live_channel);
-    ui_about = new JtvLiveUiTabAbout;
-    ui_update = new NewUpdateTab(true, ui_widget, this);
-
-    ui_widget->addTab(ui_jtv, QIcon(":img/jtv.png"), "Justin.tv");
-    ui_widget->addTab(ui_basic_jtv, QIcon(":img/jtv.png"), "Justin.tv");
-    ui_widget->addTab(ui_watch, QIcon(":img/television.png"), "Watch");
-    ui_widget->addTab(ui_params, QIcon(":img/gear.png"), "Params");
-    ui_widget->addTab(ui_rtmpdump, QIcon(":img/hdd.png"), "rtmpdump");
-    ui_widget->addTab(ui_rtmpgw, QIcon(":img/netdd.png"), "rtmpgw");
-    ui_widget->addTab(ui_about, QIcon(":img/lightbulb.png"), "About");
-
-    connect(ui_jtv, SIGNAL(askClearParams()), ui_params, SLOT(clearParams()));
-    connect(ui_jtv, SIGNAL(gotoWatchAndStart()), this, SLOT(onGotoWatchAndStart()));
-    connect(ui_watch, SIGNAL(askBtn_watchEnable()), ui_jtv, SLOT(btn_watchEnable()));
-    connect(ui_watch, SIGNAL(askBtn_watchDisable()), ui_jtv, SLOT(btn_watchDisable()));
-    connect(ui_basic_jtv, SIGNAL(gotoWatchAndStart()), this, SLOT(onGotoWatchAndStart()));
-    connect(ui_basic_jtv, SIGNAL(gotoRecord()), this, SLOT(onGotoRecord()));
-    connect(ui_watch, SIGNAL(askBtn_watchEnable()), ui_basic_jtv, SLOT(btn_watchEnable()));
-    connect(ui_watch, SIGNAL(askBtn_watchDisable()), ui_basic_jtv, SLOT(btn_watchDisable()));*/
-
-    connect(updater, SIGNAL(updateAvailable(const QString &, const QString &)), ui_update, SLOT(setUpdateInfos(const QString &, const QString &)));
-    connect(updater, SIGNAL(updateNotes(const QString &)), ui_update, SLOT(setUpdateNotes(const QString &)));
-
-    //Center on the current screen
+    //Center the window on the current screen
     QDesktopWidget desktop_widget;
     QRect screen_geometry = desktop_widget.availableGeometry();
     move(screen_geometry.width() / 2 - width() / 2, screen_geometry.height() / 2 - height() / 2);
@@ -142,6 +111,7 @@ void JtvLiveUiMain::onGotoWatchAndStart()
 }
 
 void JtvLiveUiMain::loadAdvancedUi()
+//You have to reflect changes made here in clearAdvancedUi()
 {
     layout()->setSizeConstraint(QLayout::SetNoConstraint); //the main layout won't resize the QMainWindow
     setMinimumSize(496, 270);
@@ -188,6 +158,7 @@ void JtvLiveUiMain::clearAdvancedUi()
 }
 
 void JtvLiveUiMain::loadBasicUi()
+//You have to reflect changes made here in clearBasicUi()
 {
     setFixedSize(400, 250);
 
