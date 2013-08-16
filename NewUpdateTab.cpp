@@ -19,6 +19,7 @@ NewUpdateTab::NewUpdateTab(bool auto_self_insert, QTabWidget *tab_widget, QWidge
 
     pte_notes = new QPlainTextEdit;
     pte_notes->setReadOnly(true);
+    pte_notes->setUndoRedoEnabled(false);
 
     layout = new QVBoxLayout;
     layout->addWidget(lab_notice);
