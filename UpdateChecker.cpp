@@ -1,6 +1,6 @@
 /* This file is part of "Jtv live downloader"
  *
- * Copyright (C) 2012 toine512 <toine512@gmail.com>
+ * Copyright (C) 2012-2013 toine512 <toine512@gmail.com>
  *
  * "Jtv live downloader" is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,11 +25,13 @@ UpdateChecker::UpdateChecker(QNetworkAccessManager *network_manager, const QStri
     url = base_url;
     current_version = version;
 
-    QUrl req_url = QUrl(QString(url).append("latest.release"));
-    req_url.addQueryItem("uuid", client_uuid);
-    QNetworkRequest req = QNetworkRequest(req_url);
+    QNetworkRequest req = QNetworkRequest(QString(url).append("latest.release"));
     req.setPriority(QNetworkRequest::LowPriority);
-    net_reply = net_manager->get(req);
+    req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    QUrl data;
+    data.addQueryItem("uuid", client_uuid);
+    data.addQueryItem("version", QString::number(current_version));
+    net_reply = net_manager->post(req, data.encodedQuery());
     connect(net_reply, SIGNAL(finished()), this, SLOT(checkDone()));
 }
 
